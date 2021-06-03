@@ -16,34 +16,41 @@ class Qualib:
         """
         Run a single calibration with given assumptions and Exopy template
         """
-        print('Starting a "{}" calibration with {} substitution(s):\n    {}'.format(
-            calib_name,
-            len(substitutions.keys()),
-            '\n    '.join(map(lambda kv: '{} => {}'.format(kv[0],kv[1]), substitutions.items()))
-        ))
+        print(f'Starting a "{calib_name}" calibration with {len(substitutions.keys())} substitution(s):')
+        print(' '*4+'\n    '.join(map(lambda pair: f'{pair[0]} => {pair[1]}', substitutions.items())))
         
         try:
+            # dynamically import Calibration from calibrations/{name}/{name}_utils.py
             Calibration = load_utils(calib_name)
-            print('✓ Successfully loaded {0}_utils.py'.format(calib_name))
+            print(f'✓ Successfully loaded {calib_name}_utils.py')
             
+            # load assumptions.py
             assumptions = Assumptions.load(calib_name)
-            print('✓ Successfully loaded assumptions for "{}"'.format(calib_name))
+            print(f'✓ Successfully loaded assumptions for "{calib_name}"')
             
+            # load calibrations/{name}/{name}_template.meas.ini
             exopy_templ = ExopyTemplate.load(calib_name)
-            print('✓ Successfully loaded Exopy template for "{0}"\n  Generating {0}.meas.ini file...'.format(calib_name))
+            print(f'✓ Successfully loaded Exopy template for "{calib_name}"\n  Generating {calib_name}.meas.ini file...')
+            
+            # generate and save calibrations/{name}/{name}.meas.ini
             calibration = Calibration(exopy_templ, assumptions, calib_id, calib_name, substitutions)
             keys = calibration.keys
+            print(f'✓ Successfully saved {calib_name}.meas.ini in calibrations/{calib_name}')
             
-            print('✓ Successfully saved {0}.meas.ini in calibrations/{0}'.format(calib_name))
-            print('✓ Starting a "{}" calibration...'.format(calib_name))
-            ini_path = '../qualib/calibrations/{0}/{0}.meas.ini'.format(calib_name)
+            # run 'python -m exopy -s -x ../qualib/calibrations/{name}/{name}.meas.ini'
+            print(f'✓ Starting a "{calib_name}" calibration...')
+            ini_path = f'../qualib/calibrations/{calib_name}/{calib_name}.meas.ini'
             subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path], shell=True)
-            calibration.analyze('{}/{:03d}_{}.h5'.format(assumptions['default_path'], calibration.calib_id, calibration.calib_name))
+            
+            # process the hdf5 output file
+            calibration.analyze(f'{assumptions["default_path"]}/{calibration.calib_id:03d}_{calibration.calib_name}.h5')
             result = calibration.result
-            print('Result of "{}" calibration: {}'.format(calib_name, result))
+            print(f'Result of "{calib_name}" calibration:\n{result}')
+            print(calibration.report())
         except:
-            print('  An error occurred while processing "{}" calibration:\n    {}\n\n{}\n'.format(calib_name, sys.exc_info()[1], '#'*70))
-            raise
+            print(f'  An error occurred while processing "{calib_name}" calibration:')
+            print(f'    {sys.exc_info()[1]}\n\n{"#"*70}\n')
+            raise # propagate the exception to show the stack trace and prevent the next calibration
         return
     
     def run_all(self):
@@ -52,7 +59,7 @@ class Qualib:
         """
         if len(sys.argv):
             calib_id = 0
-            path = sys.argv[1] # path to the calibration scheme
+            path = sys.argv[1] # path to calibration_scheme.py
             calib_scheme = CalibrationScheme.load(path)
             for calib in calib_scheme:
                 if 'substitutions' in calib:
@@ -73,14 +80,14 @@ class CalibrationScheme:
     def load(path):
         calib_scheme = []
         with open(path) as f:
-            return eval(f.read())
+            return eval(f.read()) # calibration_scheme.py should be a Python dict
     
 class ExopyTemplate:
     """
     Load an Exopy template defining a specific calibration
     """
     def load(calib):
-        with open('calibrations/{}/{}_template.meas.ini'.format(calib, calib)) as f:
+        with open(f'calibrations/{calib}/{calib}_template.meas.ini') as f:
             return f.read()
     
 class Assumptions:
@@ -88,14 +95,14 @@ class Assumptions:
     Parse a dict of assumptions
     """
     def load(calib):
-        with open('assumptions.py'.format(calib, calib)) as f:
-            return eval(f.read())
+        with open('assumptions.py') as f:
+            return eval(f.read()) # assumptions.py should be a Python list
 
 def load_utils(calib):
     """
     Import utils module dynamically
     """
-    module = importlib.import_module('calibrations.{}.{}_utils'.format(calib, calib))
+    module = importlib.import_module(f'calibrations.{calib}.{calib}_utils')
     return getattr(module, 'Calibration') # Calibration class from {calib_name}_utils.py
     
 qualib = Qualib()

@@ -75,11 +75,17 @@ class Calibration(DefaultCalibration):
 
         Nstop = -40
         popt, pcov = opt.curve_fit(cosine, amp[:Nstop], np.real(data[:Nstop]), (amp[-1]*2, -12e-3, 0), maxfev = 100000)
+        
         result = {'t_rabi': popt[0]}
+        units = {'t_rabi': ''}
         self.result = result
+        self.units = units
         
     def report(self):
-        return ''
+        header = f'{"="*70}\nRabi calibration'
+        footer = '='*70
+        lines = "\n".join([f'{key} = {val} {self.units[k]}' for key, val in self.result.items()])
+        return f'{header}\n{lines}\n{footer}'
     
     def live_view(self):
         """
