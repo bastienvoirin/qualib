@@ -13,7 +13,7 @@ root
   ├ assumptions.py
   ├ calibration_scheme.py
   └ calibrations
-    ├ DefaultCalibration.py
+    ├ default.py
     ├ {name1}
     │ ├ {name1}_utils.py
     │ └ {name1}_template.meas.ini

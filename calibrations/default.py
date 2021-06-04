@@ -1,4 +1,6 @@
 import re
+import nbformat as nbf
+import nbformat.v4 as nbfv4
 
 class DefaultCalibration:
     """
@@ -33,7 +35,7 @@ class DefaultCalibration:
                         val = str(assumptions[key[0]])
                 else:
                     raise Exception('Missing assumption "{}"'.format('/'.join(key)))
-                token = keys[i]
+                token = '$'+'/'.join(key)
                 if token == '$filename':
                     val = f'{calib_id:03d}_{calib_name}.h5'
                 print(f'    {token} = {val}')
@@ -43,6 +45,57 @@ class DefaultCalibration:
             f.write(template)
             
         self.keys = keys # list of placeholders
+        self.repl = ['$'+'/'.join(key) for key in splt] # list of placeholders after substitutions
         self.result = {}
         self.calib_id = calib_id
         self.calib_name = calib_name
+        
+default_header = '''# Default header, defined in qualib/calibrations/default.py
+print('a')
+%matplotlib nbagg
+import os
+import h5py
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+import matplotlib as mpl
+import matplotlib.animation as animation
+import matplotlib.colors as colors
+from mpl_toolkits.mplot3d import Axes3D 
+import matplotlib.cm as cm
+import scipy as sc
+import scipy.optimize as opt
+import scipy.ndimage as sci
+import scipy.signal as scs
+import analysis_functions as af
+import time
+from ipywidgets import interact, interactive, fixed, interact_manual
+import ipywidgets as widgets
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from qutip.wigner import qfunc, wigner
+import qutip
+import scipy
+print('z')'''
+
+class DefaultJupyterReport:
+    def __init__(self):
+        self.header = default_header
+        self.notebook = nbfv4.new_notebook()
+        self.cells = []
+        self.add_py_cell(self.header)
+    
+    def add_md_cell(self, text):
+        cell = nbfv4.new_markdown_cell(text)
+        self.cells.append(cell)
+        self.notebook['cells'] = self.cells
+        return self
+    
+    def add_py_cell(self, code):
+        cell = nbfv4.new_code_cell(code)
+        self.cells.append(cell)
+        self.notebook['cells'] = self.cells
+        return self
+
+    def generate(self, filename):
+        with open(filename, 'w') as f:
+            nbf.write(self.notebook, f)
