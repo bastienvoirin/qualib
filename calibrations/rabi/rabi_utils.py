@@ -50,7 +50,12 @@ class Calibration(DefaultCalibration):
         """
         path  = f'\'{assumptions["default_path"]}/{timestamp}_{calib_id:03d}_{calib_name}_{sub_name}.h5\''
         cells = None
-        with open('template_rabi.ipynb', 'r') as f:
+
+        for i in DefaultJupyterReport.header:
+            if i['type'] == 'code':
+                exec(i['code'])
+
+        with open('template_rabi.ipynb', 'r', encoding='utf-8') as f:
             cells = f.read()
             result = {'a_rabi': 'rslt'}
             self.result = result
@@ -59,6 +64,7 @@ class Calibration(DefaultCalibration):
             for cell in json.loads(cells)['cells']:
                 if cell['cell_type'] == 'code':
                     try:
+                        print(''.join(cell['source']))
                         exec(''.join(cell['source']).replace('§HDF5_PATH§', path))
                         self.result = result
                         assumptions['qubit'][sub_repl['PULSE_AMP']] = result['a_rabi']

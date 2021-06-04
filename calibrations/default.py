@@ -9,7 +9,7 @@ class DefaultCalibration:
     A placeholder must have the format '$param' or '$section/param' where
     <section> and <param> are alphanumeric strings ('a'-'z', 'A'-'Z', '0'-'9', '_')
     """
-    def __init__(self, template, assumptions, calib_id, calib_name, sub_name, sub_repl):
+    def __init__(self, template, assumptions, calib_id, calib_name, sub_name, sub_repl, timestamp):
         keys = re.findall(r'\$[a-zA-Z_/]+', template, re.MULTILINE) # placeholders
         splt = [key[1:].split('/') for key in keys] # strip leading '$' and split at '/'
         
@@ -38,7 +38,7 @@ class DefaultCalibration:
                     raise Exception('Missing assumption "{}"'.format('/'.join(key)))
                 token = '$'+'/'.join(key)
                 if token == '$filename':
-                    val = f'{calib_id:03d}_{calib_name}.h5'
+                    val = f'{timestamp}_{calib_id:03d}_{calib_name}_{sub_name}.h5'
                 print(f'    {token} = {val}')
                 template = template.replace(token, val)
             
@@ -61,11 +61,11 @@ class DefaultCalibration:
         with open(report_filename, 'w') as f:
             f.write(report)
         
+# TODO: add %matplotlib nbagg
 default_header = [
     {'type': 'text', 'text': '# Report'},
     {'type': 'code', 'code': '''\
 # Default header, defined in qualib/calibrations/default.py
-%matplotlib nbagg
 import os
 import h5py
 import numpy as np
@@ -106,6 +106,8 @@ def IQ_rot(data):
 ]
 
 class DefaultJupyterReport:
+    header = default_header
+
     def __init__(self):
         self.header = default_header
         self.notebook = nbfv4.new_notebook()

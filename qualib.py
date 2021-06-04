@@ -1,3 +1,5 @@
+import os
+from pathlib import Path
 import sys
 import subprocess
 import importlib
@@ -31,13 +33,13 @@ class Qualib:
             print(f'✓ Successfully loaded Exopy template for "{calib_name}"\n  Generating {calib_name}.meas.ini file...')
             
             # generate and save calibrations/{name}/{name}.meas.ini
-            calibration = Calibration(exopy_templ, assumptions, calib_id, calib_name, sub_name, sub_repl)
+            calibration = Calibration(exopy_templ, assumptions, calib_id, calib_name, sub_name, sub_repl, timestamp)
             keys = calibration.keys
             print(f'✓ Successfully saved {calib_name}.meas.ini in calibrations/{calib_name}')
             
             # run 'python -m exopy -s -x ../qualib/calibrations/{name}/{name}.meas.ini'
             print(f'✓ Starting a "{calib_name}{f"_{sub_name}" if sub_name else ""}" calibration...\n')
-            ini_path = f'../qualib/calibrations/{calib_name}/{calib_name}.meas.ini'
+            ini_path = str(Path(os.path.realpath(__file__)).parent / f'calibrations/{calib_name}/{calib_name}.meas.ini')
             subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path], shell=True)
             print()
             
