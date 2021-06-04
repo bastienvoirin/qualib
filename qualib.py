@@ -14,45 +14,35 @@ class Qualib:
     def __init__(self):
         return
     
-    def run(self, calib_id, calib_name, substitutions, report_filename):
+    def run(self, calib_id, calib_name, sub_name, sub_repl, report_filename, timestamp, assumptions):
         """
         Run a single calibration with given assumptions and Exopy template
         """
-        print(f'Starting a "{calib_name}" calibration with {len(substitutions.keys())} substitution(s):')
-        print(' '*4+'\n    '.join(map(lambda pair: f'{pair[0]} => {pair[1]}', substitutions.items())))
+        print(f'Starting a "{calib_name}{f"_{sub_name}" if sub_name else ""}" calibration with {len(sub_repl.keys())} substitution(s):')
+        print(' '*4+'\n    '.join(map(lambda pair: f'{pair[0]} => {pair[1]}', sub_repl.items())))
         
         try:
             # dynamically import Calibration from calibrations/{name}/{name}_utils.py
             Calibration, JupyterReport = load_utils(calib_name)
             print(f'✓ Successfully loaded {calib_name}_utils.py')
             
-            # load assumptions.py
-            assumptions = Assumptions.load(calib_name)
-            print(f'✓ Successfully loaded assumptions for "{calib_name}"')
-            
             # load calibrations/{name}/{name}_template.meas.ini
             exopy_templ = ExopyTemplate.load(calib_name)
             print(f'✓ Successfully loaded Exopy template for "{calib_name}"\n  Generating {calib_name}.meas.ini file...')
             
             # generate and save calibrations/{name}/{name}.meas.ini
-            calibration = Calibration(exopy_templ, assumptions, calib_id, calib_name, substitutions)
+            calibration = Calibration(exopy_templ, assumptions, calib_id, calib_name, sub_name, sub_repl)
             keys = calibration.keys
             print(f'✓ Successfully saved {calib_name}.meas.ini in calibrations/{calib_name}')
             
             # run 'python -m exopy -s -x ../qualib/calibrations/{name}/{name}.meas.ini'
-            print(f'✓ Starting a "{calib_name}" calibration...')
+            print(f'✓ Starting a "{calib_name}{f"_{sub_name}" if sub_name else ""}" calibration...\n')
             ini_path = f'../qualib/calibrations/{calib_name}/{calib_name}.meas.ini'
             subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path], shell=True)
+            print()
             
-            # process the hdf5 output file
-            # calibration.analyze(f'{assumptions["default_path"]}/{calibration.calib_id:03d}_{calibration.calib_name}.h5')
-            result = {'a_rabi': 34}
-            units = {'a_rabi': ''}
-            calibration.result = result
-            calibration.units = units
-            result = calibration.result
-            print(f'Result of "{calib_name}" calibration:\n{result}')
-            print(calibration.report(substitutions, report_filename))
+            # process the hdf5 output file and report the result(s)
+            print(calibration.process(calib_id, calib_name, sub_name, sub_repl, report_filename, timestamp, assumptions))
         except:
             print(f'  An error occurred while processing "{calib_name}" calibration:')
             print(f'    {sys.exc_info()[1]}\n\n{"#"*70}\n')
@@ -63,29 +53,40 @@ class Qualib:
         """
         Run a calibration scheme with given Exopy templates, assumptions and utils
         """
+        assert len(sys.argv) > 1, 'Missing calibration scheme\n\npython qualib.py calibration_scheme.py'
+        calib_id = 0
+        calib_scheme = CalibrationScheme.load(sys.argv[1])
+        
         now = datetime.now()
         timestamp = now.strftime('%y_%m_%d_%H%M%S')
-        #report_filename = f'report_{timestamp}.ipynb'
-        report_filename = 'report_temporary.ipynb'
-        with open('report_template.ipynb', 'r') as f:
-            with open('report_temporary.ipynb', 'w') as g:
-                g.write(f.read())
-        #global_report = DefaultJupyterReport()
-        #global_report.generate(report_filename) # create blank .ipynb report
-        if len(sys.argv):
-            calib_id = 0
-            path = sys.argv[1] # path to calibration_scheme.py
-            calib_scheme = CalibrationScheme.load(path)
-            for calib in calib_scheme:
-                if 'substitutions' in calib:
-                    for substitutions in calib['substitutions']:
-                        calib_id += 1
-                        self.run(calib_id, calib['name'], substitutions, report_filename)
-                        print()
-                else:
+        report_filename = f'report_{timestamp}.ipynb'
+        report = DefaultJupyterReport()
+        print(f'\n\nStarting calibration sequence => {report_filename}')
+        
+        # load assumptions.py
+        assumptions = Assumptions.load()
+        print(f'✓ Successfully loaded assumptions\n')
+        
+        # create report_{timestamp}.ipynb
+        report.initialize(assumptions)
+        report.create(report_filename)
+        
+        for calib in calib_scheme:
+            if 'substitutions' in calib:
+                for subs in calib['substitutions']:
+                    sub_name = subs['name']
+                    sub_repl = subs['repl']
                     calib_id += 1
-                    self.run(calib_id, calib['name'], {})
-                    print()
+                    # run current calibration and update assumptions dict
+                    self.run(calib_id, calib['name'], sub_name, sub_repl, report_filename, timestamp, assumptions)
+                    print('\n')
+            else:
+                calib_id += 1
+                # run current calibration and update assumptions dict
+                self.run(calib_id, calib['name'], None, {}, report_filename, timestamp, assumptions)
+                print('\n')
+                
+        report.finish(report_filename, assumptions)
         return
     
 class CalibrationScheme:
@@ -109,7 +110,7 @@ class Assumptions:
     """
     Parse a dict of assumptions
     """
-    def load(calib):
+    def load():
         with open('assumptions.py') as f:
             return eval(f.read()) # assumptions.py should be a Python list
 
