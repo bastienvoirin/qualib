@@ -68,7 +68,7 @@ class DefaultCalibration:
                 code = '\n'.join(filter(lambda line: line[0] != '%', i['code'].split('\n')))
                 exec(code, globals(), locals())
                 
-        with open(f'template_{calib_name}.ipynb', 'r', encoding='utf-8') as f:
+        with open(f'calibrations/{calib_name}/template_{calib_name}.ipynb', 'r', encoding='utf-8') as f:
             cells = f.read()
             result = {}
             
