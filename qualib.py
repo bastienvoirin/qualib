@@ -44,7 +44,7 @@ class Qualib:
             print()
             
             # Process the hdf5 output file and report the result(s)
-            print(calibration.process(calib_id, calib_name, sub_name, sub_repl, report_filename, timestamp, assumptions))
+            calibration.process(calib_id, calib_name, sub_name, sub_repl, report_filename, timestamp, assumptions)
         except:
             print(f'  An error occurred while processing "{calib_name}" calibration:')
             print(f'    {sys.exc_info()[1]}\n\n{"#"*70}\n')

@@ -51,6 +51,9 @@ class Calibration(DefaultCalibration):
         #path  = f'\'{assumptions["default_path"]}/{timestamp}_{calib_id:03d}_{calib_name}_{sub_name}.h5\''
         path = f'\'../measurements_rabi/{calib_id:03d}_{calib_name}.h5\''
         cells = None
+        
+        header = f'{"="*70}\n[{calib_name}_{sub_name} calibration]\n'
+        print(header)
 
         for i in DefaultJupyterReport.header:
             if i['type'] == 'code':
@@ -67,6 +70,7 @@ class Calibration(DefaultCalibration):
                         loc = locals()
                         exec(''.join(cell['source']).replace('§HDF5_PATH§', path), globals(), loc)
                         result = loc['result']
+                        print(result)
                     except:
                         raise
                         pass
@@ -90,11 +94,9 @@ class Calibration(DefaultCalibration):
         self.pre_report(calib_name, sub_name, sub_repl, report_filename, cells_json)
         self.post_report(calib_name, sub_name, sub_repl, report_filename, cells_json)
         
-        # Generate text report to be printed in console
-        header = f'{"="*70}\n[{calib_name}_{sub_name} calibration]'
         footer = '='*70
-        lines = "\n".join([f'{key} = {val}' for key, val in self.result.items()])
-        return f'{header}\n{lines}\n{footer}'
+        print(footer)
+        return
     
     def live_view(self):
         """
