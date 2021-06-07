@@ -54,11 +54,12 @@ class Calibration(DefaultCalibration):
         
         header = f'{"="*70}\n[{calib_name}_{sub_name} calibration]\n'
         print(header)
-
+        
         for i in DefaultJupyterReport.header:
             if i['type'] == 'code':
-                exec(i['code'], globals(), locals())
-
+                code = '\n'.join(filter(lambda line: line[0] != '%', i['code'].split('\n')))
+                exec(code, globals(), locals())
+                
         with open('template_rabi.ipynb', 'r', encoding='utf-8') as f:
             cells = f.read()
             result = {}

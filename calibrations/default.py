@@ -64,11 +64,10 @@ class DefaultCalibration:
         with open(report_filename, 'w') as f:
             f.write(report)
         
-# TODO: add %matplotlib nbagg
 default_header = [
     {'type': 'text', 'text': '# Report'},
-    {'type': 'code', 'code': '''\
-# Default header, defined in qualib/calibrations/default.py
+    {'type': 'code', 'code': '''# Default header, defined in qualib/calibrations/default.py
+%matplotlib nbagg
 import os
 import h5py
 import numpy as np
@@ -112,6 +111,7 @@ class DefaultJupyterReport:
     header = default_header
 
     def __init__(self):
+        #print(default_header[1]['code'].split('\n'))
         self.header = default_header
         self.notebook = nbfv4.new_notebook()
         self.cells = []
