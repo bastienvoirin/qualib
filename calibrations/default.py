@@ -10,10 +10,10 @@ class DefaultCalibration:
     <section> and <param> are alphanumeric strings ('a'-'z', 'A'-'Z', '0'-'9', '_')
     """
     def __init__(self, template, assumptions, calib_id, calib_name, sub_name, sub_repl, timestamp):
-        keys = re.findall(r'\$[a-zA-Z_/]+', template, re.MULTILINE) # placeholders
-        splt = [key[1:].split('/') for key in keys] # strip leading '$' and split at '/'
+        keys = re.findall(r'\$[a-zA-Z_/]+', template, re.MULTILINE) # Placeholders
+        splt = [key[1:].split('/') for key in keys] # Strip leading '$' and split at '/'
         
-        # handle substitutions
+        # Handle substitutions
         for i, key in enumerate(splt):
             for j, part in enumerate(key):
                 if part in sub_repl:
@@ -21,7 +21,7 @@ class DefaultCalibration:
         for src, dst in sub_repl.items():
             template = template.replace(src, dst)
         
-        # handle placeholders
+        # Handle placeholders
         for i, key in enumerate(splt):
                 val = 'MISSING_ASSUMPTION'
                 if key[0] in assumptions.keys():
@@ -45,13 +45,16 @@ class DefaultCalibration:
         with open(f'calibrations/{calib_name}/{calib_name}.meas.ini', 'w') as f:
             f.write(template)
             
-        self.keys = keys # list of placeholders
-        self.repl = ['$'+'/'.join(key) for key in splt] # list of placeholders after substitutions
+        self.keys = keys # List of placeholders
+        self.repl = ['$'+'/'.join(key) for key in splt] # List of placeholders after substitutions
         self.result = {}
         self.calib_id = calib_id
         self.calib_name = calib_name
         
-    def report(self, calib_name, sub_name, sub_repl, report_filename, cells_json):
+    def pre_report(self, calib_name, sub_name, sub_repl, report_filename, cells_json):
+        pass
+    
+    def post_report(self, calib_name, sub_name, sub_repl, report_filename, cells_json):
         report = ''
         with open(report_filename, 'r') as f:
             report = json.loads(f.read())
@@ -84,9 +87,9 @@ import time
 from ipywidgets import interact, interactive, fixed, interact_manual
 import ipywidgets as widgets
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+import scipy
 from qutip.wigner import qfunc, wigner
-import qutip
-import scipy'''},
+import qutip'''},
     {'type': 'code', 'code': '''\
 def IQ_rot(data):
     dataf = data.flatten()
@@ -125,7 +128,7 @@ class DefaultJupyterReport:
                 self.add_md_cell(cell['text'])
         
     def finish(self, report_filename, assumptions):
-        # insert assumptions after calibration sequence
+        # Insert assumptions after calibration sequence
         src = json.dumps(assumptions, indent=4).split('\n')
         src = [f'{line}\n' if i+1<len(src) else line for i, line in enumerate(src)]
         report = ''
@@ -151,21 +154,21 @@ class DefaultJupyterReport:
         with open(report_filename, 'w') as f:
             f.write(report)
     
-    # append Markdown cell
+    # Append Markdown cell
     def add_md_cell(self, text):
         cell = nbfv4.new_markdown_cell(text)
         self.cells.append(cell)
         self.notebook['cells'] = self.cells
         return self
     
-    # append Python cell
+    # Append Python cell
     def add_py_cell(self, code):
         cell = nbfv4.new_code_cell(code)
         self.cells.append(cell)
         self.notebook['cells'] = self.cells
         return self
     
-    # save as {filename}
+    # Save as {filename}
     def create(self, filename):
         with open(filename, 'w') as f:
             nbf.write(self.notebook, f)

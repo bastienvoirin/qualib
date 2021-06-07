@@ -24,31 +24,31 @@ class Qualib:
         print(' '*4+'\n    '.join(map(lambda pair: f'{pair[0]} => {pair[1]}', sub_repl.items())))
         
         try:
-            # dynamically import Calibration from calibrations/{name}/{name}_utils.py
+            # Dynamically import Calibration from calibrations/{name}/{name}_utils.py
             Calibration, JupyterReport = load_utils(calib_name)
             print(f'✓ Successfully loaded {calib_name}_utils.py')
             
-            # load calibrations/{name}/{name}_template.meas.ini
+            # Load calibrations/{name}/{name}_template.meas.ini
             exopy_templ = ExopyTemplate.load(calib_name)
             print(f'✓ Successfully loaded Exopy template for "{calib_name}"\n  Generating {calib_name}.meas.ini file...')
             
-            # generate and save calibrations/{name}/{name}.meas.ini
+            # Generate and save calibrations/{name}/{name}.meas.ini
             calibration = Calibration(exopy_templ, assumptions, calib_id, calib_name, sub_name, sub_repl, timestamp)
             keys = calibration.keys
             print(f'✓ Successfully saved {calib_name}.meas.ini in calibrations/{calib_name}')
             
-            # run 'python -m exopy -s -x ../qualib/calibrations/{name}/{name}.meas.ini'
+            # Run 'python -m exopy -s -x ../qualib/calibrations/{name}/{name}.meas.ini'
             print(f'✓ Starting a "{calib_name}{f"_{sub_name}" if sub_name else ""}" calibration...\n')
             ini_path = str(Path(os.path.realpath(__file__)).parent / f'calibrations/{calib_name}/{calib_name}.meas.ini')
             subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path], shell=True)
             print()
             
-            # process the hdf5 output file and report the result(s)
+            # Process the hdf5 output file and report the result(s)
             print(calibration.process(calib_id, calib_name, sub_name, sub_repl, report_filename, timestamp, assumptions))
         except:
             print(f'  An error occurred while processing "{calib_name}" calibration:')
             print(f'    {sys.exc_info()[1]}\n\n{"#"*70}\n')
-            raise # propagate the exception to show the stack trace and prevent the next calibration
+            raise # Propagate the exception to show the stack trace and prevent the next calibration
         return
     
     def run_all(self):
@@ -65,11 +65,11 @@ class Qualib:
         report = DefaultJupyterReport()
         print(f'\n\nStarting calibration sequence => {report_filename}')
         
-        # load assumptions.py
+        # Load assumptions.py
         assumptions = Assumptions.load()
         print(f'✓ Successfully loaded assumptions\n')
         
-        # create report_{timestamp}.ipynb
+        # Create report_{timestamp}.ipynb
         report.initialize(assumptions)
         report.create(report_filename)
         
@@ -79,12 +79,12 @@ class Qualib:
                     sub_name = subs['name']
                     sub_repl = subs['repl']
                     calib_id += 1
-                    # run current calibration and update assumptions dict
+                    # Run current calibration and update assumptions dict
                     self.run(calib_id, calib['name'], sub_name, sub_repl, report_filename, timestamp, assumptions)
                     print('\n')
             else:
                 calib_id += 1
-                # run current calibration and update assumptions dict
+                # Run current calibration and update assumptions dict
                 self.run(calib_id, calib['name'], None, {}, report_filename, timestamp, assumptions)
                 print('\n')
                 

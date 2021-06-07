@@ -33,14 +33,14 @@ class Calibration(DefaultCalibration):
         fig, ax = plt.subplots()
         """
         
-        if type == 0: # single 2D plot
+        if type == 0: # Single 2D plot
             ax.plot(axes[0], axes[1], *plt_args)
             
-        elif type == 1: # multiple 2D plots
+        elif type == 1: # Multiple 2D plots
             for series in axes[1:]:
                 ax.plot(axes[0], series, *plt_args)
                 
-        elif type == 2: # single 3D plot
+        elif type == 2: # Single 3D plot
             plot = ax.pcolormesh(axes[0], axes[1], axes[2], shading='nearest', *plt_args)
             fig.colorbar(plot)
             
@@ -48,44 +48,50 @@ class Calibration(DefaultCalibration):
         """
         Analyze and report the current calibration
         """
-        path  = f'\'{assumptions["default_path"]}/{timestamp}_{calib_id:03d}_{calib_name}_{sub_name}.h5\''
+        #path  = f'\'{assumptions["default_path"]}/{timestamp}_{calib_id:03d}_{calib_name}_{sub_name}.h5\''
+        path = f'\'../measurements_rabi/{calib_id:03d}_{calib_name}.h5\''
         cells = None
 
         for i in DefaultJupyterReport.header:
             if i['type'] == 'code':
-                exec(i['code'])
+                exec(i['code'], globals(), locals())
 
         with open('template_rabi.ipynb', 'r', encoding='utf-8') as f:
             cells = f.read()
-            result = {'a_rabi': 'rslt'}
-            self.result = result
+            result = {}
             
-            # fetch analysis code from .ipynb template and compute result
+            # Fetch analysis code from .ipynb template and compute result
             for cell in json.loads(cells)['cells']:
                 if cell['cell_type'] == 'code':
                     try:
-                        print(''.join(cell['source']))
-                        exec(''.join(cell['source']).replace('§HDF5_PATH§', path))
-                        self.result = result
-                        assumptions['qubit'][sub_repl['PULSE_AMP']] = result['a_rabi']
+                        loc = locals()
+                        exec(''.join(cell['source']).replace('§HDF5_PATH§', path), globals(), loc)
+                        result = loc['result']
                     except:
                         raise
                         pass
-                    
-            print(self.result)
-            print(json.dumps(assumptions, indent=2))
             
-            # generate calibration report
+            self.result = result
+                    
+            def update_assumptions(asmp, rslt):
+                asmp['qubit'][sub_repl['PULSE_AMP']] = rslt['a_rabi']
+            update_assumptions(assumptions, result)
+            
+            # Generate calibration report
             cells = cells.replace('§TYPE§', sub_name)
             cells = cells.replace('§HDF5_PATH§', path)
-            cells = cells.replace('§PULSE_LENGTH§', 'LEN')
-            cells = cells.replace('§PULSE_AMP§', str(self.result['a_rabi']))
+            
+            # TODO: move to default.py?
+            cells = cells.replace('§PULSE_LENGTH§', str(assumptions['qubit'][sub_repl['PULSE_LENGTH']]))
+            cells = cells.replace('§PULSE_AMP§', f'{self.result["a_rabi"]:f}')
+            
             cells_json = json.loads(cells)['cells']
         
-        super().report(calib_name, sub_name, sub_repl, report_filename, cells_json)
+        self.pre_report(calib_name, sub_name, sub_repl, report_filename, cells_json)
+        self.post_report(calib_name, sub_name, sub_repl, report_filename, cells_json)
         
-        # generate text report to be printed in console
-        header = f'{"="*70}\n[rabi_{sub_name} calibration]'
+        # Generate text report to be printed in console
+        header = f'{"="*70}\n[{calib_name}_{sub_name} calibration]'
         footer = '='*70
         lines = "\n".join([f'{key} = {val}' for key, val in self.result.items()])
         return f'{header}\n{lines}\n{footer}'
