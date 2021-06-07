@@ -1,14 +1,4 @@
-from re import sub
-import time
-import numpy as np
-from matplotlib import pyplot as plt
-import scipy
-import scipy.optimize as opt
-import h5py
 from ..default import DefaultCalibration, DefaultJupyterReport
-from inspect import getsource
-import nbformat as nbf
-import nbformat.v4 as nbfv4
 import json
 
 class Calibration(DefaultCalibration):

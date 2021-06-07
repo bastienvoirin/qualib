@@ -3,9 +3,6 @@ from pathlib import Path
 import sys
 import subprocess
 import importlib
-import h5py
-import time
-import re
 from datetime import datetime
 from calibrations.default import DefaultJupyterReport
 
@@ -13,9 +10,6 @@ class Qualib:
     """
     Wrapper supclass
     """
-    def __init__(self):
-        return
-    
     def run(self, calib_id, calib_name, sub_name, sub_repl, report_filename, timestamp, assumptions):
         """
         Run a single calibration with given assumptions and Exopy template
@@ -29,7 +23,7 @@ class Qualib:
             print(f'✓ Successfully loaded {calib_name}_utils.py')
             
             # Load calibrations/{name}/{name}_template.meas.ini
-            exopy_templ = ExopyTemplate.load(calib_name)
+            exopy_templ = load_exopy_template(calib_name)
             print(f'✓ Successfully loaded Exopy template for "{calib_name}"\n  Generating {calib_name}.meas.ini file...')
             
             # Generate and save calibrations/{name}/{name}.meas.ini
@@ -57,7 +51,7 @@ class Qualib:
         """
         assert len(sys.argv) > 1, 'Missing calibration scheme\n\npython qualib.py calibration_scheme.py'
         calib_id = 0
-        calib_scheme = CalibrationScheme.load(sys.argv[1])
+        calib_scheme = load_calibration_scheme(sys.argv[1])
         
         now = datetime.now()
         timestamp = now.strftime('%y_%m_%d_%H%M%S')
@@ -66,7 +60,7 @@ class Qualib:
         print(f'\n\nStarting calibration sequence => {report_filename}')
         
         # Load assumptions.py
-        assumptions = Assumptions.load()
+        assumptions = load_assumptions()
         print(f'✓ Successfully loaded assumptions\n')
         
         # Create report_{timestamp}.ipynb
@@ -91,30 +85,27 @@ class Qualib:
         report.finish(report_filename, assumptions)
         return
     
-class CalibrationScheme:
+def load_calibration_scheme(path):
     """
     Load a sequence of calibrations (a list of calibration names in a .txt file)
     """
-    def load(path):
-        calib_scheme = []
-        with open(path) as f:
-            return eval(f.read()) # calibration_scheme.py should be a Python dict
+    calib_scheme = []
+    with open(path) as f:
+        return eval(f.read()) # calibration_scheme.py should be a Python dict
     
-class ExopyTemplate:
+def load_exopy_template(calib):
     """
     Load an Exopy template defining a specific calibration
     """
-    def load(calib):
-        with open(f'calibrations/{calib}/{calib}_template.meas.ini') as f:
-            return f.read()
+    with open(f'calibrations/{calib}/{calib}_template.meas.ini') as f:
+        return f.read()
     
-class Assumptions:
+def load_assumptions():
     """
     Parse a dict of assumptions
     """
-    def load():
-        with open('assumptions.py') as f:
-            return eval(f.read()) # assumptions.py should be a Python list
+    with open('assumptions.py') as f:
+        return eval(f.read()) # assumptions.py should be a Python list
 
 def load_utils(calib):
     """
