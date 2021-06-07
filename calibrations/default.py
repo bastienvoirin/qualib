@@ -2,6 +2,8 @@ import re
 import nbformat as nbf
 import nbformat.v4 as nbfv4
 import json
+import numpy as np
+import scipy
 
 class DefaultCalibration:
     """
@@ -10,7 +12,7 @@ class DefaultCalibration:
     <section> and <param> are alphanumeric strings ('a'-'z', 'A'-'Z', '0'-'9', '_')
     """
     def __init__(self, template, assumptions, calib_id, calib_name, sub_name, sub_repl, timestamp):
-        keys = re.findall(r'\$[a-zA-Z_/]+', template, re.MULTILINE) # Placeholders
+        keys = re.findall(r'\$[a-zA-Z0-9_/]+', template, re.MULTILINE) # Placeholders
         splt = [key[1:].split('/') for key in keys] # Strip leading '$' and split at '/'
         
         # Handle substitutions
@@ -51,10 +53,46 @@ class DefaultCalibration:
         self.calib_id = calib_id
         self.calib_name = calib_name
         
-    def pre_report(self, calib_name, sub_name, sub_repl, report_filename, cells_json):
-        pass
+    def pre_report(self, calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions):
+        """
+        """
+        #path = f'\'{assumptions["default_path"]}/{timestamp}_{calib_id:03d}_{calib_name}_{sub_name}.h5\''
+        path = f'\'../measurements_rabi/{calib_id:03d}_{calib_name}.h5\''
+        cells = None
+        
+        header = f'{"="*70}\n[{calib_name}_{sub_name} calibration]\n'
+        print(header)
+        
+        for i in DefaultJupyterReport.header:
+            if i['type'] == 'code':
+                code = '\n'.join(filter(lambda line: line[0] != '%', i['code'].split('\n')))
+                exec(code, globals(), locals())
+                
+        with open(f'template_{calib_name}.ipynb', 'r', encoding='utf-8') as f:
+            cells = f.read()
+            result = {}
+            
+            # Fetch analysis code from .ipynb template and compute result
+            for cell in json.loads(cells)['cells']:
+                if cell['cell_type'] == 'code':
+                    try:
+                        loc = locals()
+                        exec(''.join(cell['source']).replace('§HDF5_PATH§', path), globals(), loc)
+                        result = loc['result']
+                        print(result)
+                    except:
+                        raise
+            
+            self.result = result
+            assumptions['qubit'][sub_repl['PULSE_AMP']] = result['a_rabi']
+            
+            cells = cells.replace('§HDF5_PATH§', path)
+            
+        footer = '='*70
+        print(footer)
+        return cells
     
-    def post_report(self, calib_name, sub_name, sub_repl, report_filename, cells_json):
+    def post_report(self, report_filename, cells_json):
         report = ''
         with open(report_filename, 'r') as f:
             report = json.loads(f.read())
@@ -111,7 +149,6 @@ class DefaultJupyterReport:
     header = default_header
 
     def __init__(self):
-        #print(default_header[1]['code'].split('\n'))
         self.header = default_header
         self.notebook = nbfv4.new_notebook()
         self.cells = []
