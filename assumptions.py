@@ -21,5 +21,16 @@
         'freq': 5.788,
         'power': 6
     },
-    'averaging': 1000
+    'averaging': 1000,
+    
+    # calibration-specific parameters
+    
+    'rabi_probe': {
+        'pulse_length': 1000
+    },
+    'rabi': {
+        'unconditional_pi2_pulse_linearity_amp_limit': 0.25,
+        'unconditional_pi_pulse_linearity_amp_limit':  0.25,
+        'conditional_pi_pulse_linearity_amp_limit':    0.25
+    }
 }

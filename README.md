@@ -1,3 +1,13 @@
+Qualib provides automatic calibrations for experiments of superconducting quantum circuits, based on [Exopy](https://github.com/Exopy/exopy).
+
+# Usage
+
+```bash
+python qualib.py calibration_scheme.py
+```
+
+Where `calibration_scheme.py` defines the calibration sequence file to run (see below).
+
 # Structure
 
 ```text
@@ -14,10 +24,17 @@
    ├─ calibration_scheme.py
    └─ calibrations
       ├─ default.py
+      ├─ rabi_probe
+      │  ├─ rabi_probe_utils.py
+      │  ├─ rabi_probe_template.meas.ini
+      │  └─ template_rabi_probe.ipynb
       ├─ rabi
       │  ├─ rabi_utils.py
       │  ├─ rabi_template.meas.ini
-      │  └─ template_rabi.ipynb
+      │  ├─ template_rabi.ipynb
+      │  └─ examples
+      │     ├─ assumptions.py
+      │     └─ calibration_scheme.py
       ├─ t1_qubit
       │  ├─ t1_qubit_utils.py
       │  └─ template_t1_qubit.ipynb
@@ -48,7 +65,7 @@
 
 ## `assumptions.py`
 
-# Calibrations (`qualib/calibrations/{calib_name}/`)
+# Defining a calibration in qualib/calibrations/
 
 ## `{calib_name}_template.meas.ini`
 
@@ -59,3 +76,28 @@
 ## `{calib_name}_utils.py`
 
 ## `template_{calib_name}.ipynb`
+
+# Calibrations
+
+## rabi_probe
+
+A "Rabi probe" calibration consists in:
+
+- A long pulse (> 750ns) with many points (100 to 1000)
+- A running FFT
+- A detection algorithm returning a linearity limit
+
+## rabi
+
+A "Rabi" calibration consists in:
+
+- Conditional (long) or unconditional (short) pulses
+- A cosine curve fit
+
+## t1_qubit
+
+A "T1 of qubit" calibration consists in:
+
+- An exponential curve fit
+
+## ramsey

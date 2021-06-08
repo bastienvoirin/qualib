@@ -89,7 +89,6 @@ def load_calibration_scheme(path):
     """
     Load a sequence of calibrations (a list of calibration names in a .txt file)
     """
-    calib_scheme = []
     with open(path) as f:
         return eval(f.read()) # calibration_scheme.py should be a Python dict
     

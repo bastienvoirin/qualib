@@ -53,7 +53,7 @@ class DefaultCalibration:
         self.calib_id = calib_id
         self.calib_name = calib_name
         
-    def pre_report(self, calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions):
+    def pre_report(self, calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl):
         """
         """
         #path = f'\'{assumptions["default_path"]}/{timestamp}_{calib_id:03d}_{calib_name}_{sub_name}.h5\''
@@ -72,6 +72,9 @@ class DefaultCalibration:
             cells = f.read()
             result = {}
             
+            for key, val in repl.items():
+                cells = cells.replace(key, val)
+            
             # Fetch analysis code from .ipynb template and compute result
             for cell in json.loads(cells)['cells']:
                 if cell['cell_type'] == 'code':
@@ -83,9 +86,7 @@ class DefaultCalibration:
                     except:
                         raise
             
-            self.result = result
-            assumptions['qubit'][sub_repl['PULSE_AMP']] = result['a_rabi']
-            
+            self.result = result            
             cells = cells.replace('§HDF5_PATH§', path)
             
         footer = '='*70

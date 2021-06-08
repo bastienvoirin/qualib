@@ -10,15 +10,14 @@ class Calibration(DefaultCalibration):
         """
         Analyze and report the current calibration
         """
-        repl = {
-            '§LINEARITY_AMP_LIMIT§': str(assumptions['rabi'][f'{sub_repl["PULSE"]}_linearity_amp_limit'])
-        }
+        repl = {}
         cells = self.pre_report(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl)
-        assumptions['qubit'][sub_repl['PULSE_AMP']] = self.result['a_rabi']
+        assumptions['rabi']['unconditional_pi2_pulse_linearity_amp_limit'] = self.result['linearity_amp_limit']
+        assumptions['rabi']['unconditional_pi_pulse_linearity_amp_limit']  = self.result['linearity_amp_limit']
+        assumptions['rabi']['conditional_pi_pulse_linearity_amp_limit']    = self.result['linearity_amp_limit']
         repl = {
-            '§TYPE§':          sub_repl['TYPE'],
-            '§PULSE_AMP§':    f'{self.result["a_rabi"]:f}',
-            '§PULSE_LENGTH§': str(assumptions['qubit'][sub_repl['PULSE_LENGTH']])
+            '§PULSE_LENGTH§':        f'{assumptions["rabi_probe"]["pulse_length"]}',
+            '§LINEARITY_AMP_LIMIT§': f'{self.result["linearity_amp_limit"]:f}'
         }
         for key, val in repl.items():
             cells = cells.replace(key, val)
