@@ -47,19 +47,21 @@ Where `calibration_scheme.py` defines the calibration sequence file to run (see 
 ## `calibration_scheme.py`
 
 - Format: Python list of calibration dictionaries with `<str>name` and `<list>substitutions`; each substitution is a dictionary with `<str>name` and `<dict>repl` dict of `"PLACEHOLDER": "replacement"` pairs
-- Example: Rabi unconditional pi/2 pulse, unconditional pi pulse and conditional pi pulse
+- Example: Rabi probe, Rabi unconditional pi/2 pulse, unconditional pi pulse and conditional pi pulse
 
 ```python
 [
+    {"name": "rabi_probe", "substitutions": [{"name": "default",
+                                              "repl": {}}]},
     {"name": "rabi", "substitutions": [{"name": "uncond_pi2",
-                                        "repl": {"PULSE_LENGTH": "unconditional_pi2_pulse_length",
-                                                 "PULSE_AMP":    "unconditional_pi2_pulse_amp"}},
+                                        "repl": {"PULSE": "unconditional_pi2_pulse",
+                                                 "TYPE":  "unconditional pi/2 pulse"}},
                                        {"name": "uncond_pi",
-                                        "repl": {"PULSE_LENGTH": "unconditional_pi_pulse_length",
-                                                 "PULSE_AMP":    "unconditional_pi_pulse_amp"}},
+                                        "repl": {"PULSE": "unconditional_pi_pulse",
+                                                 "TYPE":  "unconditional pi pulse"}},
                                        {"name": "cond_pi",
-                                        "repl": {"PULSE_LENGTH": "conditional_pi_pulse_length",
-                                                 "PULSE_AMP":    "conditional_pi_pulse_amp"}}]}
+                                        "repl": {"PULSE": "conditional_pi_pulse",
+                                                 "TYPE":  "conditional pi pulse"}}]}
 ]
 ```
 

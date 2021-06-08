@@ -13,15 +13,15 @@ class DefaultCalibration:
     """
     def __init__(self, template, assumptions, calib_id, calib_name, sub_name, sub_repl, timestamp):
         keys = re.findall(r'\$[a-zA-Z0-9_/]+', template, re.MULTILINE) # Placeholders
-        splt = [key[1:].split('/') for key in keys] # Strip leading '$' and split at '/'
         
         # Handle substitutions
-        for i, key in enumerate(splt):
-            for j, part in enumerate(key):
-                if part in sub_repl:
-                    splt[i][j] = sub_repl[part]
+        for i, key in enumerate(keys):
+            for src, dst in sub_repl.items():
+                keys[i] = keys[i].replace(src, dst)
         for src, dst in sub_repl.items():
             template = template.replace(src, dst)
+            
+        splt = [key[1:].split('/') for key in keys] # Strip leading '$' and split at '/'
         
         # Handle placeholders
         for i, key in enumerate(splt):

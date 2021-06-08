@@ -1,3 +1,6 @@
 __pycache__/
 calibrations/rabi/rabi.meas.ini
+calibrations/rabi_probe/rabi_probe.meas.ini
 report*.ipynb
+.ipynb-checkpoints/
+*checkpoint.ipynb

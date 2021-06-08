@@ -113,7 +113,7 @@ def load_utils(calib):
     Import utils module dynamically
     """
     module = importlib.import_module(f'calibrations.{calib}.{calib}_utils')
-    Calibration = getattr(module, 'Calibration') # Calibration class from {calib_name}_utils.py
+    Calibration   = getattr(module, 'Calibration')   # Calibration   class from {calib_name}_utils.py
     JupyterReport = getattr(module, 'JupyterReport') # JupyterReport class from {calib_name}_utils.py
     return Calibration, JupyterReport
     

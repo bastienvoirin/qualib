@@ -4,12 +4,12 @@
     'qubit': {
         'freq': 4.441065,
         'power': 12,
-        'conditional_pi_pulse_length': 700,
-        'conditional_pi_pulse_amp': 0,
-        'unconditional_pi_pulse_length': 52,
-        'unconditional_pi_pulse_amp': 0,
+        'conditional_pi_pulse_length':   700,
+        'conditional_pi_pulse_amp':        0, # updated by [rabi]
+        'unconditional_pi_pulse_length':  52,
+        'unconditional_pi_pulse_amp':      0, # updated by [rabi]
         'unconditional_pi2_pulse_length': 32,
-        'unconditional_pi2_pulse_amp': 0,
+        'unconditional_pi2_pulse_amp':     0, # updated by [rabi]
     },
     'readout': {
         'freq': 6.342,
@@ -18,19 +18,23 @@
         'amp': 0.04
     },
     'twpa': {
-        'freq': 5.788,
-        'power': 6
+        'freq':  5.788, # updated by [twpa]
+        'power': 6      # updated by [twpa]
     },
     'averaging': 1000,
     
-    # calibration-specific parameters
+    ######## calibration-specific parameters ########
     
     'rabi_probe': {
+        'npoints':      300,
+        'max_amp':      0.4,
         'pulse_length': 1000
     },
     'rabi': {
-        'unconditional_pi2_pulse_linearity_amp_limit': 0.25,
-        'unconditional_pi_pulse_linearity_amp_limit':  0.25,
-        'conditional_pi_pulse_linearity_amp_limit':    0.25
+        'npoints':                                     100,  # updated by [rabi_probe]
+        'max_amp':                                     0.4,
+        'unconditional_pi2_pulse_linearity_amp_limit': 0.25, # updated by [rabi_probe]
+        'unconditional_pi_pulse_linearity_amp_limit':  0.25, # updated by [rabi_probe]
+        'conditional_pi_pulse_linearity_amp_limit':    0.25  # updated by [rabi_probe]
     }
 }
