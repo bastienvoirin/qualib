@@ -83,6 +83,8 @@ class Qualib:
                 print('\n')
                 
         report.finish(report_filename, assumptions)
+        # [NbConvertApp] WARNING | No handler found for comm target 'matplotlib'
+        #subprocess.run(['jupyter', 'nbconvert', '--execute', report_filename, '--to', 'notebook', '--inplace'])
         return
     
 def load_calibration_scheme(path):

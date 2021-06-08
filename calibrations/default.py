@@ -156,7 +156,7 @@ class DefaultJupyterReport:
     
     def initialize(self, assumptions):
         self.add_md_cell('# Assumptions before calibration sequence')
-        self.add_py_cell(json.dumps(assumptions, indent=4))
+        self.add_py_cell(json.dumps(assumptions, indent=4)+';')
         for cell in default_header:
             # cell == {'type': 'code', 'code': '____'}
             if cell['type'] == 'code':
@@ -169,6 +169,7 @@ class DefaultJupyterReport:
         # Insert assumptions after calibration sequence
         src = json.dumps(assumptions, indent=4).split('\n')
         src = [f'{line}\n' if i+1<len(src) else line for i, line in enumerate(src)]
+        src[-1] += ';'
         report = ''
         with open(report_filename, 'r') as f:
             report = json.loads(f.read())
