@@ -105,8 +105,11 @@ def load_exopy_template(calib):
     """
     Load an Exopy template defining a specific calibration
     """
-    with open(f'calibrations/{calib}/{calib}_template.meas.ini') as f:
-        return f.read()
+    try:
+        with open(f'calibrations/{calib}/{calib}_template.meas.ini') as f:
+            return f.read()
+    except:
+        return ''
     
 def load_assumptions():
     """
