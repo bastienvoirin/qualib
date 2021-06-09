@@ -26,15 +26,15 @@
     ######## calibration-specific parameters ########
     
     'rabi_probe': {
-        'npoints':      300,
+        'npoints':      101,
         'max_amp':      0.4,
         'pulse_length': 1000
     },
     'rabi': {
-        'npoints':                                     100,  # updated by [rabi_probe]
+        'npoints':                                     101,  # updated by [rabi_probe]
         'max_amp':                                     0.4,
-        'unconditional_pi2_pulse_linearity_amp_limit': 0.25, # updated by [rabi_probe]
-        'unconditional_pi_pulse_linearity_amp_limit':  0.25, # updated by [rabi_probe]
-        'conditional_pi_pulse_linearity_amp_limit':    0.25  # updated by [rabi_probe]
+        'unconditional_pi2_pulse_linearity_amp_limit': 0.31, # updated by [rabi_probe]
+        'unconditional_pi_pulse_linearity_amp_limit':  0.24, # updated by [rabi_probe]
+        'conditional_pi_pulse_linearity_amp_limit':    0.21  # updated by [rabi_probe]
     }
 }

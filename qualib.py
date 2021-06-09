@@ -14,8 +14,14 @@ class Qualib:
         """
         Run a single calibration with given assumptions and Exopy template
         """
-        print(f'Starting a "{calib_name}{f"_{sub_name}" if sub_name else ""}" calibration with {len(sub_repl.keys())} substitution(s):')
-        print(' '*4+'\n    '.join(map(lambda pair: f'{pair[0]} => {pair[1]}', sub_repl.items())))
+        p1 = "_"+sub_name if sub_name else ""
+        p2 = len(sub_repl)
+        p3 = " s"[len(sub_repl)>1]
+        print(f'Starting a "{calib_name}{p1}" calibration with {p2} substitution{p3}', end='')
+        if sub_repl:
+            print(':\n    '+'\n    '.join(map(lambda pair: f'{pair[0]} => {pair[1]}', sub_repl.items())))
+        else:
+            print()
         
         try:
             # Dynamically import Calibration from calibrations/{name}/{name}_utils.py
@@ -51,7 +57,7 @@ class Qualib:
         """
         assert len(sys.argv) > 1, 'Missing calibration scheme\n\npython qualib.py calibration_scheme.py'
         calib_id = 0
-        calib_scheme = load_calibration_scheme(sys.argv[1])
+        calib_scheme, calib_scheme_str = load_calibration_scheme(sys.argv[1])
         
         now = datetime.now()
         timestamp = now.strftime('%y_%m_%d_%H%M%S')
@@ -64,7 +70,7 @@ class Qualib:
         print(f'✓ Successfully loaded assumptions\n')
         
         # Create report_{timestamp}.ipynb
-        report.initialize(assumptions)
+        report.initialize(assumptions, calib_scheme_str)
         report.create(report_filename)
         
         for calib in calib_scheme:
@@ -92,7 +98,8 @@ def load_calibration_scheme(path):
     Load a sequence of calibrations (a list of calibration names in a .txt file)
     """
     with open(path) as f:
-        return eval(f.read()) # calibration_scheme.py should be a Python dict
+        seq = f.read()
+        return eval(seq), seq # calibration_scheme.py should be a Python dict
     
 def load_exopy_template(calib):
     """

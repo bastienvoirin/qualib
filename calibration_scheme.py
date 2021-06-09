@@ -1,5 +1,5 @@
 [
-    {"name": "rabi_probe", "substitutions": [{"name": "default",
+    {"name": "rabi_probe", "substitutions": [{"name": "",
                                               "repl": {}}]},
     {"name": "rabi", "substitutions": [{"name": "uncond_pi2",
                                         "repl": {"PULSE": "unconditional_pi2_pulse",

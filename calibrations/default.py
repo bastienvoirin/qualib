@@ -40,7 +40,7 @@ class DefaultCalibration:
                     raise Exception('Missing assumption "{}"'.format('/'.join(key)))
                 token = '$'+'/'.join(key)
                 if token == '$filename':
-                    val = f'{timestamp}_{calib_id:03d}_{calib_name}_{sub_name}.h5'
+                    val = f'{timestamp}_{calib_id:03d}_{calib_name}{"_"+sub_name if sub_name else ""}.h5'
                 print(f'    {token} = {val}')
                 template = template.replace(token, val)
             
@@ -60,7 +60,7 @@ class DefaultCalibration:
         path = f'\'../measurements_rabi/{calib_id:03d}_{calib_name}.h5\''
         cells = None
         
-        header = f'{"="*70}\n[{calib_name}_{sub_name} calibration]\n'
+        header = f'{"="*70}\n[{calib_name}{"_"+sub_name if sub_name else ""} calibration output]\n'
         print(header)
         
         for i in DefaultJupyterReport.header:
@@ -80,7 +80,11 @@ class DefaultCalibration:
                 if cell['cell_type'] == 'code':
                     try:
                         loc = locals()
-                        exec(''.join(cell['source']).replace('§HDF5_PATH§', path), globals(), loc)
+                        src = ''.join(cell['source'])
+                        src = src.replace('§HDF5_PATH§', path)
+                        for key, val in sub_repl.items():
+                            src = src.replace(f'§{key}§', f'\'{val}\'')
+                        exec(src, globals(), loc)
                         result = loc['result']
                         print(result)
                     except:
@@ -154,7 +158,9 @@ class DefaultJupyterReport:
         self.notebook = nbfv4.new_notebook()
         self.cells = []
     
-    def initialize(self, assumptions):
+    def initialize(self, assumptions, calib_scheme_str):
+        self.add_md_cell('# Calibration sequence')
+        self.add_py_cell(calib_scheme_str.strip()+';')
         self.add_md_cell('# Assumptions before calibration sequence')
         self.add_py_cell(json.dumps(assumptions, indent=4)+';')
         for cell in default_header:
