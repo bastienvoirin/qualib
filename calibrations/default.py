@@ -106,7 +106,7 @@ class DefaultCalibration:
 default_header = [
     {'type': 'text', 'text': '# Report'},
     {'type': 'code', 'code': '''# Default header, defined in qualib/calibrations/default.py
-%matplotlib nbagg
+%matplotlib notebook
 import os
 import h5py
 import numpy as np

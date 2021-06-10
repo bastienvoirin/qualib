@@ -37,7 +37,14 @@
         'unconditional_pi_pulse_linearity_amp_limit':  0.24, # updated by [rabi_probe]
         'conditional_pi_pulse_linearity_amp_limit':    0.21  # updated by [rabi_probe]
     },
-    'ramsey': {},
+    'ramsey': {
+        'long_ro_length': 1000,  # see $readout/length?
+        'long_ro_amp':    0.04,  # see $readout/amp
+        'wait_min':       20,
+        'wait_max':       30000,
+        'npoints':        51,
+        'averaging':      5000
+    },
     't1_qubit': {
         'long_ro_length': 1000,  # see $readout/length?
         'long_ro_amp':    0.04,  # see $readout/amp

@@ -10,8 +10,14 @@ class Calibration(DefaultCalibration):
         """
         Analyze and report the current calibration
         """
-        cells = self.pre_report(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions)
-        #cells = cells.replace('§PLACEHOLDER§', VALUE)
+        repl = {}
+        cells = self.pre_report(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl)
+        repl = {
+            '§f_LO§': f'{self.result["f_LO"]:.3f}',
+            '§T2§':   f'{self.result["T2"]:.3f}',
+        }
+        for key, val in repl.items():
+            cells = cells.replace(key, val)
         cells_json = json.loads(cells)['cells']
         self.post_report(report_filename, cells_json)
         return

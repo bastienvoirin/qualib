@@ -20,7 +20,6 @@ class Calibration(DefaultCalibration):
         if '_pi2_' in sub_repl['PULSE']: factor = 4
         repl = {
             '§TYPE§':         sub_repl['TYPE'],
-            '§PULSE§':        f'\'{sub_repl["PULSE"]}\'',
             '§PULSE_AMP§':    f'{self.result["a_rabi"]/factor:f}',
             '§PULSE_LENGTH§': str(assumptions['qubit'][f'{sub_repl["PULSE"]}_length'])
         }
