@@ -1,11 +1,7 @@
 from ..default import DefaultCalibration, DefaultJupyterReport
 import json
 
-class Calibration(DefaultCalibration):
-    """
-    meas.ini file generator from Exopy template and assumptions file
-    Calibration-specific report generator
-    """     
+class Calibration(DefaultCalibration):  
     def process(self, calib_name, calib_id, sub_name, sub_repl, report_filename, timestamp, assumptions):
         """
         Analyze and report the current calibration
@@ -26,6 +22,3 @@ class Calibration(DefaultCalibration):
             '§PULSE_LENGTH§': str(assumptions['qubit'][f'{sub_repl["PULSE"]}_length'])
         }
         self.post_report(report_filename, cells, repl)
-    
-class JupyterReport(DefaultJupyterReport):
-    pass

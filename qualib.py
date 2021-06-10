@@ -1,8 +1,8 @@
 import os
-from pathlib import Path
 import sys
 import subprocess
 import importlib
+from pathlib import Path
 from datetime import datetime
 from calibrations.default import DefaultJupyterReport
 
@@ -25,7 +25,7 @@ class Qualib:
         
         try:
             # Dynamically import Calibration from calibrations/{name}/{name}_utils.py
-            Calibration, JupyterReport = load_utils(calib_name)
+            Calibration = load_utils(calib_name)
             print(f'✓ Successfully loaded {calib_name}_utils.py')
             
             # Load calibrations/{name}/{name}_template.meas.ini
@@ -94,35 +94,21 @@ class Qualib:
         return
     
 def load_calibration_scheme(path):
-    """
-    Load a sequence of calibrations (a list of calibration names in a .txt file)
-    """
     with open(path) as f:
         seq = f.read()
-        return eval(seq), seq # calibration_scheme.py should be a Python dict
+        return eval(seq), seq # calibration_scheme.py should be a Python list
     
 def load_exopy_template(calib):
-    """
-    Load an Exopy template defining a specific calibration
-    """
     with open(f'calibrations/{calib}/{calib}_template.meas.ini') as f:
         return f.read()
     
 def load_assumptions():
-    """
-    Parse a dict of assumptions
-    """
     with open('assumptions.py') as f:
-        return eval(f.read()) # assumptions.py should be a Python list
+        return eval(f.read()) # assumptions.py should be a Python dict
 
 def load_utils(calib):
-    """
-    Import utils module dynamically
-    """
     module = importlib.import_module(f'calibrations.{calib}.{calib}_utils')
-    Calibration   = getattr(module, 'Calibration')   # Calibration   class from {calib_name}_utils.py
-    JupyterReport = getattr(module, 'JupyterReport') # JupyterReport class from {calib_name}_utils.py
-    return Calibration, JupyterReport
+    return getattr(module, 'Calibration') # Calibration class from {calib_name}_utils.py
     
 qualib = Qualib()
 qualib.run_all()

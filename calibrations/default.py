@@ -22,74 +22,58 @@ class DefaultCalibration:
         for src, dst in sub_repl.items():
             template = template.replace(src, dst)
             
-        splt = [key[1:].split('/') for key in keys] # Strip leading '$' and split at '/'
-        
         # Handle placeholders
-        for i, key in enumerate(splt):
+        for key in keys:
+            splt = key[1:].split('/') # Strip leading '$' and split at '/'
             val = 'MISSING_ASSUMPTION'
-            if key[0] in assumptions.keys():
-                # $section/parameter
-                if len(key) > 1:
-                    if key[1] in assumptions[key[0]].keys():
-                        val = str(assumptions[key[0]][key[1]])
-                    else:
-                        raise Exception(f'Missing assumption "{"/".join(key)}"')
-                # $parameter
-                else:
-                    val = str(assumptions[key[0]])
-            else:
-                raise Exception('Missing assumption "{}"'.format('/'.join(key)))
-            token = '$'+'/'.join(key)
-            if token == '$filename':
+            assert splt[0] in assumptions.keys(), f'Missing assumption "{"/".join(key)}"'
+            if len(splt) > 1: # $section/parameter
+                assert splt[1] in assumptions[splt[0]].keys(), f'Missing assumption "{"/".join(key)}"'
+                val = str(assumptions[splt[0]][splt[1]])
+            else: # $parameter
+                val = str(assumptions[splt[0]])
+            if key == '$filename':
                 val = f'{timestamp}_{calib_id:03d}_{calib_name}{"_"+sub_name if sub_name else ""}.h5'
-            print(f'    {token} = {val}')
-            template = template.replace(token, val)
+            print(f'    {key} = {val}')
+            template = template.replace(key, val)
             
         with open(f'calibrations/{calib_name}/{calib_name}.meas.ini', 'w') as f:
             f.write(template)
             
-        self.keys = keys # List of placeholders
-        self.repl = ['$'+'/'.join(key) for key in splt] # List of placeholders after substitutions
+        self.keys = keys
         self.result = {}
         self.calib_id = calib_id
         self.calib_name = calib_name
         
     def pre_report(self, calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl):
-        """
-        """
         #path = f'\'{assumptions["default_path"]}/{timestamp}_{calib_id:03d}_{calib_name}_{sub_name}.h5\''
         path = f'\'../test_meas/{calib_id:03d}_{calib_name}.h5\''
         header = f'{"="*70}\n[{calib_name}{"_"+sub_name if sub_name else ""} calibration output]\n'
         print(header)
         
-        for i in DefaultJupyterReport.header:
-            if i['type'] == 'code':
-                code = '\n'.join(filter(lambda line: line[0] != '%', i['code'].split('\n')))
+        for c in DefaultJupyterReport.header:
+            if c['cell_type'] == 'code':
+                code = '\n'.join(filter(lambda line: line[0] != '%', c['source'])) # Handle magic commands
                 exec(code, globals(), locals())
                 
         with open(f'calibrations/{calib_name}/template_{calib_name}.ipynb', 'r', encoding='utf-8') as f:
             cells = f.read()
-            result = {}
-            
             for key, val in repl.items():
                 cells = cells.replace(key, val)
             
             # Fetch analysis code from .ipynb template and compute result
             for cell in json.loads(cells)['cells']:
                 if cell['cell_type'] == 'code':
-                    try:
-                        loc = locals()
-                        src = ''.join(cell['source'])
-                        src = src.replace('§HDF5_PATH§', path)
-                        for key, val in sub_repl.items():
-                            src = src.replace(f'§{key}§', f'\'{val}\'')
-                        exec(src, globals(), loc)
-                        result = loc['result']
-                        print(result)
-                    except:
-                        raise
+                    loc = locals()
+                    src = ''.join(cell['source'])
+                    src = src.replace('§HDF5_PATH§', path)
+                    for key, val in sub_repl.items():
+                        src = src.replace(f'§{key}§', f'\'{val}\'')
+                    exec(src, globals(), loc)
+                    if 'result' in loc:
+                        self.result = loc['result']
+                        print(self.result)
             
-            self.result = result
             cells = cells.replace('§HDF5_PATH§', path)
             footer = '='*70
             print(footer)
@@ -104,54 +88,16 @@ class DefaultCalibration:
             report = json.dumps(report, indent=4)
             with open(report_filename, 'w') as g:
                 g.write(report)
-        
-default_header = [
-    {'type': 'text', 'text': '# Report'},
-    {'type': 'code', 'code': '''# Default header, defined in qualib/calibrations/default.py
-%matplotlib notebook
-import os
-import h5py
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
-import matplotlib as mpl
-import matplotlib.animation as animation
-import matplotlib.colors as colors
-from mpl_toolkits.mplot3d import Axes3D 
-import matplotlib.cm as cm
-import scipy as sc
-import scipy.optimize as opt
-import scipy.ndimage as sci
-import scipy.signal as scs
-import time
-from ipywidgets import interact, interactive, fixed, interact_manual
-import ipywidgets as widgets
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes
-import scipy
-from qutip.wigner import qfunc, wigner
-import qutip'''},
-    {'type': 'code', 'code': '''\
-def IQ_rot(data):
-    dataf = data.flatten()
-    I = np.real(dataf)
-    Q = np.imag(dataf)
-    Cov = np.cov(I,Q)
-    A = scipy.linalg.eig(Cov)
-    eigvecs = A[1]
-    if A[0][1] > A[0][0]:
-        eigvec1 = eigvecs[:,0]
-    else:
-        eigvec1 = eigvecs[:,1]
-    theta = np.arctan(eigvec1[0]/eigvec1[1])
-    data_c = data * np.exp(1j*theta)
-    return data_c'''}
-]
+
+######################################################################
 
 class DefaultJupyterReport:
-    header = default_header
+    header = ''
+    with open('calibrations/default_header.ipynb') as f:
+        header = json.loads(f.read())['cells']
 
     def __init__(self):
-        self.header = default_header
+        self.header = DefaultJupyterReport.header
         self.notebook = nbfv4.new_notebook()
         self.cells = []
     
@@ -162,11 +108,12 @@ class DefaultJupyterReport:
         self.add_md_cell('# Assumptions before calibration sequence')
         self.add_py_cell(self.assumptions_before+';')
         
-        for cell in default_header:
-            if cell['type'] == 'code':
-                self.add_py_cell(cell['code'])
-            elif cell['type'] == 'text':
-                self.add_md_cell(cell['text'])
+        for cell in self.header:
+            print(cell)
+            if cell['cell_type'] == 'code':
+                self.add_py_cell(''.join(cell['source']))
+            elif cell['cell_type'] == 'markdown':
+                self.add_md_cell(''.join(cell['source']))
         
     def finish(self, report_filename, assumptions):
         self.assumptions_after = json.dumps(assumptions, indent=4)
@@ -178,12 +125,11 @@ class DefaultJupyterReport:
         with open(report_filename, 'r') as f:
             report = json.loads(f.read())
             for i, cell in enumerate(report['cells']):
-                # Insert assumptions after calibration sequence and assumptions diff
-                if cell['cell_type'] == 'markdown' and cell['source'][0] == '# Report':
+                if cell['cell_type'] == 'markdown' and cell['source'][0] == '# Assumptions before calibration sequence':
                     cls = DefaultJupyterReport
-                    cls.ins_md_cell(report, i,   ['# Assumptions after calibration sequence'])
-                    cls.ins_py_cell(report, i+1, (self.assumptions_after+';').splitlines(keepends=True))
-                    cls.ins_md_cell(report, i+2, ['# Assumptions diff\n\n', '```diff\n', *diff, '```'])
+                    cls.ins_md_cell(report, i+2, ['# Assumptions after calibration sequence'])
+                    cls.ins_py_cell(report, i+3, (self.assumptions_after+';').splitlines(keepends=True))
+                    cls.ins_md_cell(report, i+4, ['# Assumptions diff\n\n', '```diff\n', *diff, '```'])
                     break
             with open(report_filename, 'w') as g:
                 g.write(json.dumps(report, indent=4))

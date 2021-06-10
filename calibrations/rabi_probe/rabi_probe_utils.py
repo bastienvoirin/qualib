@@ -1,11 +1,7 @@
 from ..default import DefaultCalibration, DefaultJupyterReport
 import json
 
-class Calibration(DefaultCalibration):
-    """
-    meas.ini file generator from Exopy template and assumptions file
-    Calibration-specific report generator
-    """     
+class Calibration(DefaultCalibration):  
     def process(self, calib_name, calib_id, sub_name, sub_repl, report_filename, timestamp, assumptions):
         """
         Analyze and report the current calibration
@@ -23,6 +19,3 @@ class Calibration(DefaultCalibration):
             '§LINEARITY_AMP_LIMIT§': f'{self.result["linearity_amp_limit"]:f}'
         }
         self.post_report(report_filename, cells, repl)
-    
-class JupyterReport(DefaultJupyterReport):
-    pass
