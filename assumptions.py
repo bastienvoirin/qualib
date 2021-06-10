@@ -12,10 +12,10 @@
         'unconditional_pi2_pulse_amp':     0, # updated by [rabi]
     },
     'readout': {
-        'freq': 6.342,
-        'power': 18,
+        'freq':   6.342,
+        'power':  18,
         'length': 1000,
-        'amp': 0.04
+        'amp':    0.04
     },
     'twpa': {
         'freq':  5.788, # updated by [twpa]
@@ -36,5 +36,14 @@
         'unconditional_pi2_pulse_linearity_amp_limit': 0.31, # updated by [rabi_probe]
         'unconditional_pi_pulse_linearity_amp_limit':  0.24, # updated by [rabi_probe]
         'conditional_pi_pulse_linearity_amp_limit':    0.21  # updated by [rabi_probe]
+    },
+    'ramsey': {},
+    't1_qubit': {
+        'long_ro_length': 1000,  # see $readout/length?
+        'long_ro_amp':    0.04,  # see $readout/amp
+        'wait_min':       20,
+        'wait_max':       30000,
+        'npoints':        51,
+        'averaging':      5000
     }
 }

@@ -4,6 +4,7 @@ import nbformat.v4 as nbfv4
 import json
 import numpy as np
 import scipy
+import difflib
 
 class DefaultCalibration:
     """
@@ -25,24 +26,24 @@ class DefaultCalibration:
         
         # Handle placeholders
         for i, key in enumerate(splt):
-                val = 'MISSING_ASSUMPTION'
-                if key[0] in assumptions.keys():
-                    # $section/parameter
-                    if len(key) > 1:
-                        if key[1] in assumptions[key[0]].keys():
-                            val = str(assumptions[key[0]][key[1]])
-                        else:
-                            raise Exception(f'Missing assumption "{"/".join(key)}"')
-                    # $parameter
+            val = 'MISSING_ASSUMPTION'
+            if key[0] in assumptions.keys():
+                # $section/parameter
+                if len(key) > 1:
+                    if key[1] in assumptions[key[0]].keys():
+                        val = str(assumptions[key[0]][key[1]])
                     else:
-                        val = str(assumptions[key[0]])
+                        raise Exception(f'Missing assumption "{"/".join(key)}"')
+                # $parameter
                 else:
-                    raise Exception('Missing assumption "{}"'.format('/'.join(key)))
-                token = '$'+'/'.join(key)
-                if token == '$filename':
-                    val = f'{timestamp}_{calib_id:03d}_{calib_name}{"_"+sub_name if sub_name else ""}.h5'
-                print(f'    {token} = {val}')
-                template = template.replace(token, val)
+                    val = str(assumptions[key[0]])
+            else:
+                raise Exception('Missing assumption "{}"'.format('/'.join(key)))
+            token = '$'+'/'.join(key)
+            if token == '$filename':
+                val = f'{timestamp}_{calib_id:03d}_{calib_name}{"_"+sub_name if sub_name else ""}.h5'
+            print(f'    {token} = {val}')
+            template = template.replace(token, val)
             
         with open(f'calibrations/{calib_name}/{calib_name}.meas.ini', 'w') as f:
             f.write(template)
@@ -57,9 +58,7 @@ class DefaultCalibration:
         """
         """
         #path = f'\'{assumptions["default_path"]}/{timestamp}_{calib_id:03d}_{calib_name}_{sub_name}.h5\''
-        path = f'\'../measurements_rabi/{calib_id:03d}_{calib_name}.h5\''
-        cells = None
-        
+        path = f'\'../test_meas/{calib_id:03d}_{calib_name}.h5\''
         header = f'{"="*70}\n[{calib_name}{"_"+sub_name if sub_name else ""} calibration output]\n'
         print(header)
         
@@ -90,22 +89,19 @@ class DefaultCalibration:
                     except:
                         raise
             
-            self.result = result            
+            self.result = result
             cells = cells.replace('§HDF5_PATH§', path)
-            
-        footer = '='*70
-        print(footer)
-        return cells
+            footer = '='*70
+            print(footer)
+            return cells
     
     def post_report(self, report_filename, cells_json):
-        report = ''
         with open(report_filename, 'r') as f:
             report = json.loads(f.read())
             report['cells'] += cells_json
             report = json.dumps(report, indent=4)
-        
-        with open(report_filename, 'w') as f:
-            f.write(report)
+            with open(report_filename, 'w') as g:
+                g.write(report)
         
 default_header = [
     {'type': 'text', 'text': '# Report'},
@@ -159,45 +155,37 @@ class DefaultJupyterReport:
         self.cells = []
     
     def initialize(self, assumptions, calib_scheme_str):
+        self.assumptions_before = json.dumps(assumptions, indent=4)
         self.add_md_cell('# Calibration sequence')
         self.add_py_cell(calib_scheme_str.strip()+';')
         self.add_md_cell('# Assumptions before calibration sequence')
-        self.add_py_cell(json.dumps(assumptions, indent=4)+';')
+        self.add_py_cell(self.assumptions_before+';')
+        
         for cell in default_header:
-            # cell == {'type': 'code', 'code': '____'}
             if cell['type'] == 'code':
                 self.add_py_cell(cell['code'])
-            # cell == {'type': 'md', 'text': '____'}
             elif cell['type'] == 'text':
                 self.add_md_cell(cell['text'])
         
     def finish(self, report_filename, assumptions):
-        # Insert assumptions after calibration sequence
-        src = json.dumps(assumptions, indent=4).split('\n')
-        src = [f'{line}\n' if i+1<len(src) else line for i, line in enumerate(src)]
-        src[-1] += ';'
-        report = ''
+        self.assumptions_after = json.dumps(assumptions, indent=4)
+        before = self.assumptions_before.splitlines(keepends=True)
+        after = self.assumptions_after.splitlines(keepends=True)
+        diff = difflib.Differ().compare(before, after)
+        diff = [line for line in diff if line[0] in ['+', '-']]
+        
         with open(report_filename, 'r') as f:
             report = json.loads(f.read())
             for i, cell in enumerate(report['cells']):
+                # Insert assumptions after calibration sequence and assumptions diff
                 if cell['cell_type'] == 'markdown' and cell['source'][0] == '# Report':
-                    report['cells'].insert(i, {
-                        "cell_type": "markdown",
-                        "metadata": {},
-                        "source": ["# Assumptions after calibration sequence"]
-                    })
-                    report['cells'].insert(i+1, {
-                        "cell_type": "code",
-                        "execution_count": None,
-                        "metadata": {},
-                        "outputs": [],
-                        "source": src
-                    })
+                    cls = DefaultJupyterReport
+                    cls.ins_md_cell(report, i,   ['# Assumptions after calibration sequence'])
+                    cls.ins_py_cell(report, i+1, (self.assumptions_after+';').splitlines(keepends=True))
+                    cls.ins_md_cell(report, i+2, ['# Assumptions diff\n\n', '```diff\n', *diff, '```'])
                     break
-            report = json.dumps(report, indent=4)
-        
-        with open(report_filename, 'w') as f:
-            f.write(report)
+            with open(report_filename, 'w') as g:
+                g.write(json.dumps(report, indent=4))
     
     # Append Markdown cell
     def add_md_cell(self, text):
@@ -212,6 +200,26 @@ class DefaultJupyterReport:
         self.cells.append(cell)
         self.notebook['cells'] = self.cells
         return self
+    
+    # Insert Markdown cell
+    @classmethod
+    def ins_md_cell(cls, notebook, pos, src):
+        notebook['cells'].insert(pos, {
+            'cell_type': 'markdown',
+            'metadata':  {},
+            'source':    src
+        })
+    
+    # Insert Python cell
+    @classmethod
+    def ins_py_cell(cls, notebook, pos, src):
+        notebook['cells'].insert(pos, {
+            'cell_type':       'code',
+            'execution_count': None,
+            'metadata':        {},
+            'outputs':         [],
+            'source':          src
+        })
     
     # Save as {filename}
     def create(self, filename):
