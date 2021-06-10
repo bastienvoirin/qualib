@@ -12,13 +12,15 @@ class Calibration(DefaultCalibration):
         """
         repl = {}
         cells = self.pre_report(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl)
+        
+        wait_max_limit = int(assumptions['t1_qubit']['num_t1'] * self.result['t1_qubit'])
+        assumptions['t1_qubit']['wait_max'] = max(assumptions['t1_qubit']['wait_max'], wait_max_limit)
+        assumptions['ramsey']['wait_max'] = max(assumptions['ramsey']['wait_max'], wait_max_limit)
+        
         repl = {
             '§T1_QUBIT§': f'{self.result["t1_qubit"]/1000:.3f}'
         }
-        for key, val in repl.items():
-            cells = cells.replace(key, val)
-        cells_json = json.loads(cells)['cells']
-        self.post_report(report_filename, cells_json)
+        self.post_report(report_filename, cells, repl)
         return
     
 class JupyterReport(DefaultJupyterReport):

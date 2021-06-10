@@ -10,17 +10,19 @@ class Calibration(DefaultCalibration):
         """
         Analyze and report the current calibration
         """
-        repl = {}
-        cells = self.pre_report(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl)
         repl = {
-            '§f_LO§': f'{self.result["f_LO"]:.3f}',
-            '§T2§':   f'{self.result["T2"]:.3f}',
+            '§FREQ§': str(assumptions['ramsey']['freq'])
         }
-        for key, val in repl.items():
-            cells = cells.replace(key, val)
-        cells_json = json.loads(cells)['cells']
-        self.post_report(report_filename, cells_json)
-        return
+        cells = self.pre_report(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl)
+        
+        assumptions['qubit']['freq'] = self.result['f_LO']
+        assumptions['ramsey']['freq'] = self.result['f_LO'] - assumptions['ramsey']['delta_freq']
+        
+        repl = {
+            '§f_LO§': f'{self.result["f_LO"]:.6f}',
+            '§T2§':   f'{abs(self.result["T2"])/1000:.3f}',
+        }
+        self.post_report(report_filename, cells, repl)
     
 class JupyterReport(DefaultJupyterReport):
     pass

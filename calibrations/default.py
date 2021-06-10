@@ -95,10 +95,12 @@ class DefaultCalibration:
             print(footer)
             return cells
     
-    def post_report(self, report_filename, cells_json):
+    def post_report(self, report_filename, cells, repl):
+        for key, val in repl.items():
+            cells = cells.replace(key, val)
         with open(report_filename, 'r') as f:
             report = json.loads(f.read())
-            report['cells'] += cells_json
+            report['cells'] += json.loads(cells)['cells']
             report = json.dumps(report, indent=4)
             with open(report_filename, 'w') as g:
                 g.write(report)
@@ -141,8 +143,7 @@ def IQ_rot(data):
     else:
         eigvec1 = eigvecs[:,1]
     theta = np.arctan(eigvec1[0]/eigvec1[1])
-    # theta = theta%np.pi # added 19/07/2019
-    data_c = data * np.exp(1j *theta)
+    data_c = data * np.exp(1j*theta)
     return data_c'''}
 ]
 
