@@ -10,5 +10,6 @@
                                         "repl": {"PULSE": "conditional_pi_pulse",
                                                  "TYPE":  "conditional pi pulse"}}]},
     {"name": "t1_qubit"},
-    {"name": "ramsey"}
+    {"name": "ramsey"},
+    {"name": "spectro_ro"}
 ]

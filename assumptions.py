@@ -57,5 +57,8 @@
         'wait_max':       30000, # updated by [t1_qubit]
         'npoints':        51,
         'averaging':      5000
+    },
+    'spectro_ro': {
+        'averaging': 10000
     }
 }

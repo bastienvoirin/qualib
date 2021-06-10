@@ -26,9 +26,9 @@ class DefaultCalibration:
         for key in keys:
             splt = key[1:].split('/') # Strip leading '$' and split at '/'
             val = 'MISSING_ASSUMPTION'
-            assert splt[0] in assumptions.keys(), f'Missing assumption "{"/".join(key)}"'
+            assert splt[0] in assumptions.keys(), f'Missing assumption "{key[1:]}"'
             if len(splt) > 1: # $section/parameter
-                assert splt[1] in assumptions[splt[0]].keys(), f'Missing assumption "{"/".join(key)}"'
+                assert splt[1] in assumptions[splt[0]].keys(), f'Missing assumption "{key[1:]}"'
                 val = str(assumptions[splt[0]][splt[1]])
             else: # $parameter
                 val = str(assumptions[splt[0]])
@@ -109,7 +109,6 @@ class DefaultJupyterReport:
         self.add_py_cell(self.assumptions_before+';')
         
         for cell in self.header:
-            print(cell)
             if cell['cell_type'] == 'code':
                 self.add_py_cell(''.join(cell['source']))
             elif cell['cell_type'] == 'markdown':
