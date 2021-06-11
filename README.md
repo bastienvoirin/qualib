@@ -11,17 +11,17 @@ Where `calibration_scheme.py` defines the calibration sequence file to run (see 
 # Structure
 
 ```text
-├─ README.md
-├─ exopy
-│  └─
-├─ exopy_env
-│  └─
-├─ measurements
-│  └─
 └─ qualib
+   ├─ README.md
    ├─ qualib.py
+   ├─ load.py
+   ├─ log.py
    ├─ assumptions.py
    ├─ calibration_scheme.py
+   ├─ logs
+   │  └─ README.md
+   ├─ reports
+   │  └─ README.md
    └─ calibrations
       ├─ default.py
       ├─ rabi_probe
@@ -31,15 +31,19 @@ Where `calibration_scheme.py` defines the calibration sequence file to run (see 
       ├─ rabi
       │  ├─ rabi_utils.py
       │  ├─ rabi_template.meas.ini
-      │  ├─ template_rabi.ipynb
-      │  └─ examples
-      │     ├─ assumptions.py
-      │     └─ calibration_scheme.py
+      │  └─ template_rabi.ipynb
       ├─ t1_qubit
       │  ├─ t1_qubit_utils.py
+      │  ├─ t1_qubit_template.meas.ini
       │  └─ template_t1_qubit.ipynb
-      └─ ramsey
-         └─ ramsey_utils.py
+      ├─ ramsey
+      │  ├─ ramsey_utils.py
+      │  ├─ ramsey_template.meas.ini
+      │  └─ template_ramsey.ipynb
+      └─ spectro_ro
+         ├─ spectro_ro_utils.py
+         ├─ spectro_ro_template.meas.ini
+         └─ template_spectro_ro.ipynb
 ```
 
 # Calibration sequence
@@ -47,12 +51,11 @@ Where `calibration_scheme.py` defines the calibration sequence file to run (see 
 ## `calibration_scheme.py`
 
 - Format: Python list of calibration dictionaries with `<str>name` and `<list>substitutions`; each substitution is a dictionary with `<str>name` and `<dict>repl` dict of `"PLACEHOLDER": "replacement"` pairs
-- Example: Rabi probe, Rabi unconditional pi/2 pulse, unconditional pi pulse and conditional pi pulse
+- Example:
 
 ```python
 [
-    {"name": "rabi_probe", "substitutions": [{"name": "default",
-                                              "repl": {}}]},
+    {"name": "rabi_probe"},
     {"name": "rabi", "substitutions": [{"name": "uncond_pi2",
                                         "repl": {"PULSE": "unconditional_pi2_pulse",
                                                  "TYPE":  "unconditional pi/2 pulse"}},
@@ -61,7 +64,10 @@ Where `calibration_scheme.py` defines the calibration sequence file to run (see 
                                                  "TYPE":  "unconditional pi pulse"}},
                                        {"name": "cond_pi",
                                         "repl": {"PULSE": "conditional_pi_pulse",
-                                                 "TYPE":  "conditional pi pulse"}}]}
+                                                 "TYPE":  "conditional pi pulse"}}]},
+    {"name": "t1_qubit"},
+    {"name": "ramsey"},
+    {"name": "spectro_ro"}
 ]
 ```
 
@@ -103,3 +109,5 @@ A "T1 of qubit" calibration consists in:
 - An exponential curve fit
 
 ## ramsey
+
+## spectro_ro
