@@ -81,7 +81,7 @@ class DefaultCalibration:
                                   f'from _opt and _cov in template_{calib_name}.ipynb'
                         assert all(ratios <= 0.05), message
             
-            cells = cells.replace('§HDF5_PATH§', path)
+            cells = cells.replace('§HDF5_PATH§', f'\'../{path[1:-1]}\'')
             footer = '='*70
             print(footer)
             return cells

@@ -1,10 +1,12 @@
 import os
 import sys
+import json
 import subprocess
-import importlib
 from pathlib import Path
-from datetime import datetime
-from calibrations.default import DefaultJupyterReport
+from datetime import datetime, time
+from .calibrations.default import DefaultJupyterReport
+from .load import load_calibration_scheme, load_assumptions, load_exopy_template, load_utils
+from .log import Log
 
 class Qualib:
     """
@@ -14,6 +16,7 @@ class Qualib:
         """
         Run a single calibration with given assumptions and Exopy template
         """
+        global log
         p1 = "_"+sub_name if sub_name else ""
         p2 = len(sub_repl)
         p3 = " s"[len(sub_repl)>1]
@@ -25,11 +28,11 @@ class Qualib:
         
         try:
             # Dynamically import Calibration from calibrations/{name}/{name}_utils.py
-            Calibration = load_utils(calib_name)
+            Calibration = load_utils(log, calib_name)
             print(f'✓ Successfully loaded {calib_name}_utils.py')
             
             # Load calibrations/{name}/{name}_template.meas.ini
-            exopy_templ = load_exopy_template(calib_name)
+            exopy_templ = load_exopy_template(log, calib_name)
             print(f'✓ Successfully loaded Exopy template for "{calib_name}"\n  Generating {calib_name}.meas.ini file...')
             
             # Generate and save calibrations/{name}/{name}.meas.ini
@@ -37,16 +40,17 @@ class Qualib:
             keys = calibration.keys
             print(f'✓ Successfully saved {calib_name}.meas.ini in calibrations/{calib_name}')
             
-            # Run 'python -m exopy -s -x ../qualib/calibrations/{name}/{name}.meas.ini'
-            print(f'✓ Starting a "{calib_name}{f"_{sub_name}" if sub_name else ""}" calibration...\n')
+            # Run 'python -m exopy -s -x ./calibrations/{name}/{name}.meas.ini' and capture output
+            print(f'  Calling Exopy to run a "{calib_name}{f"_{sub_name}" if sub_name else ""}" calibration...\n')
             ini_path = str(Path(os.path.realpath(__file__)).parent / f'calibrations/{calib_name}/{calib_name}.meas.ini')
             subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path], shell=True)
-            print()
+            #process = subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path], capture_output=True)#, shell=True)
+            #print(process.stdout.decode('utf-8').replace('\\n', '\n').replace('\\\'', '\''))
             
             # Process the hdf5 output file and report the result(s)
             calibration.process(calib_name, calib_id, sub_name, sub_repl, report_filename, timestamp, assumptions)
         except:
-            print(f'{"="*70}\n\nAn error occurred while processing "{calib_name}" calibration:', end='')
+            print(f'{"="*70}\n\nAn error occurred while processing "{calib_name}" calibration: ', end='')
             print(f'{sys.exc_info()[1]}\nSee traceback below.\n\n{"#"*70}\n')
             raise # Propagate the exception to show the stack trace and prevent the next calibration
         return
@@ -56,17 +60,18 @@ class Qualib:
         Run a calibration scheme with given Exopy templates, assumptions and utils
         """
         assert len(sys.argv) > 1, 'Missing calibration scheme\n\npython qualib.py calibration_scheme.py'
-        calib_id = 0
-        calib_scheme, calib_scheme_str = load_calibration_scheme(sys.argv[1])
-        
         now = datetime.now()
         timestamp = now.strftime('%y_%m_%d_%H%M%S')
-        report_filename = f'report_{timestamp}.ipynb'
+        report_filename = f'reports/report_{timestamp}.ipynb'
         report = DefaultJupyterReport()
+        global log
+        log.initialize(timestamp)
+        calib_id = 0
+        calib_scheme, calib_scheme_str = load_calibration_scheme(log, sys.argv[1])
         print(f'\n\nStarting calibration sequence => {report_filename}')
         
         # Load assumptions.py
-        assumptions = load_assumptions()
+        assumptions = load_assumptions(log)
         print(f'✓ Successfully loaded assumptions\n')
         
         # Create report_{timestamp}.ipynb
@@ -93,22 +98,6 @@ class Qualib:
         #subprocess.run(['jupyter', 'nbconvert', '--execute', report_filename, '--to', 'notebook', '--inplace'])
         return
     
-def load_calibration_scheme(path):
-    with open(path) as f:
-        seq = f.read()
-        return eval(seq), seq # calibration_scheme.py should be a Python list
-    
-def load_exopy_template(calib):
-    with open(f'calibrations/{calib}/{calib}_template.meas.ini') as f:
-        return f.read()
-    
-def load_assumptions():
-    with open('assumptions.py') as f:
-        return eval(f.read()) # assumptions.py should be a Python dict
-
-def load_utils(calib):
-    module = importlib.import_module(f'calibrations.{calib}.{calib}_utils')
-    return getattr(module, 'Calibration') # Calibration class from {calib_name}_utils.py
-    
+log = Log()
 qualib = Qualib()
 qualib.run_all()
