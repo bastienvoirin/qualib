@@ -34,7 +34,7 @@ class DefaultCalibration:
                 val = str(assumptions[splt[0]])
             if key == '$filename':
                 val = f'{timestamp}_{calib_id:03d}_{calib_name}{"_"+sub_name if sub_name else ""}.h5'
-            print(f'    {key} = {val}')
+            #print(f'    {key} = {val}')
             template = template.replace(key, val)
             
         with open(f'calibrations/{calib_name}/{calib_name}.meas.ini', 'w') as f:
@@ -70,9 +70,16 @@ class DefaultCalibration:
                     for key, val in sub_repl.items():
                         src = src.replace(f'§{key}§', f'\'{val}\'')
                     exec(src, globals(), loc)
-                    if 'result' in loc:
-                        self.result = loc['result']
+                    if '_result' in loc:
+                        self.result = loc['_result']
                         print(self.result)
+                    if '_opt' in loc and '_cov' in loc: # sigma(value)/value <= 5%
+                        ratios  = np.sqrt(np.diag(loc['_cov'])) / np.abs(loc['_opt'])
+                        failed  = ', '.join([f'_opt[{ind}]' for ind in np.where(ratios > 0.05)[0]])
+                        message = f'\n  Standard deviation too large for {failed}\n'\
+                                  f'  If this parameter is not relevant, exclude it '\
+                                  f'from _opt and _cov in template_{calib_name}.ipynb'
+                        assert all(ratios <= 0.05), message
             
             cells = cells.replace('§HDF5_PATH§', path)
             footer = '='*70

@@ -46,8 +46,8 @@ class Qualib:
             # Process the hdf5 output file and report the result(s)
             calibration.process(calib_name, calib_id, sub_name, sub_repl, report_filename, timestamp, assumptions)
         except:
-            print(f'  An error occurred while processing "{calib_name}" calibration:')
-            print(f'    {sys.exc_info()[1]}\n\n{"#"*70}\n')
+            print(f'{"="*70}\n\nAn error occurred while processing "{calib_name}" calibration:', end='')
+            print(f'{sys.exc_info()[1]}\nSee traceback below.\n\n{"#"*70}\n')
             raise # Propagate the exception to show the stack trace and prevent the next calibration
         return
     
