@@ -7,6 +7,15 @@ import scipy
 import difflib
 import sys
 
+def keep_cell(src):
+    """
+    Skip cell if the first line is '#if condition:' and 'condition' evaluates to False
+    """
+    first_line = src[0].strip()
+    if first_line[:3] != '#if' or eval(first_line[4:-1]):
+        return src[1:]
+    return []
+
 class DefaultCalibration:
     """
     Default meas.ini file generator from Exopy template and assumptions file
@@ -42,7 +51,7 @@ class DefaultCalibration:
             f.write(template)
             
         self.keys = keys
-        self.result = {}
+        self.results = {}
         self.calib_id = calib_id
         self.calib_name = calib_name
         
@@ -63,33 +72,43 @@ class DefaultCalibration:
                 cells = cells.replace(key, val)
             
             # Fetch analysis code from .ipynb template and compute result
+            loc = locals()
             for cell in json.loads(cells)['cells']:
                 if cell['cell_type'] == 'code':
-                    loc = locals()
-                    src = ''.join(cell['source'])
-                    src = src.replace('§HDF5_PATH§', path)
+                    src = ''.join(cell['source']).replace('§HDF5_PATH§', path)
                     for key, val in sub_repl.items():
                         src = src.replace(f'§{key}§', f'\'{val}\'')
-                    exec(src, globals(), loc)
-                    if '_result' in loc:
-                        self.result = loc['_result']
-                        print(self.result)
-                    if '_opt' in loc and '_cov' in loc: # sigma(value)/value <= 5%
-                        ratios  = np.sqrt(np.diag(loc['_cov'])) / np.abs(loc['_opt'])
-                        failed  = ', '.join([f'_opt[{ind}]' for ind in np.where(ratios > 0.05)[0]])
-                        message = f'\n  Standard deviation too large for {failed}\n'\
-                                  f'  If this parameter is not relevant, exclude it '\
-                                  f'from _opt and _cov in template_{calib_name}.ipynb'
-                        assert all(ratios <= 0.05), message
+                    if keep_cell(src.splitlines()):
+                        exec(src, loc, loc)
+                        if '_results' in loc:
+                            self.results = loc['_results']
+                            print(self.results)
+                        if '_opt' in loc and '_cov' in loc: # sigma(value)/value <= 5%
+                            ratios  = np.sqrt(np.diag(loc['_cov'])) / np.abs(loc['_opt'])
+                            failed  = ', '.join([f'_opt[{ind}]' for ind in np.where(ratios > 0.05)[0]])
+                            message = f'\n  Standard deviation too large for {failed}\n'\
+                                    f'  If this parameter is not relevant, exclude it '\
+                                    f'from _opt and _cov in template_{calib_name}.ipynb'
+                            assert all(ratios <= 0.05), message
             
-            cells = cells.replace('§HDF5_PATH§', f'\'../{path[1:-1]}\'')
             footer = '='*70
             print(footer)
-            return cells
+            
+            # Filter conditional cells
+            def trim(cell):
+                if cell['source'][0][:3] == '#if':
+                    cell['source'] = cell['source'][1:]
+                return cell
+            cells = json.loads(cells.replace('§HDF5_PATH§', f'\'../{path[1:-1]}\''))
+            cells['cells'] = [trim(cell) for cell in cells['cells'] if keep_cell(cell['source'])]
+            return json.dumps(cells, indent=4, ensure_ascii=False)
+            #return cells
     
     def post_report(self, report_filename, cells, repl):
+        #print(cells)
         for key, val in repl.items():
             cells = cells.replace(key, val)
+        #print(cells)
         with open(report_filename, 'r') as f:
             report = json.loads(f.read())
             report['cells'] += json.loads(cells)['cells']

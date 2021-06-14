@@ -11,11 +11,11 @@ class Calibration(DefaultCalibration):
         }
         cells = self.pre_report(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl)
         
-        assumptions['qubit']['freq'] = self.result['f_LO']
-        assumptions['ramsey']['freq'] = self.result['f_LO'] - assumptions['ramsey']['delta_freq']
+        assumptions['qubit']['freq'] = self.results['f_LO']
+        assumptions['ramsey']['freq'] = self.results['f_LO'] - assumptions['ramsey']['delta_freq']
         
         repl = {
-            '§f_LO§': f'{self.result["f_LO"]:.6f}',
-            '§T2§':   f'{abs(self.result["T2"])/1000:.3f}',
+            '§f_LO§': f'{self.results["f_LO"]:.6f}',
+            '§T2§':   f'{abs(self.results["T2"])/1000:.3f}',
         }
         self.post_report(report_filename, cells, repl)

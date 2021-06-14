@@ -11,14 +11,14 @@ class Calibration(DefaultCalibration):
         }
         cells = self.pre_report(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl)
         
-        assumptions['qubit'][f'{sub_repl["PULSE"]}_amp'] = self.result['a_rabi']
+        assumptions['qubit'][f'{sub_repl["PULSE"]}_amp'] = self.results['a_rabi']
         factor = 1
         if '_pi_'  in sub_repl['PULSE']: factor = 2
         if '_pi2_' in sub_repl['PULSE']: factor = 4
         
         repl = {
             '§TYPE§':         sub_repl['TYPE'],
-            '§PULSE_AMP§':    f'{self.result["a_rabi"]/factor:f}',
+            '§PULSE_AMP§':    f'{self.results["a_rabi"]/factor:f}',
             '§PULSE_LENGTH§': str(assumptions['qubit'][f'{sub_repl["PULSE"]}_length'])
         }
         self.post_report(report_filename, cells, repl)

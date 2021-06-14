@@ -11,5 +11,8 @@
                                                  "TYPE":  "conditional pi pulse"}}]},
     {"name": "t1_qubit"},
     {"name": "ramsey"},
-    {"name": "spectro_ro"}
+    {"name": "spectro_ro", "substitutions": [{"name": "phase_only",
+                                              "repl": {"TYPE": "phase_only"}},
+                                             {"name": "circle_fit",
+                                              "repl": {"TYPE": "circle_fit"}}]}
 ]
