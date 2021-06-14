@@ -4,9 +4,9 @@ import json
 import subprocess
 from pathlib import Path
 from datetime import datetime, time
-from .calibrations.default import DefaultJupyterReport
 from .load import load_calibration_scheme, load_assumptions, load_exopy_template, load_utils
 from .log import Log
+from .calibrations.default import DefaultJupyterReport
 
 class Qualib:
     """
@@ -55,19 +55,26 @@ class Qualib:
             raise # Propagate the exception to show the stack trace and prevent the next calibration
         return
     
-    def run_all(self):
+    def run_all(self, pkg_calib_scheme):
         """
         Run a calibration scheme with given Exopy templates, assumptions and utils
         """
-        assert len(sys.argv) > 1, 'Missing calibration scheme\n\npython qualib.py calibration_scheme.py'
+        global missing_calib_scheme
+        assert len(sys.argv) > 1 or pkg_calib_scheme, missing_calib_scheme
+        calib_scheme_path = ''
+        if len(sys.argv) > 1:
+            calib_scheme_path = sys.argv[1]
+        else:
+            calib_scheme_path = pkg_calib_scheme
+            
+        global log
         now = datetime.now()
         timestamp = now.strftime('%y_%m_%d_%H%M%S')
         report_filename = f'reports/report_{timestamp}.ipynb'
         report = DefaultJupyterReport()
-        global log
         log.initialize(timestamp)
         calib_id = 0
-        calib_scheme, calib_scheme_str = load_calibration_scheme(log, sys.argv[1])
+        calib_scheme, calib_scheme_str = load_calibration_scheme(log, calib_scheme_path)
         print(f'\n\nStarting calibration sequence => {report_filename}')
         
         # Load assumptions.py
@@ -98,6 +105,19 @@ class Qualib:
         #subprocess.run(['jupyter', 'nbconvert', '--execute', report_filename, '--to', 'notebook', '--inplace'])
         return
     
+missing_calib_scheme = '''Missing calibration scheme
+
+CLI usage:
+    python -m qualib.main calibration_scheme.py
+
+Package usage:
+    pip install qualib
+  then
+    from qualib.main import Qualib
+    qualib = Qualib()
+    qualib.run_all('calibration_scheme.py')'''
+
 log = Log()
-qualib = Qualib()
-qualib.run_all()
+if __name__ == '__main__':
+    qualib = Qualib()
+    qualib.run_all('')

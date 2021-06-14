@@ -5,6 +5,7 @@ import json
 import numpy as np
 import scipy
 import difflib
+import sys
 
 class DefaultCalibration:
     """
@@ -37,7 +38,7 @@ class DefaultCalibration:
             #print(f'    {key} = {val}')
             template = template.replace(key, val)
             
-        with open(f'calibrations/{calib_name}/{calib_name}.meas.ini', 'w') as f:
+        with open(f'qualib/calibrations/{calib_name}/{calib_name}.meas.ini', 'w') as f:
             f.write(template)
             
         self.keys = keys
@@ -56,7 +57,7 @@ class DefaultCalibration:
                 code = '\n'.join(filter(lambda line: line[0] != '%', c['source'])) # Handle magic commands
                 exec(code, globals(), locals())
                 
-        with open(f'calibrations/{calib_name}/template_{calib_name}.ipynb', 'r', encoding='utf-8') as f:
+        with open(f'qualib/calibrations/{calib_name}/template_{calib_name}.ipynb', 'r', encoding='utf-8') as f:
             cells = f.read()
             for key, val in repl.items():
                 cells = cells.replace(key, val)
@@ -100,7 +101,9 @@ class DefaultCalibration:
 
 class DefaultJupyterReport:
     header = ''
-    with open('calibrations/default_header.ipynb') as f:
+    import os 
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    with open('qualib/calibrations/default_header.ipynb') as f:
         header = json.loads(f.read())['cells']
 
     def __init__(self):

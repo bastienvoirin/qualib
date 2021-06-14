@@ -21,7 +21,7 @@ def load_calibration_scheme(log, path):
         raise
     
 def load_exopy_template(log, calib):
-    path = f'calibrations/{calib}/{calib}_template.meas.ini'
+    path = f'qualib/calibrations/{calib}/{calib}_template.meas.ini'
     log.info(f'Loading Exopy measurements template "{path}"')
     try:
         with open(path) as f:
@@ -42,7 +42,7 @@ def load_assumptions(log):
         raise
 
 def load_utils(log, calib):
-    path = f'calibrations.{calib}.{calib}_utils'
+    path = f'qualib.calibrations.{calib}.{calib}_utils'
     log.info(f'Importing Calibration class from "{path}"')
     try:
         module = importlib.import_module(path)

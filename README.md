@@ -1,49 +1,69 @@
-Qualib provides automatic calibrations for experiments of superconducting quantum circuits, based on [Exopy](https://github.com/Exopy/exopy).
+Qualib provides automatic calibrations for experiments on superconducting quantum circuits, based on [Exopy](https://github.com/Exopy/exopy).
 
 # Usage
 
-```bash
-python qualib.py calibration_scheme.py
+`calibration_scheme.py` defines the calibration sequence file to run (see below).
+
+## As a module
+
+```shell
+python -m qualib.main calibration_scheme.py
 ```
 
-Where `calibration_scheme.py` defines the calibration sequence file to run (see below).
+## As a package
+
+```shell
+pip install qualib
+```
+
+```python
+from qualib.main import Qualib
+
+qualib = Qualib()
+qualib.run_all('calibration_scheme.py')
+```
 
 # Structure
 
 ```text
-└─ qualib
-   ├─ README.md
-   ├─ qualib.py
-   ├─ load.py
-   ├─ log.py
-   ├─ assumptions.py
-   ├─ calibration_scheme.py
-   ├─ logs
-   │  └─ README.md
-   ├─ reports
-   │  └─ README.md
-   └─ calibrations
-      ├─ default.py
-      ├─ rabi_probe
-      │  ├─ rabi_probe_utils.py
-      │  ├─ rabi_probe_template.meas.ini
-      │  └─ template_rabi_probe.ipynb
-      ├─ rabi
-      │  ├─ rabi_utils.py
-      │  ├─ rabi_template.meas.ini
-      │  └─ template_rabi.ipynb
-      ├─ t1_qubit
-      │  ├─ t1_qubit_utils.py
-      │  ├─ t1_qubit_template.meas.ini
-      │  └─ template_t1_qubit.ipynb
-      ├─ ramsey
-      │  ├─ ramsey_utils.py
-      │  ├─ ramsey_template.meas.ini
-      │  └─ template_ramsey.ipynb
-      └─ spectro_ro
-         ├─ spectro_ro_utils.py
-         ├─ spectro_ro_template.meas.ini
-         └─ template_spectro_ro.ipynb
+├── assumptions.py
+├── calibration_scheme.py
+├── README.md
+├── logs
+│   └── README.md
+├── reports
+│   └── README.md
+├── setup.py
+└── qualib
+    ├── __init__.py
+    ├── qualib.py
+    ├── load.py
+    ├── log.py
+    └── calibrations
+        ├── __init__.py
+        ├── default_header.ipynb
+        ├── default.py
+        ├── template_CALIBRATION_NAME.ipynb
+        ├── rabi
+        │   ├── rabi_template.meas.ini
+        │   ├── rabi_utils.py
+        │   └── template_rabi.ipynb
+        ├── rabi_probe
+        │   ├── rabi_probe_template.meas.ini
+        │   ├── rabi_probe_utils.py
+        │   └── template_rabi_probe.ipynb
+        ├── ramsey
+        │   ├── ramsey_template.meas.ini
+        │   ├── ramsey_utils.py
+        │   └── template_ramsey.ipynb
+        ├── spectro_ro
+        │   ├── spectro_ro_template.meas.ini
+        │   ├── spectro_ro_utils.py
+        │   └── template_spectro_ro.ipynb
+        └── t1_qubit
+            ├── t1_qubit_template.meas.ini
+            ├── t1_qubit_utils.py
+            └── template_t1_qubit.ipynb
 ```
 
 # Calibration sequence
