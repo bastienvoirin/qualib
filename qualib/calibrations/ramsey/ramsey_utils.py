@@ -6,10 +6,8 @@ class Calibration(DefaultCalibration):
         """
         Analyze and report the current calibration
         """
-        repl = {
-            '§FREQ§': str(assumptions['ramsey']['freq'])
-        }
-        cells = self.pre_report(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl)
+        repl = {'§FREQ§': str(assumptions['ramsey']['freq'])}
+        cells = self.pre_process(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl)
         
         assumptions['qubit']['freq'] = self.results['f_LO']
         assumptions['ramsey']['freq'] = self.results['f_LO'] - assumptions['ramsey']['delta_freq']
@@ -18,4 +16,4 @@ class Calibration(DefaultCalibration):
             '§f_LO§': f'{self.results["f_LO"]:.6f}',
             '§T2§':   f'{abs(self.results["T2"])/1000:.3f}',
         }
-        self.post_report(report_filename, cells, repl)
+        self.post_process(calib_name, report_filename, cells, repl)

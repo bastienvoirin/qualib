@@ -7,7 +7,7 @@ class Calibration(DefaultCalibration):
         Analyze and report the current calibration
         """
         repl = {}
-        cells = self.pre_report(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl)
+        cells = self.pre_process(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl)
         
         assumptions['rabi']['npoints'] = int(assumptions['rabi_probe']['npoints'] * 10 / self.results['samples_per_period'])
         assumptions['rabi']['unconditional_pi2_pulse_linearity_amp_limit'] = self.results['linearity_amp_limit']
@@ -18,4 +18,4 @@ class Calibration(DefaultCalibration):
             '§PULSE_LENGTH§':        f'{assumptions["rabi_probe"]["pulse_length"]}',
             '§LINEARITY_AMP_LIMIT§': f'{self.results["linearity_amp_limit"]:f}'
         }
-        self.post_report(report_filename, cells, repl)
+        self.post_process(calib_name, report_filename, cells, repl)

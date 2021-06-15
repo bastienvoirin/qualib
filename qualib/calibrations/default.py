@@ -23,9 +23,12 @@ class DefaultCalibration:
     <section> and <param> are alphanumeric strings ('a'-'z', 'A'-'Z', '0'-'9', '_')
     """
     def __init__(self, log, template, assumptions, calib_id, calib_name, sub_name, sub_repl, timestamp):
+        self.log = log
+        self.pre = ''.join([calib_name, '_'+sub_name if sub_name else '', ':'])
         keys = re.findall(r'\$[a-zA-Z0-9_/]+', template, re.MULTILINE) # Placeholders
         
         # Handle substitutions
+        self.log.info(f'{self.pre} Handling "qualib/calibrations/{calib_name}/{calib_name}_template.meas.ini" substitutions')
         for i, key in enumerate(keys):
             for src, dst in sub_repl.items():
                 keys[i] = keys[i].replace(src, dst)
@@ -33,6 +36,7 @@ class DefaultCalibration:
             template = template.replace(src, dst)
             
         # Handle placeholders
+        self.log.info(f'{self.pre} Handling "qualib/calibrations/{calib_name}/{calib_name}_template.meas.ini" placeholders')
         for key in keys:
             splt = key[1:].split('/') # Strip leading '$' and split at '/'
             val = 'MISSING_ASSUMPTION'
@@ -47,34 +51,37 @@ class DefaultCalibration:
             #print(f'    {key} = {val}')
             template = template.replace(key, val)
             
-        with open(f'qualib/calibrations/{calib_name}/{calib_name}.meas.ini', 'w') as f:
+        meas_path = f'qualib/calibrations/{calib_name}/{calib_name}.meas.ini'
+        self.log.info(f'{self.pre} Generating "{meas_path}"')
+        with open(meas_path, 'w') as f:
             f.write(template)
             
-        self.log = log
         self.keys = keys
         self.results = {}
         self.calib_id = calib_id
         self.calib_name = calib_name
         
-    def pre_report(self, calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl):
+    def pre_process(self, calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl):
         #path = f'\'{assumptions["default_path"]}/{timestamp}_{calib_id:03d}_{calib_name}_{sub_name}.h5\''
         path = f'\'../test_meas/{calib_id:03d}_{calib_name}.h5\''
         header = f'{"="*70}\n[{calib_name}{"_"+sub_name if sub_name else ""} calibration output]\n'
         print(header)
         
-        # Execute default_header.ipynb code cells
+        self.log.info(f'{self.pre} Executing "qualib/calibrations/default_header.ipynb" code cells')
         for c in DefaultJupyterReport.header:
             if c['cell_type'] == 'code':
                 code = '\n'.join(filter(lambda line: line[0] != '%', c['source'])) # Handle magic commands
                 exec(code, globals(), locals())
                 
-        # Execute template_{calib_name}.ipynb
+        self.log.info(f'{self.pre} Reading "qualib/calibrations/{calib_name}/template_{calib_name}.ipynb"')
         with open(f'qualib/calibrations/{calib_name}/template_{calib_name}.ipynb', 'r', encoding='utf-8') as f:
             cells = f.read()
+            self.log.info(f'{self.pre} Handling pre_process placeholders defined in "qualib/calibrations/{calib_name}/{calib_name}_utils.py"')
+            self.log.info(self.log.json(repl))
             for key, val in repl.items():
                 cells = cells.replace(key, val)
             
-            # Fetch analysis code from .ipynb template and compute result
+            self.log.info(f'{self.pre} Executing "qualib/calibrations/{calib_name}/template_{calib_name}.ipynb" code cells')
             loc = locals()
             for cell in json.loads(cells)['cells']:
                 if cell['cell_type'] == 'code':
@@ -85,27 +92,38 @@ class DefaultCalibration:
                     # Handle conditional cells
                     if keep_cell(src.splitlines()):
                         exec(src, loc, loc)
-                        if '_results' in loc:
+                        
+                        if '_results' in loc and '_results' in src:
+                            self.log.info(f'{self.pre} Fetching results')
                             self.results = loc['_results']
                             print(self.results)
-                        if '_opt' in loc and '_cov' in loc: # sigma(value)/value <= 5%
+                            
+                        # sigma(value)/value <= 5%
+                        if '_opt' in loc and '_cov' in loc and '_opt' in src and '_cov' in src:
+                            self.log.info(f'{self.pre} Checking standard deviations against optimized values')
                             ratios  = np.sqrt(np.diag(loc['_cov'])) / np.abs(loc['_opt'])
                             failed  = ', '.join([f'_opt[{ind}]' for ind in np.where(ratios > 0.05)[0]])
                             message = f'\n  Standard deviation too large for {failed}\n'\
-                                      f'  If this parameter is not relevant, exclude it '\
+                                      f'  If a parameter is not relevant, exclude it '\
                                       f'from _opt and _cov in template_{calib_name}.ipynb'
+                            if not all(ratios <= 0.05):
+                                self.log.error(f'{self.pre}{message}')
                             assert all(ratios <= 0.05), message
-                        if '_err' in loc:
+                            
+                        if '_err' in loc and '_err' in src:
+                            self.log.info(f'{self.pre} Handling custom errors')
                             errors = []
                             for message, condition in loc['_err'].items():
                                 if condition:
                                     errors.append(message)
+                                    self.log.error(f'{self.pre} {message}')
                             assert not errors, '\n  '+'\n  '.join(errors)
             
             footer = '='*70
             print(footer)
             
             # Filter conditional cells '#if condition:'
+            self.log.info(f'{self.pre} Filtering conditional cells')
             def trim(cell):
                 if cell['source'][0][:3] == '#if':
                     cell['source'] = cell['source'][1:]
@@ -114,11 +132,13 @@ class DefaultCalibration:
             cells['cells'] = [trim(cell) for cell in cells['cells'] if keep_cell(cell['source'])]
             return json.dumps(cells, indent=4, ensure_ascii=False)
     
-    def post_report(self, report_filename, cells, repl):
-        #print(cells)
+    def post_process(self, calib_name, report_filename, cells, repl):
+        self.log.info(f'{self.pre} Handling post_process placeholders defined in "qualib/calibrations/{calib_name}/{calib_name}_utils.py"')
+        self.log.info(self.log.json(repl))
         for key, val in repl.items():
             cells = cells.replace(key, val)
-        #print(cells)
+            
+        self.log.info(f'{self.pre} Appending cells to global .ipynb report')
         with open(report_filename, 'r') as f:
             report = json.loads(f.read())
             report['cells'] += json.loads(cells)['cells']

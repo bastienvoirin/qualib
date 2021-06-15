@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import traceback
 import subprocess
 from pathlib import Path
 from datetime import datetime, time
@@ -17,39 +18,32 @@ class Qualib:
         Run a single calibration with given assumptions and Exopy template
         """
         global log
-        p1 = "_"+sub_name if sub_name else ""
+        p1 = '_'+sub_name if sub_name else ''
         p2 = len(sub_repl)
-        p3 = " s"[len(sub_repl)>1]
-        print(f'Starting a "{calib_name}{p1}" calibration with {p2} substitution{p3}', end='')
-        if sub_repl:
-            print(':\n    '+'\n    '.join(map(lambda pair: f'{pair[0]} => {pair[1]}', sub_repl.items())))
-        else:
-            print()
+        p3 = ' s'[len(sub_repl)>1]
+        log.info(f'{calib_name}{p1}: Starting calibration with {p2} substitution{p3}')
+        log.info(log.json(sub_repl))
         
         try:
-            # Dynamically import Calibration from calibrations/{name}/{name}_utils.py
-            Calibration = load_utils(log, calib_name)
-            print(f'✓ Successfully loaded {calib_name}_utils.py')
+            Calibration = load_utils(log, calib_name, p1)
+            exopy_templ = load_exopy_template(log, calib_name, sub_name)
             
-            # Load calibrations/{name}/{name}_template.meas.ini
-            exopy_templ = load_exopy_template(log, calib_name)
-            print(f'✓ Successfully loaded Exopy template for "{calib_name}"\n  Generating {calib_name}.meas.ini file...')
-            
-            # Generate and save calibrations/{name}/{name}.meas.ini
+            log.info(f'{calib_name}{p1}: Generating "qualib/calibrations/{calib_name}/{calib_name}.meas.ini"')
             calibration = Calibration(log, exopy_templ, assumptions, calib_id, calib_name, sub_name, sub_repl, timestamp)
             keys = calibration.keys
-            print(f'✓ Successfully saved {calib_name}.meas.ini in calibrations/{calib_name}')
             
             # Run 'python -m exopy -s -x ./calibrations/{name}/{name}.meas.ini' and capture output
-            print(f'  Calling Exopy to run a "{calib_name}{f"_{sub_name}" if sub_name else ""}" calibration...\n')
+            log.info(f'{calib_name}{p1}: Calling Exopy')
             ini_path = str(Path(os.path.realpath(__file__)).parent / f'calibrations/{calib_name}/{calib_name}.meas.ini')
             subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path], shell=True)
             #process = subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path], capture_output=True)#, shell=True)
             #print(process.stdout.decode('utf-8').replace('\\n', '\n').replace('\\\'', '\''))
             
-            # Process the hdf5 output file and report the result(s)
+            log.info(f'{calib_name}{p1}: Processing HDF5 output file and reporting results')
             calibration.process(calib_name, calib_id, sub_name, sub_repl, report_filename, timestamp, assumptions)
         except:
+            log.error(f'{calib_name}{p1}: {sys.exc_info()[1]}')
+            [log.error(line) for line in traceback.format_exc().splitlines()]
             print(f'{"="*70}\n\nAn error occurred while processing "{calib_name}" calibration: ', end='')
             print(f'{sys.exc_info()[1]}\nSee traceback below.\n\n{"#"*70}\n')
             raise # Propagate the exception to show the stack trace and prevent the next calibration
@@ -75,16 +69,15 @@ class Qualib:
         log.initialize(timestamp)
         calib_id = 0
         calib_scheme, calib_scheme_str = load_calibration_scheme(log, calib_scheme_path)
-        print(f'\n\nStarting calibration sequence => {report_filename}')
         
-        # Load assumptions.py
         assumptions = load_assumptions(log)
-        print(f'✓ Successfully loaded assumptions\n')
         
-        # Create report_{timestamp}.ipynb
+        log.info(f'Initializing "reports/report_{timestamp}.ipynb"')
         report.initialize(assumptions, calib_scheme_str)
+        log.info(f'Creating "reports/report_{timestamp}.ipynb"')
         report.create(report_filename)
         
+        print()
         for calib in calib_scheme:
             if 'substitutions' in calib:
                 for subs in calib['substitutions']:
@@ -93,16 +86,18 @@ class Qualib:
                     calib_id += 1
                     # Run current calibration and update assumptions dict
                     self.run(calib_id, calib['name'], sub_name, sub_repl, report_filename, timestamp, assumptions)
-                    print('\n')
+                    print()
             else:
                 calib_id += 1
                 # Run current calibration and update assumptions dict
                 self.run(calib_id, calib['name'], None, {}, report_filename, timestamp, assumptions)
-                print('\n')
+                print()
                 
+        log.info('Finishing Jupyter report')
         report.finish(report_filename, assumptions)
         # [NbConvertApp] WARNING | No handler found for comm target 'matplotlib'
         #subprocess.run(['jupyter', 'nbconvert', '--execute', report_filename, '--to', 'notebook', '--inplace'])
+        log.info('Done')
         return
     
 missing_calib_scheme = '''Missing calibration scheme

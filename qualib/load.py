@@ -10,7 +10,7 @@ def load_(log, *args, **kwargs):
         raise
 
 def load_calibration_scheme(log, path):
-    log.info(f'Loading calibration sequence expected at "{path}"')
+    log.info(f'Loading calibration sequence "{path}"')
     try:
         with open(path) as f:
             seq = f.read()
@@ -20,9 +20,9 @@ def load_calibration_scheme(log, path):
         log.exc()
         raise
     
-def load_exopy_template(log, calib):
+def load_exopy_template(log, calib, sub):
     path = f'qualib/calibrations/{calib}/{calib}_template.meas.ini'
-    log.info(f'Loading Exopy measurements template "{path}"')
+    log.info(f'{calib}{"_"+sub if sub else ""}: Loading Exopy measurements template "{path}"')
     try:
         with open(path) as f:
             return f.read()
@@ -41,13 +41,13 @@ def load_assumptions(log):
         log.exc()
         raise
 
-def load_utils(log, calib):
+def load_utils(log, calib, sub):
     path = f'qualib.calibrations.{calib}.{calib}_utils'
-    log.info(f'Importing Calibration class from "{path}"')
+    log.info(f'{calib}{sub}: Importing Calibration class from "qualib/calibrations/{calib}/{calib}_utils.py"')
     try:
         module = importlib.import_module(path)
         return getattr(module, 'Calibration')
     except:
-        log.error(f'Unable to import Calibration class from calibrations.{calib}.{calib}_utils')
+        log.error(f'Unable to import Calibration class from {path}')
         log.exc()
         raise

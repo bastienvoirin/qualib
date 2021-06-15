@@ -1,5 +1,6 @@
 import traceback
 from datetime import datetime, time
+import json
 
 class Log():
     def initialize(self, timestamp, max_label_len=5):
@@ -42,4 +43,4 @@ class Log():
                 f.write(f'{" "*len(pre)} {line}\n')
                 
     def json(self, obj):
-        return json.dumps(obj, indent=2).splitlines()
+        return json.dumps(obj, indent=2, ensure_ascii=False).splitlines()
