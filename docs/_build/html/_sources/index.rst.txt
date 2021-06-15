@@ -9,11 +9,9 @@ Welcome to Qualib's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
-
-
-Indices and tables
-==================
+   
+   usage
+   developing
 
 * :ref:`genindex`
 * :ref:`modindex`
