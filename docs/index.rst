@@ -12,3 +12,4 @@ Welcome to Qualib's documentation!
    
    usage
    developing
+   reference

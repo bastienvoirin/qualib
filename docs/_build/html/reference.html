@@ -1,0 +1,407 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Reference &mdash; Qualib  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Developer guide" href="developing.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Qualib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Developer guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#assumptions-py">assumptions.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#calibration-scheme-py">calibration_scheme.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#qualib">qualib/</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#log-py">log.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#load-py">load.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main-py">main.py</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reports">reports/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#logs">logs/</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Qualib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Reference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/reference.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="reference">
+<h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="assumptions-py">
+<h2>assumptions.py<a class="headerlink" href="#assumptions-py" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">assumptions.py</span></code> should be a Python dictionary.</p>
+</div>
+<div class="section" id="calibration-scheme-py">
+<h2>calibration_scheme.py<a class="headerlink" href="#calibration-scheme-py" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">assumptions.py</span></code> should be a Python list. Each element of this list specifies a calibration to run.</p>
+<p>Format:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;calib_name_0&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;calib_name_1&quot;</span><span class="p">,</span> <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;variant&quot;</span><span class="p">,</span>
+                                                <span class="s2">&quot;repl&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;PLACEHOLDER_A&quot;</span><span class="p">:</span> <span class="s2">&quot;value_A&quot;</span><span class="p">,</span>
+                                                         <span class="s2">&quot;PLACEHOLDER_B&quot;</span><span class="p">:</span> <span class="s2">&quot;value_B&quot;</span><span class="p">}}]},</span>
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;calib_name_2&quot;</span><span class="p">,</span> <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;variant_0&quot;</span><span class="p">,</span>
+                                                <span class="s2">&quot;repl&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;PLACEHOLDER_A&quot;</span><span class="p">:</span> <span class="s2">&quot;value_A_0&quot;</span><span class="p">,</span>
+                                                         <span class="s2">&quot;PLACEHOLDER_B&quot;</span><span class="p">:</span> <span class="s2">&quot;value_B_0&quot;</span><span class="p">}},</span>
+                                               <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;variant_1&quot;</span><span class="p">,</span>
+                                                <span class="s2">&quot;repl&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;PLACEHOLDER_0&quot;</span><span class="p">:</span> <span class="s2">&quot;value_A_1&quot;</span><span class="p">,</span>
+                                                         <span class="s2">&quot;PLACEHOLDER_1&quot;</span><span class="p">:</span> <span class="s2">&quot;value_B_1&quot;</span><span class="p">}}]}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: the calibration name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">substitutions</span></code>: a list of substitution groups, Python dictionaries with the following keys:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: the name of this substitution group</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">repl</span></code>: a dictionary of <code class="docutils literal notranslate"><span class="pre">&quot;PLACEHOLDER&quot;:</span> <span class="pre">&quot;value&quot;</span></code> pairs</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="qualib">
+<h2>qualib/<a class="headerlink" href="#qualib" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="log-py">
+<h3>log.py<a class="headerlink" href="#log-py" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="Log">
+<em class="property">class </em><code class="sig-name descname">Log</code><a class="headerlink" href="#Log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Keyword arguments <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> are not supported yet, but may be added in future versions.</p>
+<dl class="py method">
+<dt id="Log.initialize">
+<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timestamp</span></em>, <em class="sig-param"><span class="n">max_label_len</span><span class="o">=</span><span class="default_value">5</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Log.initialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="Log.info">
+<code class="sig-name descname">info</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Log.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls <code class="docutils literal notranslate"><span class="pre">log('info',</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Log.debug">
+<code class="sig-name descname">debug</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Log.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls <code class="docutils literal notranslate"><span class="pre">log('debug',</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Log.warn">
+<code class="sig-name descname">warn</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Log.warn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls <code class="docutils literal notranslate"><span class="pre">log('warn',</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Log.error">
+<code class="sig-name descname">error</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Log.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls <code class="docutils literal notranslate"><span class="pre">log('error',</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Log.exc">
+<code class="sig-name descname">exc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Log.exc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logs the current exception traceback with an <code class="docutils literal notranslate"><span class="pre">[ERROR]</span></code> label.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Log.log">
+<code class="sig-name descname">log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">label</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Log.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logs its arguments. Multiples lines may be passed to this method</p>
+<ul class="simple">
+<li><p>As a list: <code class="docutils literal notranslate"><span class="pre">log(label,</span> <span class="pre">lines)</span></code>, <cite>e.g.</cite> <code class="docutils literal notranslate"><span class="pre">log('info',</span> <span class="pre">[line1,</span> <span class="pre">line2,</span> <span class="pre">line3])</span></code></p></li>
+<li><p>As multiple arguments: <code class="docutils literal notranslate"><span class="pre">log(label,</span> <span class="pre">*lines)</span></code>, <cite>e.g.</cite> <code class="docutils literal notranslate"><span class="pre">log('info',</span> <span class="pre">line1,</span> <span class="pre">line2,</span> <span class="pre">line3)</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Log.json">
+<code class="sig-name descname">json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Log.json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="load-py">
+<h3>load.py<a class="headerlink" href="#load-py" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="load_calibration_scheme">
+<code class="sig-name descname">load_calibration_scheme</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log</span></em>, <em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_calibration_scheme" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads, evaluates and returns the calibration sequence found at <code class="docutils literal notranslate"><span class="pre">path</span></code> as a list, logging to <code class="docutils literal notranslate"><span class="pre">log</span></code> instance of <a class="reference internal" href="#Log" title="Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Log</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="load_assumptions">
+<code class="sig-name descname">load_assumptions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log</span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_assumptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads, evaluates and returns <code class="docutils literal notranslate"><span class="pre">assumptions.py</span></code> as a dictionary, logging to <code class="docutils literal notranslate"><span class="pre">log</span></code> instance of <a class="reference internal" href="#Log" title="Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Log</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="load_exopy_template">
+<code class="sig-name descname">load_exopy_template</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log</span></em>, <em class="sig-param"><span class="n">calib</span></em>, <em class="sig-param"><span class="n">sub</span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_exopy_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the Exopy measurement template found at <code class="docutils literal notranslate"><span class="pre">qualib/calibrations/{calib}/{calib}_template.meas.ini</span></code>, logging to <code class="docutils literal notranslate"><span class="pre">log</span></code> instance of <a class="reference internal" href="#Log" title="Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Log</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="load_utils">
+<code class="sig-name descname">load_utils</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log</span></em>, <em class="sig-param"><span class="n">calib</span></em>, <em class="sig-param"><span class="n">sub</span></em><span class="sig-paren">)</span><a class="headerlink" href="#load_utils" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports and returns Calibration class from <code class="docutils literal notranslate"><span class="pre">qualib/calibrations/{calib}/{calib}_utils.py</span></code>, logging to <code class="docutils literal notranslate"><span class="pre">log</span></code> instance of <a class="reference internal" href="#Log" title="Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Log</span></code></a>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="main-py">
+<h3>main.py<a class="headerlink" href="#main-py" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="Qualib">
+<em class="property">class </em><code class="sig-name descname">Qualib</code><a class="headerlink" href="#Qualib" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper supclass.</p>
+<dl class="py method">
+<dt id="Qualib.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">calib_id</span></em>, <em class="sig-param"><span class="n">calib_name</span></em>, <em class="sig-param"><span class="n">sub_name</span></em>, <em class="sig-param"><span class="n">sub_repl</span></em>, <em class="sig-param"><span class="n">report_filename</span></em>, <em class="sig-param"><span class="n">timestamp</span></em>, <em class="sig-param"><span class="n">assumptions</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Qualib.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs a calibration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="Qualib.run_all">
+<code class="sig-name descname">run_all</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pkg_calib_scheme</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Qualib.run_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs a calibration sequence whose path is either passed as <code class="docutils literal notranslate"><span class="pre">pkg_calib_scheme</span></code> (package usage) or in <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code> (CLI/module usage).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="reports">
+<h2>reports/<a class="headerlink" href="#reports" title="Permalink to this headline">¶</a></h2>
+<p>Each report consists in:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Assumptions before calibration sequence</p></li>
+<li><p>Assumptions after calibration sequence</p></li>
+<li><p>Assumptions diff</p></li>
+<li><p>Report header (imports, utility functions)</p></li>
+<li><p>Calibrations reports</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="logs">
+<h2>logs/<a class="headerlink" href="#logs" title="Permalink to this headline">¶</a></h2>
+<p>Logs consist in timestamped and labeled lines of information (‘info’), debug informations (‘debug’), warning (‘warn’), errors (‘error’) and/or custom content.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="developing.html" class="btn btn-neutral float-left" title="Developer guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Bastien Voirin.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
