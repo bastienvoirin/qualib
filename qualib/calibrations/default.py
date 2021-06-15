@@ -22,7 +22,7 @@ class DefaultCalibration:
     A placeholder must have the format '$param' or '$section/param' where
     <section> and <param> are alphanumeric strings ('a'-'z', 'A'-'Z', '0'-'9', '_')
     """
-    def __init__(self, template, assumptions, calib_id, calib_name, sub_name, sub_repl, timestamp):
+    def __init__(self, log, template, assumptions, calib_id, calib_name, sub_name, sub_repl, timestamp):
         keys = re.findall(r'\$[a-zA-Z0-9_/]+', template, re.MULTILINE) # Placeholders
         
         # Handle substitutions
@@ -50,6 +50,7 @@ class DefaultCalibration:
         with open(f'qualib/calibrations/{calib_name}/{calib_name}.meas.ini', 'w') as f:
             f.write(template)
             
+        self.log = log
         self.keys = keys
         self.results = {}
         self.calib_id = calib_id
@@ -61,11 +62,13 @@ class DefaultCalibration:
         header = f'{"="*70}\n[{calib_name}{"_"+sub_name if sub_name else ""} calibration output]\n'
         print(header)
         
+        # Execute default_header.ipynb code cells
         for c in DefaultJupyterReport.header:
             if c['cell_type'] == 'code':
                 code = '\n'.join(filter(lambda line: line[0] != '%', c['source'])) # Handle magic commands
                 exec(code, globals(), locals())
                 
+        # Execute template_{calib_name}.ipynb
         with open(f'qualib/calibrations/{calib_name}/template_{calib_name}.ipynb', 'r', encoding='utf-8') as f:
             cells = f.read()
             for key, val in repl.items():
@@ -78,6 +81,8 @@ class DefaultCalibration:
                     src = ''.join(cell['source']).replace('§HDF5_PATH§', path)
                     for key, val in sub_repl.items():
                         src = src.replace(f'§{key}§', f'\'{val}\'')
+                        
+                    # Handle conditional cells
                     if keep_cell(src.splitlines()):
                         exec(src, loc, loc)
                         if '_results' in loc:
@@ -87,14 +92,20 @@ class DefaultCalibration:
                             ratios  = np.sqrt(np.diag(loc['_cov'])) / np.abs(loc['_opt'])
                             failed  = ', '.join([f'_opt[{ind}]' for ind in np.where(ratios > 0.05)[0]])
                             message = f'\n  Standard deviation too large for {failed}\n'\
-                                    f'  If this parameter is not relevant, exclude it '\
-                                    f'from _opt and _cov in template_{calib_name}.ipynb'
+                                      f'  If this parameter is not relevant, exclude it '\
+                                      f'from _opt and _cov in template_{calib_name}.ipynb'
                             assert all(ratios <= 0.05), message
+                        if '_err' in loc:
+                            errors = []
+                            for message, condition in loc['_err'].items():
+                                if condition:
+                                    errors.append(message)
+                            assert not errors, '\n  '+'\n  '.join(errors)
             
             footer = '='*70
             print(footer)
             
-            # Filter conditional cells
+            # Filter conditional cells '#if condition:'
             def trim(cell):
                 if cell['source'][0][:3] == '#if':
                     cell['source'] = cell['source'][1:]
@@ -102,7 +113,6 @@ class DefaultCalibration:
             cells = json.loads(cells.replace('§HDF5_PATH§', f'\'../{path[1:-1]}\''))
             cells['cells'] = [trim(cell) for cell in cells['cells'] if keep_cell(cell['source'])]
             return json.dumps(cells, indent=4, ensure_ascii=False)
-            #return cells
     
     def post_report(self, report_filename, cells, repl):
         #print(cells)

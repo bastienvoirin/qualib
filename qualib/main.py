@@ -36,7 +36,7 @@ class Qualib:
             print(f'✓ Successfully loaded Exopy template for "{calib_name}"\n  Generating {calib_name}.meas.ini file...')
             
             # Generate and save calibrations/{name}/{name}.meas.ini
-            calibration = Calibration(exopy_templ, assumptions, calib_id, calib_name, sub_name, sub_repl, timestamp)
+            calibration = Calibration(log, exopy_templ, assumptions, calib_id, calib_name, sub_name, sub_repl, timestamp)
             keys = calibration.keys
             print(f'✓ Successfully saved {calib_name}.meas.ini in calibrations/{calib_name}')
             
