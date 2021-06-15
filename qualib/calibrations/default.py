@@ -85,7 +85,7 @@ class DefaultCalibration:
             loc = locals()
             for cell in json.loads(cells)['cells']:
                 if cell['cell_type'] == 'code':
-                    src = ''.join(cell['source']).replace('§HDF5_PATH§', path)
+                    src = ''.join(cell['source']).replace('HDF5_PATH', path)
                     for key, val in sub_repl.items():
                         src = src.replace(f'§{key}§', f'\'{val}\'')
                         

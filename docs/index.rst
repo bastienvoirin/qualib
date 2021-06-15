@@ -12,7 +12,3 @@ Welcome to Qualib's documentation!
    
    usage
    developing
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

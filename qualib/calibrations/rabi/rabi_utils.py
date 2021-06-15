@@ -6,7 +6,7 @@ class Calibration(DefaultCalibration):
         """
         Analyze and report the current calibration
         """
-        repl = {'§LINEARITY_AMP_LIMIT§': str(assumptions['rabi'][f'{sub_repl["PULSE"]}_linearity_amp_limit'])}
+        repl = {'LINEARITY_AMP_LIMIT': str(assumptions['rabi'][f'{sub_repl["PULSE"]}_linearity_amp_limit'])}
         cells = self.pre_process(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl)
         
         assumptions['qubit'][f'{sub_repl["PULSE"]}_amp'] = self.results['a_rabi']
