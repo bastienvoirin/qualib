@@ -1,8 +1,8 @@
 {
-    'default_path': 'F:/data/Qnode Fock_stab 2/calibrations',
+    'default_path': 'F:/data/Qnode Fock_stab 3/calibrations',
     'filename': 'FILENAME', # {calib_id}_{calib_name}.h5
     'qubit': {
-        'freq':                     4.441065, # updated by [ramsey]
+        'freq':                         4.44, # updated by [ramsey], [spectro_qubit]
         'power':                          12,
         'conditional_pi_pulse_length':   700,
         'conditional_pi_pulse_amp':        0, # updated by [rabi]
@@ -38,16 +38,16 @@
         'conditional_pi_pulse_linearity_amp_limit':    0.21  # updated by [rabi_probe]
     },
     'ramsey': {
-        'long_ro_length': 1000,  # see $readout/length?
-        'long_ro_amp':    0.04,  # see $readout/amp?
+        'long_ro_length': 1000,   # see $readout/length?
+        'long_ro_amp':    0.04,   # see $readout/amp?
         'wait_min':       20,
-        'wait_max':       30000, # updated by [t1_qubit]: $ramsey/wait_max ← max($ramsey_wait_max, 5*T1)
-        'npoints':        51,
+        'wait_max':       30000,  # updated by [t1_qubit]: $ramsey/wait_max ← max($ramsey_wait_max, 5*T1)
+        'npoints':        101,
         'averaging':      5000,
-        'freq':           4.441, # base frequency, updated by [ramsey]
-                                 # $ramsey/freq ← $qubit/freq - $ramsey/delta_freq
-        'width':          1e-3,  # frequencies ← (freq-width/2, freq, freq+width/2)
-        'delta_freq':     5e-5   # defines $qubit/freq - $ramsey/freq
+        'freq':           4.4414, # base frequency, updated by [ramsey]
+                                  # $ramsey/freq ← $qubit/freq - $ramsey/delta_freq
+        'width':          2e-3,   # frequencies ← (freq-width/2, freq, freq+width/2)
+        'delta_freq':     0       # defines $qubit/freq - $ramsey/freq
     },
     't1_qubit': {
         'num_t1':         8,     # wait_max will be adjusted to be greater or equal to §t1_qubit/num_t1 * T1
@@ -60,5 +60,16 @@
     },
     'spectro_ro': {
         'averaging': 10000
+    },
+    'spectro_qubit': {
+        'averaging':           5000,
+        'coarse_pulse_length': 1000,
+        'fine_pulse_length':   7000,
+        'coarse_pulse_amp':    0.01,
+        'fine_pulse_amp':      0.0005,
+        'coarse_sweep_width':  100,
+        'fine_sweep_width':    15,
+        'coarse_npoints':      101,
+        'fine_npoints':        101
     }
 }

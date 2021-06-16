@@ -35,9 +35,11 @@ class Qualib:
             # Run 'python -m exopy -s -x ./calibrations/{name}/{name}.meas.ini' and capture output
             log.info(f'{calib_name}{p1}: Calling Exopy')
             ini_path = str(Path(os.path.realpath(__file__)).parent / f'calibrations/{calib_name}/{calib_name}.meas.ini')
-            subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path], shell=True)
-            #process = subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path], capture_output=True)#, shell=True)
-            #print(process.stdout.decode('utf-8').replace('\\n', '\n').replace('\\\'', '\''))
+            #subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path], shell=True)
+            process = subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path], capture_output=True, shell=True)
+            process_output = process.stdout.decode('utf-8').replace('\\n', '\n').replace('\\\'', '\'')
+            [log.info(f'{calib_name}{p1}: {line}') for line in process_output.splitlines()]
+            print(process_output)
             
             log.info(f'{calib_name}{p1}: Processing HDF5 output file and reporting results')
             calibration.process(calib_name, calib_id, sub_name, sub_repl, report_filename, timestamp, assumptions)
@@ -86,15 +88,16 @@ class Qualib:
                     calib_id += 1
                     # Run current calibration and update assumptions dict
                     self.run(calib_id, calib['name'], sub_name, sub_repl, report_filename, timestamp, assumptions)
+                    report.finish(report_filename, assumptions)
                     print()
             else:
                 calib_id += 1
                 # Run current calibration and update assumptions dict
                 self.run(calib_id, calib['name'], None, {}, report_filename, timestamp, assumptions)
+                report.finish(report_filename, assumptions)
                 print()
                 
         log.info('Finishing Jupyter report')
-        report.finish(report_filename, assumptions)
         # [NbConvertApp] WARNING | No handler found for comm target 'matplotlib'
         #subprocess.run(['jupyter', 'nbconvert', '--execute', report_filename, '--to', 'notebook', '--inplace'])
         log.info('Done')

@@ -62,8 +62,8 @@ class DefaultCalibration:
         self.calib_name = calib_name
         
     def pre_process(self, calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl):
-        #path = f'\'{assumptions["default_path"]}/{timestamp}_{calib_id:03d}_{calib_name}_{sub_name}.h5\''
-        path = f'\'../test_meas/{calib_id:03d}_{calib_name}.h5\''
+        path = f'\'{assumptions["default_path"]}/{timestamp}_{calib_id:03d}_{calib_name}{"_"+sub_name if sub_name else ""}.h5\''
+        #path = f'\'../test_meas/{calib_id:03d}_{calib_name}.h5\''
         header = f'{"="*70}\n[{calib_name}{"_"+sub_name if sub_name else ""} calibration output]\n'
         print(header)
         
@@ -128,7 +128,7 @@ class DefaultCalibration:
                 if cell['source'][0][:3] == '#if':
                     cell['source'] = cell['source'][1:]
                 return cell
-            cells = json.loads(cells.replace('§HDF5_PATH§', f'\'../{path[1:-1]}\''))
+            cells = json.loads(cells.replace('HDF5_PATH', f'\'{path[1:-1]}\''))
             cells['cells'] = [trim(cell) for cell in cells['cells'] if keep_cell(cell['source'])]
             return json.dumps(cells, indent=4, ensure_ascii=False)
     
