@@ -1,3 +1,5 @@
+[![Documentation Status](https://readthedocs.org/projects/qualib/badge/?version=latest)](https://qualib.readthedocs.io/en/latest/?badge=latest)
+
 Qualib provides automatic calibrations for experiments on superconducting quantum circuits, based on [Exopy](https://github.com/Exopy/exopy).
 
 # Usage

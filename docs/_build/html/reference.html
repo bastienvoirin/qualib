@@ -13,6 +13,7 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
 
   
   
@@ -89,6 +90,7 @@
 <li class="toctree-l1"><a class="reference internal" href="usage.html">User guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developing.html">Developer guide</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#flowchart">Flowchart</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#assumptions-py">assumptions.py</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#calibration-scheme-py">calibration_scheme.py</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#qualib">qualib/</a><ul>
@@ -194,6 +196,96 @@
 </style>
 <div class="section" id="reference">
 <h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="flowchart">
+<h2>Flowchart<a class="headerlink" href="#flowchart" title="Permalink to this headline">¶</a></h2>
+<div class="graphviz"><img src="_images/graphviz-b75849db955dbc9c4395e00f0b460858d7b258b3.png" alt="digraph G {
+    rank = same;
+    rankdir = LR;
+    splines = true;
+    esep = 1;
+    node [
+        shape = rect;
+        fontname = &quot;monospace&quot;;
+    ];
+    subgraph level_0 {
+        run_all [
+            label = &quot;Qualib.run_all()&quot;;
+        ];
+    }
+    subgraph level_1 {
+        log_init [
+            label = &quot;Log.initialize()&quot;;
+            pos=&quot;0,0!&quot;;
+        ];
+        load_calib_scheme [
+            label = &quot;load_calibration_scheme()&quot;;
+        ];
+        load_assumptions [
+            label = &quot;load_assumptions()&quot;;
+        ];
+        run [
+            label = &quot;Qualib.run()&quot;;
+        ];
+    }
+    subgraph level_2 {
+        load_utils [
+            label = &quot;load_utils()&quot;;
+        ];
+        load_exopy_template [
+            label = &quot;load_exopy_template()&quot;;
+        ];
+        calibration [
+            label = &quot;Calibration.__init__()&quot;;
+        ];
+        a_2 [
+            style = invis;
+        ];
+        subprocess [
+            label = &quot;subprocess.run()&quot;;
+        ];
+        calib_process [
+            label = &quot;Calibration.process()&quot;;
+        ];
+    }
+    subgraph level_3 {
+        calib_init_substitutions [
+            label = &quot;Handle substitutions\nin Exopy template&quot;;
+            shape = oval;
+        ];
+        calib_init_placeholders [
+            label = &quot;Handle placeholders\nin Exopy template&quot;;
+            shape = oval;
+        ];
+        a_3 [
+            style = invis;
+        ];
+        pre_process [
+            label = &quot;Calibration.pre_process()&quot;;
+        ];
+        post_process [
+            label = &quot;Calibration.post_process()&quot;;
+        ];
+    }
+    run_all -&gt; log_init;
+    log_init -&gt; load_calib_scheme;
+    load_calib_scheme -&gt; load_assumptions;
+    load_assumptions -&gt; run;
+    run -&gt; load_utils;
+    load_utils -&gt; load_exopy_template;
+    load_exopy_template -&gt; calibration;
+    calibration -&gt; calib_init_substitutions;
+    calib_init_substitutions -&gt; calib_init_placeholders;
+    calib_init_placeholders:w -&gt; subprocess:e;
+    subprocess -&gt; calib_process;
+    calib_process:e -&gt; pre_process:w;
+    pre_process -&gt; post_process;
+    post_process:w -&gt; run:s [constraint = false];
+    calib_init_placeholders -&gt; a_3 [style = invis];
+    a_3 -&gt; pre_process [style = invis];
+    calibration -&gt; a_2 [style = invis];
+    a_2 -&gt; subprocess [style = invis];
+}" class="graphviz" /></div>
+</div>
 <div class="section" id="assumptions-py">
 <h2>assumptions.py<a class="headerlink" href="#assumptions-py" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">assumptions.py</span></code> should be a Python dictionary.</p>
@@ -239,7 +331,8 @@
 <dl class="py method">
 <dt id="Log.initialize">
 <code class="sig-name descname">initialize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timestamp</span></em>, <em class="sig-param"><span class="n">max_label_len</span><span class="o">=</span><span class="default_value">5</span></em><span class="sig-paren">)</span><a class="headerlink" href="#Log.initialize" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Defines the path and filename of the log from a <code class="docutils literal notranslate"><span class="pre">timestamp</span></code> string (<code class="docutils literal notranslate"><span class="pre">logs/{timestamp}.log</span></code>) as well as the indentation needed to align log entries. <code class="docutils literal notranslate"><span class="pre">max_label_len</span></code> is set to <code class="docutils literal notranslate"><span class="pre">5</span></code> by default to align <code class="docutils literal notranslate"><span class="pre">info</span></code>, <code class="docutils literal notranslate"><span class="pre">debug</span></code>, <code class="docutils literal notranslate"><span class="pre">warn</span></code> and <code class="docutils literal notranslate"><span class="pre">error</span></code> messages. Set <code class="docutils literal notranslate"><span class="pre">max_label_len</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code> or a negative integer to disable alignment.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="Log.info">

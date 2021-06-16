@@ -4,6 +4,99 @@
 Reference
 ==================================
 
+Flowchart
+**********************************
+
+.. graphviz::
+    
+    digraph G {
+        rank = same;
+        rankdir = LR;
+        splines = true;
+        esep = 1;
+        node [
+            shape = rect;
+            fontname = "monospace";
+        ];
+        subgraph level_0 {
+            run_all [
+                label = "Qualib.run_all()";
+            ];
+        }
+        subgraph level_1 {
+            log_init [
+                label = "Log.initialize()";
+                pos="0,0!";
+            ];
+            load_calib_scheme [
+                label = "load_calibration_scheme()";
+            ];
+            load_assumptions [
+                label = "load_assumptions()";
+            ];
+            run [
+                label = "Qualib.run()";
+            ];
+        }
+        subgraph level_2 {
+            load_utils [
+                label = "load_utils()";
+            ];
+            load_exopy_template [
+                label = "load_exopy_template()";
+            ];
+            calibration [
+                label = "Calibration.__init__()";
+            ];
+            a_2 [
+                style = invis;
+            ];
+            subprocess [
+                label = "subprocess.run()";
+            ];
+            calib_process [
+                label = "Calibration.process()";
+            ];
+        }
+        subgraph level_3 {
+            calib_init_substitutions [
+                label = "Handle substitutions\nin Exopy template";
+                shape = oval;
+            ];
+            calib_init_placeholders [
+                label = "Handle placeholders\nin Exopy template";
+                shape = oval;
+            ];
+            a_3 [
+                style = invis;
+            ];
+            pre_process [
+                label = "Calibration.pre_process()";
+            ];
+            post_process [
+                label = "Calibration.post_process()";
+            ];
+        }
+        run_all -> log_init;
+        log_init -> load_calib_scheme;
+        load_calib_scheme -> load_assumptions;
+        load_assumptions -> run;
+        run -> load_utils;
+        load_utils -> load_exopy_template;
+        load_exopy_template -> calibration;
+        calibration -> calib_init_substitutions;
+        calib_init_substitutions -> calib_init_placeholders;
+        calib_init_placeholders:w -> subprocess:e;
+        subprocess -> calib_process;
+        calib_process:e -> pre_process:w;
+        pre_process -> post_process;
+        post_process:w -> run:s [constraint = false];
+        calib_init_placeholders -> a_3 [style = invis];
+        a_3 -> pre_process [style = invis];
+        calibration -> a_2 [style = invis];
+        a_2 -> subprocess [style = invis];
+    }
+
 assumptions.py
 **********************************
 
@@ -48,6 +141,8 @@ log.py
     Keyword arguments ``**kwargs`` are not supported yet, but may be added in future versions.
     
     .. py:method:: initialize(timestamp, max_label_len=5)
+        
+        Defines the path and filename of the log from a ``timestamp`` string (``logs/{timestamp}.log``) as well as the indentation needed to align log entries. ``max_label_len`` is set to ``5`` by default to align ``info``, ``debug``, ``warn`` and ``error`` messages. Set ``max_label_len`` to ``0`` or a negative integer to disable alignment.
     
     .. py:method:: info(*args, **kwargs)
         
