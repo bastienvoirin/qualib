@@ -10,7 +10,7 @@ Substitutions, placeholders and interfaces
 Substitutions
 ----------------------------------
 
-A substitution is a placeholder which is are handled early, in ``Calibration.pre_process()``. Substitutions are used to define several variants of a given calibration. Substitutions can be found in:
+A substitution is a placeholder which is handled early, in ``Calibration.pre_process()``. Substitutions are used to define several variants of a given calibration. Substitutions can be found in:
 
     * ``CALIBRATION_NAME_template.meas.ini`` (format: ``SUBSTITUTION``)
     * ``template_CALIBRATION_NAME.ipynb`` (format: ``SUBSTITUTION``)
@@ -23,8 +23,8 @@ A substitution can be:
 .. note::
     Special substitutions:
     
-        * [auto] ``HDF5_FILE`` in ``template_CALIBRATION_NAME.ipynb``: absolute path to the HDF5 data file
-        * [user] ``NAME`` in ``calibration_scheme.py``: name of the substitutions group
+        * [auto] ``HDF5_PATH`` in ``template_CALIBRATION_NAME.ipynb``: absolute path to the HDF5 data file; replaced during ``DefaultCalibration.pre_process()`` with ``default_path`` (defined in ``assumptions.py``) and a timestamp.
+        * [user] ``NAME`` in ``calibration_scheme.py``: name of the substitutions group, in *camel\_case*.
     
 Placeholders
 ----------------------------------
@@ -39,14 +39,14 @@ Placeholders are handled in ``Calibration.pre_process()``.
 Interfaces
 ----------------------------------
 
-An interface is a special Python variable defined in ``template_CALIBRATION_NAME.ipynb`` whose value is fetched and process by ``Calibration.process()`` (at ``CALIBRATION_NAME_utils.py``) and ``DefaultCalibration.process()`` (at ``calibrations/default.py``). Currently, there are 4 interfaces:
+An interface is a special Python variable defined in ``template_CALIBRATION_NAME.ipynb`` whose value is fetched and processed by ``Calibration.process()`` (at ``CALIBRATION_NAME_utils.py``) and ``DefaultCalibration.process()`` (at ``calibrations/default.py``). Currently, there are 4 interfaces:
 
 .. list-table:: List of interfaces currently supported
     :widths: 10 90
     :header-rows: 1
 
     *   - Interface
-        - Results
+        - Description
     *   - ``_results``
         - ``dict`` of ``name: value`` pairs summarizing the calibration results  
     *   - ``_err``
@@ -103,27 +103,29 @@ Flowchart
             pre_process [
                 label = "Calibration.pre_process()";
             ];
+            invis_1 [
+                style = invis;
+            ];
             subprocess [
                 label = "subprocess.run()";
             ];
             calib_process [
                 label = "Calibration.process()";
             ];
+            invis_2 [
+                style = invis;
+            ];
             post_process [
                 label = "Calibration.post_process()";
             ];
-            loop [
-                label = "Loop?";
-                shape = diamond;
-            ];
         }
         subgraph level_3 {
-            calib_init_substitutions [
-                label = "Handle substitutions\nin Exopy template";
+            calib_substitutions [
+                label = "Handle substitutions";
                 shape = oval;
             ];
-            calib_init_placeholders [
-                label = "Handle placeholders\nin Exopy template";
+            calib_placeholders [
+                label = "Handle placeholders";
                 shape = oval;
             ];
         }
@@ -134,48 +136,58 @@ Flowchart
         run -> load_utils;
         load_utils -> load_exopy_template;
         load_exopy_template -> calibration;
-        calibration -> calib_init_substitutions;
-        calib_init_substitutions -> calib_init_placeholders;
-        calib_init_placeholders:w -> pre_process:e;
-        pre_process -> subprocess;
+        calibration -> pre_process;
+        pre_process:e -> calib_substitutions:n;
+        calib_substitutions:s -> subprocess:e;
         subprocess -> calib_process;
-        calib_process -> post_process;
-        post_process -> loop;
-        loop:w -> run:s [constraint = false];
+        calib_process:e -> calib_placeholders:n;
+        calib_placeholders:s -> post_process:e;
+        post_process:w -> run:s [constraint = false];
+        pre_process -> invis_1 [style = invis];
+        invis_1 -> subprocess [style = invis];
+        calib_process -> invis_2 [style = invis];
+        invis_2 -> post_process [style = invis];
     }
 
-assumptions.py
+Calibration sequences
 **********************************
+
+assumptions.py
+----------------------------------
 
 ``assumptions.py`` should be a Python dictionary.
 
 calibration_scheme.py
-**********************************
+----------------------------------
 
-``assumptions.py`` should be a Python list. Each element of this list specifies a calibration to run.
+``calibration_scheme.py`` should be a Python list. Each element of this list specifies a calibration to run.
 
 Format:
 
 .. code-block:: py
     
     [
-        {"name": "calib_name_0"},
-        {"name": "calib_name_1", "substitutions": [{"name": "variant",
-                                                    "repl": {"PLACEHOLDER_A": "value_A",
-                                                             "PLACEHOLDER_B": "value_B"}}]},
-        {"name": "calib_name_2", "substitutions": [{"name": "variant_0",
-                                                    "repl": {"PLACEHOLDER_A": "value_A_0",
-                                                             "PLACEHOLDER_B": "value_B_0"}},
-                                                   {"name": "variant_1",
-                                                    "repl": {"PLACEHOLDER_0": "value_A_1",
-                                                             "PLACEHOLDER_1": "value_B_1"}}]}
+        {"name": "a_calibration"},
+
+        {"name": "another_calibration",
+         "substitutions": {"NAME":                "variant_in_camel_case",
+                           "A_SUBSTITUTION":      "a_value",
+                           "ANOTHER_SUBTITUTION": "another_value"}}
     ]
 
 * ``name``: the calibration name
-* ``substitutions``: a list of substitution groups, Python dictionaries with the following keys:
+* ``substitutions``: an optional dictionary of substitutions; if present, ``NAME`` must be defined.
 
-    * ``name``: the name of this substitution group
-    * ``repl``: a dictionary of ``"PLACEHOLDER": "value"`` pairs
+Calibrations
+**********************************
+
+template.ipynb
+----------------------------------
+
+utils.py
+----------------------------------
+
+``Calibration`` inherits from, and overrides, ``DefaultCalibration``.
 
 qualib/
 **********************************

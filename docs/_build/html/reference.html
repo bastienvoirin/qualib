@@ -97,8 +97,16 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#flowchart">Flowchart</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#assumptions-py">assumptions.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#calibration-scheme-py">calibration_scheme.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#calibration-sequences">Calibration sequences</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#assumptions-py">assumptions.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calibration-scheme-py">calibration_scheme.py</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#calibrations">Calibrations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#template-ipynb">template.ipynb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#utils-py">utils.py</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#qualib">qualib/</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#log-py">log.py</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#load-py">load.py</a></li>
@@ -206,7 +214,7 @@
 <h2>Substitutions, placeholders and interfaces<a class="headerlink" href="#substitutions-placeholders-and-interfaces" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="substitutions">
 <h3>Substitutions<a class="headerlink" href="#substitutions" title="Permalink to this headline">¶</a></h3>
-<p>A substitution is a placeholder which is are handled early, in <code class="docutils literal notranslate"><span class="pre">Calibration.pre_process()</span></code>. Substitutions are used to define several variants of a given calibration. Substitutions can be found in:</p>
+<p>A substitution is a placeholder which is handled early, in <code class="docutils literal notranslate"><span class="pre">Calibration.pre_process()</span></code>. Substitutions are used to define several variants of a given calibration. Substitutions can be found in:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">CALIBRATION_NAME_template.meas.ini</span></code> (format: <code class="docutils literal notranslate"><span class="pre">SUBSTITUTION</span></code>)</p></li>
@@ -225,8 +233,8 @@
 <p>Special substitutions:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>[auto] <code class="docutils literal notranslate"><span class="pre">HDF5_FILE</span></code> in <code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code>: absolute path to the HDF5 data file</p></li>
-<li><p>[user] <code class="docutils literal notranslate"><span class="pre">NAME</span></code> in <code class="docutils literal notranslate"><span class="pre">calibration_scheme.py</span></code>: name of the substitutions group</p></li>
+<li><p>[auto] <code class="docutils literal notranslate"><span class="pre">HDF5_PATH</span></code> in <code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code>: absolute path to the HDF5 data file; replaced during <code class="docutils literal notranslate"><span class="pre">DefaultCalibration.pre_process()</span></code> with <code class="docutils literal notranslate"><span class="pre">default_path</span></code> (defined in <code class="docutils literal notranslate"><span class="pre">assumptions.py</span></code>) and a timestamp.</p></li>
+<li><p>[user] <code class="docutils literal notranslate"><span class="pre">NAME</span></code> in <code class="docutils literal notranslate"><span class="pre">calibration_scheme.py</span></code>: name of the substitutions group, in <em>camel_case</em>.</p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -244,7 +252,7 @@
 </div>
 <div class="section" id="interfaces">
 <h3>Interfaces<a class="headerlink" href="#interfaces" title="Permalink to this headline">¶</a></h3>
-<p>An interface is a special Python variable defined in <code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code> whose value is fetched and process by <code class="docutils literal notranslate"><span class="pre">Calibration.process()</span></code> (at <code class="docutils literal notranslate"><span class="pre">CALIBRATION_NAME_utils.py</span></code>) and <code class="docutils literal notranslate"><span class="pre">DefaultCalibration.process()</span></code> (at <code class="docutils literal notranslate"><span class="pre">calibrations/default.py</span></code>). Currently, there are 4 interfaces:</p>
+<p>An interface is a special Python variable defined in <code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code> whose value is fetched and processed by <code class="docutils literal notranslate"><span class="pre">Calibration.process()</span></code> (at <code class="docutils literal notranslate"><span class="pre">CALIBRATION_NAME_utils.py</span></code>) and <code class="docutils literal notranslate"><span class="pre">DefaultCalibration.process()</span></code> (at <code class="docutils literal notranslate"><span class="pre">calibrations/default.py</span></code>). Currently, there are 4 interfaces:</p>
 <table class="colwidths-given docutils align-default" id="id1">
 <caption><span class="caption-text">List of interfaces currently supported</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
 <colgroup>
@@ -253,7 +261,7 @@
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Interface</p></th>
-<th class="head"><p>Results</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
 <tbody>
@@ -275,7 +283,7 @@
 </div>
 <div class="section" id="flowchart">
 <h2>Flowchart<a class="headerlink" href="#flowchart" title="Permalink to this headline">¶</a></h2>
-<div class="graphviz"><img src="_images/graphviz-eccbb13d4586feabb90f6f9cae085825386ff17c.png" alt="digraph G {
+<div class="graphviz"><img src="_images/graphviz-1f4e7ed1576a2ce5411e71c4ee1ad072301541f6.png" alt="digraph G {
     rank = same;
     rankdir = LR;
     splines = true;
@@ -317,27 +325,29 @@
         pre_process [
             label = &quot;Calibration.pre_process()&quot;;
         ];
+        invis_1 [
+            style = invis;
+        ];
         subprocess [
             label = &quot;subprocess.run()&quot;;
         ];
         calib_process [
             label = &quot;Calibration.process()&quot;;
         ];
+        invis_2 [
+            style = invis;
+        ];
         post_process [
             label = &quot;Calibration.post_process()&quot;;
         ];
-        loop [
-            label = &quot;Loop?&quot;;
-            shape = diamond;
-        ];
     }
     subgraph level_3 {
-        calib_init_substitutions [
-            label = &quot;Handle substitutions\nin Exopy template&quot;;
+        calib_substitutions [
+            label = &quot;Handle substitutions&quot;;
             shape = oval;
         ];
-        calib_init_placeholders [
-            label = &quot;Handle placeholders\nin Exopy template&quot;;
+        calib_placeholders [
+            label = &quot;Handle placeholders&quot;;
             shape = oval;
         ];
     }
@@ -348,49 +358,54 @@
     run -&gt; load_utils;
     load_utils -&gt; load_exopy_template;
     load_exopy_template -&gt; calibration;
-    calibration -&gt; calib_init_substitutions;
-    calib_init_substitutions -&gt; calib_init_placeholders;
-    calib_init_placeholders:w -&gt; pre_process:e;
-    pre_process -&gt; subprocess;
+    calibration -&gt; pre_process;
+    pre_process:e -&gt; calib_substitutions:n;
+    calib_substitutions:s -&gt; subprocess:e;
     subprocess -&gt; calib_process;
-    calib_process -&gt; post_process;
-    post_process -&gt; loop;
-    loop:w -&gt; run:s [constraint = false];
+    calib_process:e -&gt; calib_placeholders:n;
+    calib_placeholders:s -&gt; post_process:e;
+    post_process:w -&gt; run:s [constraint = false];
+    pre_process -&gt; invis_1 [style = invis];
+    invis_1 -&gt; subprocess [style = invis];
+    calib_process -&gt; invis_2 [style = invis];
+    invis_2 -&gt; post_process [style = invis];
 }" class="graphviz" /></div>
 </div>
+<div class="section" id="calibration-sequences">
+<h2>Calibration sequences<a class="headerlink" href="#calibration-sequences" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="assumptions-py">
-<h2>assumptions.py<a class="headerlink" href="#assumptions-py" title="Permalink to this headline">¶</a></h2>
+<h3>assumptions.py<a class="headerlink" href="#assumptions-py" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">assumptions.py</span></code> should be a Python dictionary.</p>
 </div>
 <div class="section" id="calibration-scheme-py">
-<h2>calibration_scheme.py<a class="headerlink" href="#calibration-scheme-py" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">assumptions.py</span></code> should be a Python list. Each element of this list specifies a calibration to run.</p>
+<h3>calibration_scheme.py<a class="headerlink" href="#calibration-scheme-py" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">calibration_scheme.py</span></code> should be a Python list. Each element of this list specifies a calibration to run.</p>
 <p>Format:</p>
 <div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;calib_name_0&quot;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;calib_name_1&quot;</span><span class="p">,</span> <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;variant&quot;</span><span class="p">,</span>
-                                                <span class="s2">&quot;repl&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;PLACEHOLDER_A&quot;</span><span class="p">:</span> <span class="s2">&quot;value_A&quot;</span><span class="p">,</span>
-                                                         <span class="s2">&quot;PLACEHOLDER_B&quot;</span><span class="p">:</span> <span class="s2">&quot;value_B&quot;</span><span class="p">}}]},</span>
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;calib_name_2&quot;</span><span class="p">,</span> <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;variant_0&quot;</span><span class="p">,</span>
-                                                <span class="s2">&quot;repl&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;PLACEHOLDER_A&quot;</span><span class="p">:</span> <span class="s2">&quot;value_A_0&quot;</span><span class="p">,</span>
-                                                         <span class="s2">&quot;PLACEHOLDER_B&quot;</span><span class="p">:</span> <span class="s2">&quot;value_B_0&quot;</span><span class="p">}},</span>
-                                               <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;variant_1&quot;</span><span class="p">,</span>
-                                                <span class="s2">&quot;repl&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;PLACEHOLDER_0&quot;</span><span class="p">:</span> <span class="s2">&quot;value_A_1&quot;</span><span class="p">,</span>
-                                                         <span class="s2">&quot;PLACEHOLDER_1&quot;</span><span class="p">:</span> <span class="s2">&quot;value_B_1&quot;</span><span class="p">}}]}</span>
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;a_calibration&quot;</span><span class="p">},</span>
+
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;another_calibration&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span>                <span class="s2">&quot;variant_in_camel_case&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;A_SUBSTITUTION&quot;</span><span class="p">:</span>      <span class="s2">&quot;a_value&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;ANOTHER_SUBTITUTION&quot;</span><span class="p">:</span> <span class="s2">&quot;another_value&quot;</span><span class="p">}}</span>
 <span class="p">]</span>
 </pre></div>
 </div>
-<ul>
+<ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: the calibration name</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">substitutions</span></code>: a list of substitution groups, Python dictionaries with the following keys:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: the name of this substitution group</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">repl</span></code>: a dictionary of <code class="docutils literal notranslate"><span class="pre">&quot;PLACEHOLDER&quot;:</span> <span class="pre">&quot;value&quot;</span></code> pairs</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">substitutions</span></code>: an optional dictionary of substitutions; if present, <code class="docutils literal notranslate"><span class="pre">NAME</span></code> must be defined.</p></li>
 </ul>
-</div></blockquote>
-</li>
-</ul>
+</div>
+</div>
+<div class="section" id="calibrations">
+<h2>Calibrations<a class="headerlink" href="#calibrations" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="template-ipynb">
+<h3>template.ipynb<a class="headerlink" href="#template-ipynb" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="utils-py">
+<h3>utils.py<a class="headerlink" href="#utils-py" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Calibration</span></code> inherits from, and overrides, <code class="docutils literal notranslate"><span class="pre">DefaultCalibration</span></code>.</p>
+</div>
 </div>
 <div class="section" id="qualib">
 <h2>qualib/<a class="headerlink" href="#qualib" title="Permalink to this headline">¶</a></h2>
