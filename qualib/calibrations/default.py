@@ -23,9 +23,18 @@ class DefaultCalibration:
     <section> and <param> are alphanumeric strings ('a'-'z', 'A'-'Z', '0'-'9', '_')
     """
     def __init__(self, log, template, assumptions, calib_id, calib_name, sub_name, sub_repl, timestamp):
-        self.log = log
+        self.log         = log
+        self.template    = template
+        self.assumptions = assumptions
+        self.id          = calib_id
+        self.name        = calib_name
+        self.sub_name    = sub_name
+        self.sub_repl    = sub_repl
+        self.timestamp   = timestamp
+
         self.pre = ''.join([calib_name, '_'+sub_name if sub_name else '', ':'])
-        keys = re.findall(r'\$[a-zA-Z0-9_/]+', template, re.MULTILINE) # Placeholders
+
+        keys = re.findall(r'\$[a-zA-Z0-9_/]+', template, re.MULTILINE) # Placeholders in Exopy template
         
         # Handle substitutions
         self.log.info(f'{self.pre} Handling "qualib/calibrations/{calib_name}/{calib_name}_template.meas.ini" substitutions')
@@ -48,7 +57,6 @@ class DefaultCalibration:
                 val = str(assumptions[splt[0]])
             if key == '$filename':
                 val = f'{timestamp}_{calib_id:03d}_{calib_name}{"_"+sub_name if sub_name else ""}.h5'
-            #print(f'    {key} = {val}')
             template = template.replace(key, val)
             
         meas_path = f'qualib/calibrations/{calib_name}/{calib_name}.meas.ini'
@@ -58,14 +66,11 @@ class DefaultCalibration:
             
         self.keys = keys
         self.results = {}
-        self.calib_id = calib_id
-        self.calib_name = calib_name
         
     def pre_process(self, calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl):
         path = f'\'{assumptions["default_path"]}/{timestamp}_{calib_id:03d}_{calib_name}{"_"+sub_name if sub_name else ""}.h5\''
         #path = f'\'../test_meas/{calib_id:03d}_{calib_name}.h5\''
         header = f'{"="*70}\n[{calib_name}{"_"+sub_name if sub_name else ""} calibration output]\n'
-        print(header)
         
         self.log.info(f'{self.pre} Executing "qualib/calibrations/default_header.ipynb" code cells')
         for c in DefaultJupyterReport.header:

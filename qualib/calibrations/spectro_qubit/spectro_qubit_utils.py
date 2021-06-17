@@ -60,6 +60,9 @@ class Calibration(DefaultCalibration):
         self.calib_id = calib_id
         self.calib_name = calib_name
 
+    def pre_process():
+        pass
+
     def process(self, calib_name, calib_id, sub_name, sub_repl, report_filename, timestamp, assumptions):
         """
         Analyze and report the current calibration
@@ -76,4 +79,11 @@ class Calibration(DefaultCalibration):
             '§TYPE§': sub_repl['TYPE'],
             '§FREQ§': f'{self.results["freq"]:f}',
         }
-        self.post_process(calib_name, report_filename, cells, repl)
+        return cells
+
+    def post_process(calib_name, report_filename, cells):
+        repl = {
+            '§TYPE§': sub_repl['TYPE'],
+            '§FREQ§': f'{self.results["freq"]:f}',
+        }
+        super().post_process(calib_name, report_filename, cells)

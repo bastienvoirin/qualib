@@ -48,14 +48,21 @@ Flowchart
             calibration [
                 label = "Calibration.__init__()";
             ];
-            a_2 [
-                style = invis;
+            pre_process [
+                label = "Calibration.pre_process()";
             ];
             subprocess [
                 label = "subprocess.run()";
             ];
             calib_process [
                 label = "Calibration.process()";
+            ];
+            post_process [
+                label = "Calibration.post_process()";
+            ];
+            loop [
+                label = "Loop?";
+                shape = diamond;
             ];
         }
         subgraph level_3 {
@@ -67,15 +74,6 @@ Flowchart
                 label = "Handle placeholders\nin Exopy template";
                 shape = oval;
             ];
-            a_3 [
-                style = invis;
-            ];
-            pre_process [
-                label = "Calibration.pre_process()";
-            ];
-            post_process [
-                label = "Calibration.post_process()";
-            ];
         }
         run_all -> log_init;
         log_init -> load_calib_scheme;
@@ -86,15 +84,12 @@ Flowchart
         load_exopy_template -> calibration;
         calibration -> calib_init_substitutions;
         calib_init_substitutions -> calib_init_placeholders;
-        calib_init_placeholders:w -> subprocess:e;
+        calib_init_placeholders:w -> pre_process:e
+        pre_process -> subprocess;
         subprocess -> calib_process;
-        calib_process:e -> pre_process:w;
-        pre_process -> post_process;
-        post_process:w -> run:s [constraint = false];
-        calib_init_placeholders -> a_3 [style = invis];
-        a_3 -> pre_process [style = invis];
-        calibration -> a_2 [style = invis];
-        a_2 -> subprocess [style = invis];
+        calib_process -> post_process;
+        post_process -> loop;
+        loop:w -> run:s [constraint = false];
     }
 
 assumptions.py

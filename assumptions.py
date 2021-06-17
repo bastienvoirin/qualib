@@ -2,7 +2,7 @@
     'default_path': 'F:/data/Qnode Fock_stab 3/calibrations',
     'filename': 'FILENAME', # {calib_id}_{calib_name}.h5
     'qubit': {
-        'freq':                         4.44, # updated by [ramsey], [spectro_qubit]
+        'freq':                         4.4415, # updated by [ramsey], [spectro_qubit]
         'power':                          12,
         'conditional_pi_pulse_length':   700,
         'conditional_pi_pulse_amp':        0, # updated by [rabi]
@@ -63,13 +63,13 @@
     },
     'spectro_qubit': {
         'averaging':           5000,
-        'coarse_pulse_length': 1000,
-        'fine_pulse_length':   7000,
-        'coarse_pulse_amp':    0.01,
-        'fine_pulse_amp':      0.0005,
-        'coarse_sweep_width':  100,
-        'fine_sweep_width':    15,
-        'coarse_npoints':      101,
-        'fine_npoints':        101
+        'coarse_pulse_length': 1500,
+        'fine_pulse_length':   5000,
+        'coarse_pulse_amp':    0.0075,
+        'fine_pulse_amp':      0.00035,
+        'coarse_sweep_width':  75,
+        'fine_sweep_width':    25,
+        'coarse_npoints':      201,
+        'fine_npoints':        201
     }
 }
