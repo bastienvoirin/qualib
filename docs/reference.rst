@@ -4,6 +4,58 @@
 Reference
 ==================================
 
+Substitutions, placeholders and interfaces
+******************************************
+
+Substitutions
+----------------------------------
+
+A substitution is a placeholder which is are handled early, in ``Calibration.pre_process()``. Substitutions are used to define several variants of a given calibration. Substitutions can be found in:
+
+    * ``CALIBRATION_NAME_template.meas.ini`` (format: ``SUBSTITUTION``)
+    * ``template_CALIBRATION_NAME.ipynb`` (format: ``SUBSTITUTION``)
+
+A substitution can be:
+
+    * Implicit: hardcoded, "auto"
+    * Explicit: user-defined in ``calibration_scheme.py``, "user".
+
+.. note::
+    Special substitutions:
+    
+        * [auto] ``HDF5_FILE`` in ``template_CALIBRATION_NAME.ipynb``: absolute path to the HDF5 data file
+        * [user] ``NAME`` in ``calibration_scheme.py``: name of the substitutions group
+    
+Placeholders
+----------------------------------
+
+Placeholders can be found in:
+
+    * ``CALIBRATION_NAME_template.meas.ini`` (format: ``$parameter`` or ``$section/parameter``)
+    * ``template_CALIBRATION_NAME.ipynb`` (format: ``PLACEHOLDER``)
+    
+Placeholders are handled in ``Calibration.pre_process()``.
+        
+Interfaces
+----------------------------------
+
+An interface is a special Python variable defined in ``template_CALIBRATION_NAME.ipynb`` whose value is fetched and process by ``Calibration.process()`` (at ``CALIBRATION_NAME_utils.py``) and ``DefaultCalibration.process()`` (at ``calibrations/default.py``). Currently, there are 4 interfaces:
+
+.. list-table:: List of interfaces currently supported
+    :widths: 10 90
+    :header-rows: 1
+
+    *   - Interface
+        - Results
+    *   - ``_results``
+        - ``dict`` of ``name: value`` pairs summarizing the calibration results  
+    *   - ``_err``
+        - ``dict`` of ``error_message: condition_to_throw`` pairs defining custom runtime errors (for instance to detect whether a curve fit failed or not)
+    *   - ``_opt``
+        - ``list``, ``tuple``, or ``numpy.ndarray`` of optimized parameters, typically returned by ``scipy.optimize.curve_fit()``
+    *   - ``_cov``
+        - ``list``, ``tuple``, or ``numpy.ndarray`` of covariance arrays, typically returned by ``scipy.optimize.curve_fit()``
+        
 Flowchart
 **********************************
 
@@ -48,14 +100,21 @@ Flowchart
             calibration [
                 label = "Calibration.__init__()";
             ];
-            a_2 [
-                style = invis;
+            pre_process [
+                label = "Calibration.pre_process()";
             ];
             subprocess [
                 label = "subprocess.run()";
             ];
             calib_process [
                 label = "Calibration.process()";
+            ];
+            post_process [
+                label = "Calibration.post_process()";
+            ];
+            loop [
+                label = "Loop?";
+                shape = diamond;
             ];
         }
         subgraph level_3 {
@@ -67,15 +126,6 @@ Flowchart
                 label = "Handle placeholders\nin Exopy template";
                 shape = oval;
             ];
-            a_3 [
-                style = invis;
-            ];
-            pre_process [
-                label = "Calibration.pre_process()";
-            ];
-            post_process [
-                label = "Calibration.post_process()";
-            ];
         }
         run_all -> log_init;
         log_init -> load_calib_scheme;
@@ -86,15 +136,12 @@ Flowchart
         load_exopy_template -> calibration;
         calibration -> calib_init_substitutions;
         calib_init_substitutions -> calib_init_placeholders;
-        calib_init_placeholders:w -> subprocess:e;
+        calib_init_placeholders:w -> pre_process:e;
+        pre_process -> subprocess;
         subprocess -> calib_process;
-        calib_process:e -> pre_process:w;
-        pre_process -> post_process;
-        post_process:w -> run:s [constraint = false];
-        calib_init_placeholders -> a_3 [style = invis];
-        a_3 -> pre_process [style = invis];
-        calibration -> a_2 [style = invis];
-        a_2 -> subprocess [style = invis];
+        calib_process -> post_process;
+        post_process -> loop;
+        loop:w -> run:s [constraint = false];
     }
 
 assumptions.py

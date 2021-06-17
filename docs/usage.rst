@@ -59,22 +59,36 @@ Example:
 .. code-block:: py
     
     [
+        {"name": "spectro_ro",
+         "substitutions": {"NAME": "phase_only",
+                           "TYPE": "phase only"}},
+         
+        {"name": "spectro_ro",
+         "substitutions": {"NAME": "circle_fit",
+                           "TYPE": "circle fit"}},
+                           
+        {"name": "spectro_qubit"},
+        
         {"name": "rabi_probe"},
-        {"name": "rabi", "substitutions": [{"name": "uncond_pi2",
-                                            "repl": {"PULSE": "unconditional_pi2_pulse",
-                                                     "TYPE":  "unconditional pi/2 pulse"}},
-                                           {"name": "uncond_pi",
-                                            "repl": {"PULSE": "unconditional_pi_pulse",
-                                                     "TYPE":  "unconditional pi pulse"}},
-                                           {"name": "cond_pi",
-                                            "repl": {"PULSE": "conditional_pi_pulse",
-                                                     "TYPE":  "conditional pi pulse"}}]},
-        {"name": "t1_qubit"},
+        
+        {"name": "rabi",
+         "substitutions": {"NAME":  "uncond_pi2",
+                           "PULSE": "unconditional_pi2_pulse",
+                           "TYPE":  "unconditional pi/2 pulse"}},
+                           
+        {"name": "rabi",
+         "substitutions": {"NAME":  "uncond_pi",
+                           "PULSE": "unconditional_pi_pulse",
+                           "TYPE":  "unconditional pi pulse"}},
+                           
+        {"name": "rabi",
+         "substitutions": {"NAME":  "cond_pi",
+                           "PULSE": "conditional_pi_pulse",
+                           "TYPE":  "conditional pi pulse"}},
+                           
         {"name": "ramsey"},
-        {"name": "spectro_ro", "substitutions": [{"name": "phase_only",
-                                                  "repl": {"TYPE": "phase_only"}},
-                                                 {"name": "circle_fit",
-                                                  "repl": {"TYPE": "circle_fit"}}]}
+        
+        {"name": "t1_qubit"}
     ]
 
 Installation/usage
