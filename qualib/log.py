@@ -1,28 +1,28 @@
+import json
 import traceback
 from datetime import datetime, time
-import json
 
 class Log():
     def initialize(self, timestamp, max_label_len=5):
         self.path = f'logs/{timestamp}.log'
         self.max_label_len = max_label_len
         
-    def info(self, *args, **kwargs):
-        self.log('info', *args, **kwargs)
+    def info(self, prefix, *args, **kwargs):
+        self.log('info', prefix, *args, **kwargs)
         
-    def debug(self, *args, **kwargs):
-        self.log('debug', *args, **kwargs)
+    def debug(self, prefix, *args, **kwargs):
+        self.log('debug', prefix, *args, **kwargs)
         
-    def warn(self, *args, **kwargs):
-        self.log('warn', *args, **kwargs)
+    def warn(self, prefix, *args, **kwargs):
+        self.log('warn', prefix, *args, **kwargs)
         
-    def error(self, *args, **kwargs):
-        self.log('error', *args, **kwargs)
+    def error(self, prefix, *args, **kwargs):
+        self.log('error', prefix, *args, **kwargs)
         
     def exc(self):
         self.error(traceback.format_exc().splitlines())
-        
-    def log(self, label, *args, **kwargs):
+
+    def log(self, label, prefix, *args, **kwargs):
         if not args:
             return
         
@@ -35,7 +35,7 @@ class Log():
         assert hasattr(self, 'path') and hasattr(self, 'max_label_len'), 'Log() instances must be initialized'
         
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
-        pre = f'[{now}] [{label.upper()}]' + ' '*(self.max_label_len - len(label))
+        pre = f'[{now}] [{label.upper()}]' + ' '*(self.max_label_len - len(label)) + f'{" "+prefix if prefix else ""}'
         
         with open(self.path, 'a') as f:
             f.write(f'{pre} {lines.pop(0)}\n')
