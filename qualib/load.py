@@ -10,6 +10,12 @@ def load_(log, *args, **kwargs):
         raise
 
 def load_calibration_scheme(log, path):
+    """
+
+    :return:
+    :rtype: dict, str
+    :raise:
+    """
     log.info(f'Loading calibration sequence "{path}"')
     try:
         with open(path, encoding='utf8') as f:
@@ -21,6 +27,12 @@ def load_calibration_scheme(log, path):
         raise
     
 def load_exopy_template(log, calib, sub):
+    """
+
+    :return: Contents of the Exopy template for a given calibration name
+    :rtype: str
+    :raise:
+    """
     path = f'qualib/calibrations/{calib}/{calib}_template.meas.ini'
     log.info(f'{calib}{"_"+sub if sub else ""}: Loading Exopy measurements template "{path}"')
     try:
@@ -32,6 +44,12 @@ def load_exopy_template(log, calib, sub):
         raise
     
 def load_assumptions(log):
+    """
+
+    :return: Assumptions before any calibration
+    :rtype: dict
+    :raise:
+    """
     log.info(f'Loading "assumptions.py"')
     try:
         with open('assumptions.py', encoding='utf8') as f:
@@ -42,6 +60,12 @@ def load_assumptions(log):
         raise
 
 def load_utils(log, calib, sub):
+    """
+
+    :return: Calibration class from `CALIBRATION_NAME_utils.py`
+    :rtype: Calibration
+    :raise:
+    """
     path = f'qualib.calibrations.{calib}.{calib}_utils'
     log.info(f'{calib}{sub}: Importing Calibration class from "qualib/calibrations/{calib}/{calib}_utils.py"')
     try:

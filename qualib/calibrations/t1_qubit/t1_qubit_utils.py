@@ -2,12 +2,12 @@ from ..default import DefaultCalibration, DefaultJupyterReport
 import json
 
 class Calibration(DefaultCalibration): 
-    def process(self, calib_name, calib_id, sub_name, sub_repl, report_filename, timestamp, assumptions):
+    def process(self, calib_name, calib_id, subs_name, subs_misc, report_filename, timestamp, assumptions):
         """
         Analyze and report the current calibration
         """
         repl = {}
-        cells = self.pre_process(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl)
+        cells = self.pre_process(calib_name, calib_id, subs_name, subs_misc, timestamp, assumptions, repl)
         
         wait_max_limit = int(assumptions['t1_qubit']['num_t1'] * self.results['t1_qubit'])
         assumptions['t1_qubit']['wait_max'] = max(assumptions['t1_qubit']['wait_max'], wait_max_limit)

@@ -6,10 +6,10 @@ import numpy as np
 import scipy
 import difflib
 import sys
+import os
 
 def keep_cell(src):
-    """
-    Skip cell if the first line is '#if condition:' and 'condition' evaluates to False
+    """Handles conditional cells: skips a given cell if its first line is `#if condition:` and `condition` evaluates to False
     """
     first_line = src[0].strip()
     if first_line[:3] != '#if' or eval(first_line[4:-1]):
@@ -22,26 +22,26 @@ class DefaultCalibration:
     A placeholder must have the format '$param' or '$section/param' where
     <section> and <param> are alphanumeric strings ('a'-'z', 'A'-'Z', '0'-'9', '_')
     """
-    def __init__(self, log, template, assumptions, calib_id, calib_name, sub_name, sub_repl, timestamp):
+    def old___init__(self, log, template, assumptions, calib_id, calib_name, subs_name, subs_misc, timestamp):
         self.log         = log
         self.template    = template
         self.assumptions = assumptions
         self.id          = calib_id
         self.name        = calib_name
-        self.sub_name    = sub_name
-        self.sub_repl    = sub_repl
+        self.subs_name   = subs_name
+        self.subs_misc   = subs_misc
         self.timestamp   = timestamp
 
-        self.pre = ''.join([calib_name, '_'+sub_name if sub_name else '', ':'])
+        self.pre = ''.join([calib_name, '_'+subs_name if subs_name else '', ':'])
 
         keys = re.findall(r'\$[a-zA-Z0-9_/]+', template, re.MULTILINE) # Placeholders in Exopy template
         
         # Handle substitutions
         self.log.info(f'{self.pre} Handling "qualib/calibrations/{calib_name}/{calib_name}_template.meas.ini" substitutions')
         for i, key in enumerate(keys):
-            for src, dst in sub_repl.items():
+            for src, dst in subs_misc.items():
                 keys[i] = keys[i].replace(src, dst)
-        for src, dst in sub_repl.items():
+        for src, dst in subs_misc.items():
             template = template.replace(src, dst)
             
         # Handle placeholders
@@ -56,7 +56,7 @@ class DefaultCalibration:
             else: # $parameter
                 val = str(assumptions[splt[0]])
             if key == '$filename':
-                val = f'{timestamp}_{calib_id:03d}_{calib_name}{"_"+sub_name if sub_name else ""}.h5'
+                val = f'{timestamp}_{calib_id:03d}_{calib_name}{"_"+subs_name if subs_name else ""}.h5'
             template = template.replace(key, val)
             
         meas_path = f'qualib/calibrations/{calib_name}/{calib_name}.meas.ini'
@@ -67,13 +67,13 @@ class DefaultCalibration:
         self.keys = keys
         self.results = {}
         
-    def pre_process(self, calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl):
-        path = f'\'{assumptions["default_path"]}/{timestamp}_{calib_id:03d}_{calib_name}{"_"+sub_name if sub_name else ""}.h5\''
+    def old_pre_process(self, calib_name, calib_id, subs_name, subs_misc, timestamp, assumptions, repl):
+        path = f'\'{assumptions["default_path"]}/{timestamp}_{calib_id:03d}_{calib_name}{"_"+subs_name if subs_name else ""}.h5\''
         #path = f'\'../test_meas/{calib_id:03d}_{calib_name}.h5\''
-        header = f'{"="*70}\n[{calib_name}{"_"+sub_name if sub_name else ""} calibration output]\n'
+        header = f'{"="*70}\n[{calib_name}{"_"+subs_name if subs_name else ""} calibration output]\n'
         
         self.log.info(f'{self.pre} Executing "qualib/calibrations/default_header.ipynb" code cells')
-        for c in DefaultJupyterReport.header:
+        for c in Report.header:
             if c['cell_type'] == 'code':
                 code = '\n'.join(filter(lambda line: line[0] != '%', c['source'])) # Handle magic commands
                 exec(code, globals(), locals())
@@ -91,7 +91,7 @@ class DefaultCalibration:
             for cell in json.loads(cells)['cells']:
                 if cell['cell_type'] == 'code':
                     src = ''.join(cell['source']).replace('HDF5_PATH', path)
-                    for key, val in sub_repl.items():
+                    for key, val in subs_misc.items():
                         src = src.replace(f'§{key}§', f'\'{val}\'')
                         
                     # Handle conditional cells
@@ -137,7 +137,7 @@ class DefaultCalibration:
             cells['cells'] = [trim(cell) for cell in cells['cells'] if keep_cell(cell['source'])]
             return json.dumps(cells, indent=4, ensure_ascii=False)
     
-    def post_process(self, calib_name, report_filename, cells, repl):
+    def old_post_process(self, calib_name, report_filename, cells, repl):
         self.log.info(f'{self.pre} Handling post_process placeholders defined in "qualib/calibrations/{calib_name}/{calib_name}_utils.py"')
         self.log.info(self.log.json(repl))
         for key, val in repl.items():
@@ -151,87 +151,165 @@ class DefaultCalibration:
             with open(report_filename, 'w') as g:
                 g.write(report)
 
+
+    def __init__(self, log, report, calib_id, calib_name, subs_name, subs_misc):
+        """Handles substitutions
+
+        :param Log log:
+        :param Report report:
+        :param int calib_id:
+        :param str calib_name:
+        :param str subs_name:
+        :param dict subs_misc:
+        :return: None
+        """
+        return
+
+    def pre_process(self, log, report):
+        """Handles pre-placeholders
+
+        :param Log log:
+        :param Report report:
+        :return: None
+        """
+        return
+
+    def post_process(self, log, report, calib_name, mapping):
+        """Handles post-placeholders
+
+        :param Log log:
+        :param Report report:
+        :param str calib_name:
+        :param dict mapping: Dictionary of `'POST_PLACEHOLDER': value` pairs
+        :return: None
+        """
+        log.info(f'{self.pre} Handling post_process placeholders defined in "qualib/calibrations/{calib_name}/{calib_name}_utils.py"')
+        log.info(log.json(mapping))
+
+        for key, val in mapping.items():
+            for i, cell in enumerate(report.cells):
+                report.cells[i]['source'] = cell['source'].replace(key, val)
+
+        report.update()
+        return
+
 ######################################################################
 
-class DefaultJupyterReport:
+class Report:
     header = ''
-    import os 
     dir_path = os.path.dirname(os.path.realpath(__file__))
     with open('qualib/calibrations/default_header.ipynb') as f:
         header = json.loads(f.read())['cells']
 
-    def __init__(self):
-        self.header = DefaultJupyterReport.header
+    def __init__(self, filename, assumptions, calib_scheme_str):
+        """
+        
+        :param str filename: Report filename
+        :param dict assumptions: State of the assumptions before the calibrations
+        :param str calib_scheme_str: String representation of the calibration sequence
+        :return: self
+        """
+        self.header   = Report.header
         self.notebook = nbfv4.new_notebook()
-        self.cells = []
-    
-    def initialize(self, assumptions, calib_scheme_str):
+        self.filename = filename
+        self.cells    = []
+
         self.assumptions_before = json.dumps(assumptions, indent=4)
+
         self.add_md_cell('# Calibration sequence')
         self.add_py_cell(calib_scheme_str.strip()+';')
         self.add_md_cell('# Assumptions before calibration sequence')
         self.add_py_cell(self.assumptions_before+';')
         
         for cell in self.header:
-            if cell['cell_type'] == 'code':
+            if cell['cell_type'] == 'py':
                 self.add_py_cell(''.join(cell['source']))
-            elif cell['cell_type'] == 'markdown':
+            if cell['cell_type'] == 'md':
                 self.add_md_cell(''.join(cell['source']))
+
+        self.update()
+
+    def update(self):
+        """Overwrites `self.notebook` from the list of cells `self.cells`
+
+        :return: self
+        """
+        self.notebook = nbfv4.new_notebook()
+
+        for cell in self.cells:
+            if cell['type'] == 'md':
+                nbfv4.new_markdown_cell(cell['source'])
+            if cell['type'] == 'py':
+                nbfv4.new_code_cell(cell['source'])
+
+        with open(self.filename, 'w') as f:
+            nbf.write(self.notebook, f)
+        return self
         
-    def finish(self, report_filename, assumptions):
+    def add_results(self, assumptions):
+        """Reports results from the previous calibration
+        
+        :return: self
+        """
         self.assumptions_after = json.dumps(assumptions, indent=4)
-        before = self.assumptions_before.splitlines(keepends=True)
-        after = self.assumptions_after.splitlines(keepends=True)
-        diff = difflib.Differ().compare(before, after)
-        diff = [line for line in diff if line[0] in ['+', '-']]
+        befr = self.assumptions_before.splitlines(keepends=True)
+        aftr = self.assumptions_after.splitlines(keepends=True)
+        diff = [line for line in difflib.Differ().compare(befr, aftr) if line[0] != ' ']
         
-        with open(report_filename, 'r') as f:
-            report = json.loads(f.read())
-            for i, cell in enumerate(report['cells']):
-                if cell['cell_type'] == 'markdown' and cell['source'][0] == '# Assumptions before calibration sequence':
-                    cls = DefaultJupyterReport
-                    cls.ins_md_cell(report, i+2, ['# Assumptions after calibration sequence'])
-                    cls.ins_py_cell(report, i+3, (self.assumptions_after+';').splitlines(keepends=True))
-                    cls.ins_md_cell(report, i+4, ['# Assumptions diff\n\n', '```diff\n', *diff, '```'])
-                    break
-            with open(report_filename, 'w') as g:
-                g.write(json.dumps(report, indent=4))
-    
-    # Append Markdown cell
-    def add_md_cell(self, text):
-        cell = nbfv4.new_markdown_cell(text)
-        self.cells.append(cell)
-        self.notebook['cells'] = self.cells
-        return self
-    
-    # Append Python cell
-    def add_py_cell(self, code):
-        cell = nbfv4.new_code_cell(code)
-        self.cells.append(cell)
-        self.notebook['cells'] = self.cells
-        return self
-    
-    # Insert Markdown cell
-    @classmethod
-    def ins_md_cell(cls, notebook, pos, src):
-        notebook['cells'].insert(pos, {
+        # Add assumptions after and assumptions diff
+        for i, cell in enumerate(self.cells):
+            if cell['type'] == 'md' and cell['source'][0] == '# Assumptions before calibration sequence':
+                self.ins_md_cell(i+2, ['# Assumptions after calibration sequence'])
+                self.ins_py_cell(i+3, (self.assumptions_after+';').splitlines(keepends=True))
+                self.ins_md_cell(i+4, ['# Assumptions diff\n\n', '```diff\n', *diff, '```'])
+                break
+
+        return self.write()
+
+    def add_md_cell(self, src):
+        """Appends a Markdown cell
+
+        :param str source: Raw content of the Markdown cell
+        :return: self
+        """
+        self.cells.append({'type': 'md', 'source': src})
+        return self.update()
+
+    def add_py_cell(self, src):
+        """Appends a Python cell
+        
+        :param str source: Raw content of the Python cell
+        :return: self
+        """
+        self.cells.append({'type': 'py', 'source': src})
+        return self.update()
+
+    def ins_md_cell(self, pos, src):
+        """Inserts a Markdown cell
+        
+        :param int pos: Position of the new Markdown cell
+        :param str src: Source code of the new Markdown cell
+        :return: self
+        """
+        self.cells.insert(pos, {
             'cell_type': 'markdown',
             'metadata':  {},
             'source':    src
         })
-    
-    # Insert Python cell
-    @classmethod
-    def ins_py_cell(cls, notebook, pos, src):
-        notebook['cells'].insert(pos, {
+        return self.update()
+
+    def ins_py_cell(self, pos, src):
+        """Inserts a Python cell
+        
+        :param int pos: Position of the new Python cell
+        :param str src: Source code of the new Python cell
+        :return: self
+        """
+        self.cells.insert(pos, {
             'cell_type':       'code',
             'execution_count': None,
             'metadata':        {},
             'outputs':         [],
             'source':          src
         })
-    
-    # Save as {filename}
-    def create(self, filename):
-        with open(filename, 'w') as f:
-            nbf.write(self.notebook, f)
+        return self.update()

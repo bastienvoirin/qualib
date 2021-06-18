@@ -2,7 +2,7 @@
     'default_path': 'F:/data/Qnode Fock_stab 3/calibrations',
     'filename': 'FILENAME', # {calib_id}_{calib_name}.h5
     'qubit': {
-        'freq':                         4.4415, # updated by [ramsey], [spectro_qubit]
+        'freq':                        4.441, # updated by [ramsey], [spectro_qubit]
         'power':                          12,
         'conditional_pi_pulse_length':   700,
         'conditional_pi_pulse_amp':        0, # updated by [rabi]

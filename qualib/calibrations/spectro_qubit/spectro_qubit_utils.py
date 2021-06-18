@@ -3,24 +3,24 @@ import json
 import re
 
 class Calibration(DefaultCalibration):
-    def __init__(self, log, template, assumptions, calib_id, calib_name, sub_name, sub_repl, timestamp):
+    def __init__(self, log, template, assumptions, calib_id, calib_name, subs_name, subs_misc, timestamp):
         self.log = log
-        self.pre = ''.join([calib_name, '_'+sub_name if sub_name else '', ':'])
+        self.pre = ''.join([calib_name, '_'+subs_name if subs_name else '', ':'])
         keys = re.findall(r'\$[a-zA-Z0-9_/]+', template, re.MULTILINE) # Placeholders
         
         # Handle substitutions
         self.log.info(f'{self.pre} Handling "qualib/calibrations/{calib_name}/{calib_name}_template.meas.ini" substitutions')
         for i, key in enumerate(keys):
-            for src, dst in sub_repl.items():
+            for src, dst in subs_misc.items():
                 keys[i] = keys[i].replace(src, dst)
-        for src, dst in sub_repl.items():
+        for src, dst in subs_misc.items():
             template = template.replace(src, dst)
         
         ####################################
         # Calibration-specific
 
-        sweep_width = assumptions['spectro_qubit'][f'{sub_repl["TYPE"]}_sweep_width']
-        sweep_npoints = assumptions['spectro_qubit'][f'{sub_repl["TYPE"]}_npoints']
+        sweep_width = assumptions['spectro_qubit'][f'{subs_misc["TYPE"]}_sweep_width']
+        sweep_npoints = assumptions['spectro_qubit'][f'{subs_misc["TYPE"]}_npoints']
         new_keys = []
         for key in keys:
             if 'SWEEP_STEP' in key:
@@ -46,7 +46,7 @@ class Calibration(DefaultCalibration):
             else: # $parameter
                 val = str(assumptions[splt[0]])
             if key == '$filename':
-                val = f'{timestamp}_{calib_id:03d}_{calib_name}{"_"+sub_name if sub_name else ""}.h5'
+                val = f'{timestamp}_{calib_id:03d}_{calib_name}{"_"+subs_name if subs_name else ""}.h5'
             #print(f'    {key} = {val}')
             template = template.replace(key, val)
             
@@ -63,27 +63,27 @@ class Calibration(DefaultCalibration):
     def pre_process():
         pass
 
-    def process(self, calib_name, calib_id, sub_name, sub_repl, report_filename, timestamp, assumptions):
+    def process(self, calib_name, calib_id, subs_name, subs_misc, report_filename, timestamp, assumptions):
         """
         Analyze and report the current calibration
         """
         repl = {
-            'PULSE_LENGTH': str(assumptions['spectro_qubit'][f'{sub_name}_pulse_length']),
-            'PULSE_AMP': str(assumptions['spectro_qubit'][f'{sub_name}_pulse_amp'])
+            'PULSE_LENGTH': str(assumptions['spectro_qubit'][f'{subs_name}_pulse_length']),
+            'PULSE_AMP': str(assumptions['spectro_qubit'][f'{subs_name}_pulse_amp'])
         }
-        cells = self.pre_process(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl)
+        cells = self.pre_process(calib_name, calib_id, subs_name, subs_misc, timestamp, assumptions, repl)
         
         assumptions['qubit']['freq'] = self.results['freq']
         
         repl = {
-            '§TYPE§': sub_repl['TYPE'],
+            '§TYPE§': subs_misc['TYPE'],
             '§FREQ§': f'{self.results["freq"]:f}',
         }
         return cells
 
     def post_process(calib_name, report_filename, cells):
         repl = {
-            '§TYPE§': sub_repl['TYPE'],
+            '§TYPE§': subs_misc['TYPE'],
             '§FREQ§': f'{self.results["freq"]:f}',
         }
         super().post_process(calib_name, report_filename, cells)

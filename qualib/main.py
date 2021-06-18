@@ -3,46 +3,45 @@ import sys
 import json
 import traceback
 import subprocess
+
 from pathlib import Path
 from datetime import datetime, time
 from .load import load_calibration_scheme, load_assumptions, load_exopy_template, load_utils
 from .log import Log
-from .calibrations.default import DefaultJupyterReport
+from .calibrations.default import Report
 
 class Qualib:
-    """
-    Wrapper supclass
-    """
-    def run(self, calib_id, calib_name, sub_name, sub_repl, report_filename, timestamp, assumptions):
-        """
-        Runs a single calibration with given assumptions and Exopy template
-        """
-        global log
+    """Wrapper supclass
 
-        full = f'{calib_name}_{sub_name}' if sub_name else calib_name
+    """
+    def run(self, log, report, assumptions, calib_id, calib_name, subs_name, subs_misc):
+        """Runs a single calibration with given assumptions and Exopy template
+
+        """
+        full = f'{calib_name}_{subs_name}' if subs_name else calib_name
         prefix = full+':'
 
-        log.info(prefix, f'Starting calibration with {len(sub_repl)} substitution{"s" if len(sub_repl) > 1 else ""}')
-        log.info(prefix, log.json(sub_repl))
+        log.info(prefix, f'Starting calibration with {len(subs_misc)} substitution{"s" if len(subs_misc) > 1 else ""}')
+        log.info(prefix, log.json(subs_misc))
         
         try:
-            Calibration = load_utils(log, calib_name, sub_name)
-            exopy_templ = load_exopy_template(log, calib_name, sub_name)
+            Calibration = load_utils(log, calib_name, subs_name)
+            exopy_templ = load_exopy_template(log, calib_name, subs_name)
             
             log.info(prefix, f'Generating "qualib/calibrations/{calib_name}/{calib_name}.meas.ini"')
-            calibration = Calibration(log, exopy_templ, assumptions, calib_id, calib_name, sub_name, sub_repl, timestamp)
+            calibration = Calibration(log, exopy_templ, assumptions, calib_id, calib_name, subs_name, subs_misc)
             
             log.info(prefix, 'Pre-processing')
-            calibration.pre_process(calib_name, calib_id, sub_name, sub_repl, report_filename, timestamp, assumptions)
+            calibration.pre_process(log, report, assumptions, calib_name, calib_id, subs_name, subs_misc)
 
             log.info(prefix, 'Calling Exopy')
             ini_path = str(Path(os.path.realpath(__file__)).parent / f'calibrations/{calib_name}/{calib_name}.meas.ini')
             subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path], capture_output=True, shell=True)
 
             log.info(prefix, 'Processing')
-            calibration.process(calib_name, calib_id, sub_name, sub_repl, report_filename, timestamp, assumptions)
+            calibration.process(log, report, assumptions, calib_name, calib_id, subs_name, subs_misc)
             log.info(prefix, 'Post-processing')
-            calibration.post_process(calib_name, calib_id, sub_name, sub_repl, report_filename, timestamp, assumptions)
+            calibration.post_process(log, report, assumptions, calib_name, calib_id, subs_name, subs_misc)
 
         except:
             log.error(prefix, f'{sys.exc_info()[1]}')
@@ -54,8 +53,10 @@ class Qualib:
         return
     
     def run_all(self, pkg_calib_scheme):
-        """
-        Runs a calibration scheme with given Exopy templates, assumptions and utils
+        """Runs a calibration scheme with given Exopy templates, assumptions and utils
+
+        :param str pkg_calib_scheme: Path to the Python file defining the calibration sequence to run
+        :type pkg_calib_scheme: str, optional
         """
         global missing_calib_scheme
         assert len(sys.argv) > 1 or pkg_calib_scheme, missing_calib_scheme
@@ -65,40 +66,23 @@ class Qualib:
         else:
             calib_scheme_path = pkg_calib_scheme
             
-        global log
-        now = datetime.now()
-        timestamp = now.strftime('%y_%m_%d_%H%M%S')
-        report_filename = f'reports/report_{timestamp}.ipynb'
-        report = DefaultJupyterReport()
+        timestamp = datetime.now().strftime('%y_%m_%d_%H%M%S')
+
+        log = Log()
         log.initialize(timestamp)
 
-        calib_id = 0
         calib_scheme, calib_scheme_str = load_calibration_scheme(log, calib_scheme_path)
-        
         assumptions = load_assumptions(log)
-        
-        log.info('', f'Initializing "reports/report_{timestamp}.ipynb"')
-        report.initialize(assumptions, calib_scheme_str)
 
-        log.info('', f'Creating "reports/report_{timestamp}.ipynb"')
-        report.create(report_filename)
-        
-        print()
-        for calib in calib_scheme:
-            if 'substitutions' in calib:
-                for subs in calib['substitutions']:
-                    sub_name = subs['name']
-                    sub_repl = subs['repl']
-                    calib_id += 1
-                    self.run(calib_id, calib['name'], sub_name, sub_repl, report_filename, timestamp, assumptions)
-                    report.finish(report_filename, assumptions)
-                    print()
-            else:
-                calib_id += 1
-                self.run(calib_id, calib['name'], None, {}, report_filename, timestamp, assumptions)
-                report.finish(report_filename, assumptions)
-                print()
-                
+        log.info('', f'Initializing "reports/report_{timestamp}.ipynb"')
+        report = Report(f'reports/report_{timestamp}.ipynb', assumptions, calib_scheme_str)
+
+        log.info('', 'Starting calibration sequence')
+
+        for calib_id, calib in enumerate(calib_scheme, start=1):
+            self.run(log, report, assumptions, calib_id, calib['name'], calib.get('substitutions') or {})
+            print()
+
         log.info('', 'Done')
         return
     
@@ -114,7 +98,6 @@ Package usage:
     qualib = Qualib()
     qualib.run_all('calibration_scheme.py')'''
 
-log = Log()
 if __name__ == '__main__':
     qualib = Qualib()
-    qualib.run_all('')
+    qualib.run_all()

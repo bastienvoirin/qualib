@@ -2,11 +2,11 @@ from ..default import DefaultCalibration, DefaultJupyterReport
 import json
 
 class Calibration(DefaultCalibration): 
-    def pre_process(self, calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions):
-        repl = {'§TYPE§': sub_repl['TYPE']}
-        self.cells = super().pre_process(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl)
+    def pre_process(self, calib_name, calib_id, subs_name, subs_misc, timestamp, assumptions):
+        repl = {'§TYPE§': subs_misc['TYPE']}
+        self.cells = super().pre_process(calib_name, calib_id, subs_name, subs_misc, timestamp, assumptions, repl)
 
-    def process(self, calib_name, calib_id, sub_name, sub_repl, report_filename, timestamp, assumptions):
+    def process(self, calib_name, calib_id, subs_name, subs_misc, report_filename, timestamp, assumptions):
         assumptions['readout']['freq'] = self.results['freq']
         return calib_name, report_filename
 

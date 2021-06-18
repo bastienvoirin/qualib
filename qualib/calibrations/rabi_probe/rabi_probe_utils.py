@@ -2,12 +2,12 @@ from ..default import DefaultCalibration, DefaultJupyterReport
 import json
 
 class Calibration(DefaultCalibration):  
-    def process(self, calib_name, calib_id, sub_name, sub_repl, report_filename, timestamp, assumptions):
+    def process(self, calib_name, calib_id, subs_name, subs_misc, report_filename, timestamp, assumptions):
         """
         Analyze and report the current calibration
         """
         repl = {}
-        cells = self.pre_process(calib_name, calib_id, sub_name, sub_repl, timestamp, assumptions, repl)
+        cells = self.pre_process(calib_name, calib_id, subs_name, subs_misc, timestamp, assumptions, repl)
         
         assumptions['rabi']['npoints'] = int(assumptions['rabi_probe']['npoints'] * 10 / self.results['samples_per_period'])
         assumptions['rabi']['unconditional_pi2_pulse_linearity_amp_limit'] = self.results['linearity_amp_limit']
