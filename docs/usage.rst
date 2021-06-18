@@ -1,3 +1,5 @@
+.. sectnum::
+
 User guide
 ==================================
 
@@ -100,7 +102,7 @@ CLI/module usage
 * First, get Qualib locally from https://github.com/bastienvoirin/qualib.git
 * Then, open a terminal and run
 
-.. code-block:: console
+.. code-block:: sh
     
     python -m qualib.main calibration_scheme.py
 
@@ -108,7 +110,7 @@ CLI/module usage
 Package usage
 ----------------------------------
 
-.. code-block:: console
+.. code-block:: sh
     
     pip install qualib
 
