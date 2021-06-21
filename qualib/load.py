@@ -15,13 +15,13 @@ def load_calibration_scheme(log, path):
         log.exc()
         raise
     
-def load_exopy_template(log, calib, sub):
+def load_exopy_template(log, calib, subs_name):
     """
     Returns:
         `str`: Contents of the Exopy template for a given calibration name.
     """
     path = f'qualib/calibrations/{calib}/{calib}_template.meas.ini'
-    log.info(f'{calib}{"_"+sub if sub else ""}: Loading Exopy measurements template "{path}"')
+    log.info(f'{calib}{"_"+subs_name if subs_name else ""}: Loading Exopy measurements template "{path}"')
     try:
         with open(path, encoding='utf8') as f:
             return f.read()

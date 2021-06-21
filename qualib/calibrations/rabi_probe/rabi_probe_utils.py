@@ -1,4 +1,4 @@
-from ..default import DefaultCalibration, DefaultJupyterReport
+from ..default import DefaultCalibration, Report
 import json
 
 class Calibration(DefaultCalibration):  

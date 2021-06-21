@@ -11,13 +11,13 @@
     #  "substitutions": {"name":  "cond_pi",
     #                    "PULSE": "conditional_pi_pulse",
     #                    "TYPE":  "conditional pi pulse"}},
-    {"name": "spectro_qubit",
-     "substitutions": {"name": "coarse",
-                       "TYPE": "coarse"}},
+    # {"name": "spectro_qubit",
+    #  "substitutions": {"name": "coarse",
+    #                    "TYPE": "coarse"}},
     # {"name": "spectro_qubit",
     #  "substitutions": {"name": "fine",
     #                    "TYPE": "fine"}},
-    # {"name": "spectro_ro",
-    #  "substitutions": {"name": "phase_only",
-    #                    "TYPE": "phase_only"}}
+    {"name": "spectro_ro",
+     "substitutions": {"name": "phase_only",
+                       "TYPE": "phase_only"}}
 ]
