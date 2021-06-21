@@ -11,12 +11,22 @@ from .log import Log
 from .calibrations.default import Report
 
 class Qualib:
-    """Wrapper supclass
+    """Wrapper supclass.
 
     """
     def run(self, log, report, assumptions, calib_id, calib_name, subs_name, subs_misc):
-        """Runs a single calibration with given assumptions and Exopy template
-
+        """Runs a single calibration with given assumptions and Exopy template.
+        
+        Args:
+            log (Log):
+            report (Report):
+            calibration_id (int): A natural number giving the rank of the calibration to run.
+            calibration_name (str): The name of the calibration to run.
+            substitutions (dict): The dictionary of substitutions.
+            assumptions (dict): The current state of the assumptions (updated after each calibration).
+        
+        Returns:
+            `None`
         """
         full = f'{calib_name}_{subs_name}' if subs_name else calib_name
         prefix = full+':'
@@ -53,10 +63,16 @@ class Qualib:
         return
     
     def run_all(self, pkg_calib_scheme):
-        """Runs a calibration scheme with given Exopy templates, assumptions and utils
-
-        :param str pkg_calib_scheme: Path to the Python file defining the calibration sequence to run
-        :type pkg_calib_scheme: str, optional
+        """Runs a calibration sequence whose path is either passed:
+        
+            * As ``pkg_calib_scheme`` --- package usage: ``Qualib().run_all('calibration_scheme.py')``
+            * Or in ``sys.argv`` --- CLI/module usage: ``python qualib.main calibration_scheme.py``.
+        
+        Args:
+            pkg_calib_scheme (`str`, optional): path to the Python file defining the calibration sequence to run.
+        
+        Returns:
+            `None`
         """
         global missing_calib_scheme
         assert len(sys.argv) > 1 or pkg_calib_scheme, missing_calib_scheme

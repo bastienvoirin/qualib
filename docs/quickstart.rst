@@ -1,6 +1,4 @@
-.. sectnum::
-
-User guide
+Getting started
 ==================================
 
 Defining a calibration
@@ -120,3 +118,4 @@ Package usage
     
     qualib = Qualib()
     qualib.run_all('calibration_scheme.py')
+

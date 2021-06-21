@@ -1,0 +1,820 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>2. User guide &mdash; Qualib  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="3. Reference" href="reference.html" />
+    <link rel="prev" title="1. Getting started" href="quickstart.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Qualib
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">1. Getting started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. User guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#flowchart">2.1. Flowchart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#substitutions-placeholders-and-interfaces">2.2. Substitutions, placeholders and interfaces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#substitutions">2.2.1. Substitutions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pre-placeholders">2.2.2. Pre-placeholders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#post-placeholders">2.2.3. Post-placeholders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#interfaces">2.2.4. Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#calibration-sequences">2.3. Calibration sequences</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#assumptions-py">2.3.1. assumptions.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calibration-scheme-py">2.3.2. calibration_scheme.py</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#calibrations">2.4. Calibrations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#template-ipynb">2.4.1. template.ipynb</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#typical-template-ipynb">2.4.1.1. Typical <code class="docutils literal notranslate"><span class="pre">template.ipynb</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#conditional-code-cells">2.4.1.2. Conditional code cells</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">3. Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Qualib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><span class="section-number">2. </span>User guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/user_guide.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="user-guide">
+<h1><span class="section-number">2. </span>User guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="flowchart">
+<h2><span class="section-number">2.1. </span>Flowchart<a class="headerlink" href="#flowchart" title="Permalink to this headline">¶</a></h2>
+<div align="center" class="align-center"><div class="graphviz"><object data="_images/graphviz-05ad81d2ec164bd38ad49e296934222b48e718e7.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph G {
+    rank = same;
+    rankdir = LR;
+    splines = true;
+    esep = 1;
+    node [
+        shape = rect;
+        fontname = &quot;monospace&quot;;
+    ];
+    subgraph level_0 {
+        run_all [
+            label = &quot;Qualib.run_all()&quot;;
+        ];
+    }
+    subgraph level_1 {
+        log_init [
+            label = &quot;Log.initialize()&quot;;
+        ];
+        report_init [
+            label = &quot;Report.__init__()&quot;;
+        ];
+        load_calib_scheme [
+            label = &quot;load_calibration_scheme()&quot;;
+        ];
+        load_assumptions [
+            label = &quot;load_assumptions()&quot;;
+        ];
+        run [
+            label = &quot;Qualib.run()&quot;;
+        ];
+    }
+    subgraph level_2 {
+        load_utils [
+            label = &quot;load_utils()&quot;;
+        ];
+        load_exopy_template [
+            label = &quot;load_exopy_template()&quot;;
+        ];
+        load_ipynb_template [
+            label = &quot;load_ipynb_template()&quot;;
+        ];
+        calib_init [
+            label = &quot;Calibration.__init__()&quot;;
+        ];
+        calib_handle_substitutions [
+            label = &quot;Calibration.handle_substitutions()&quot;;
+            peripheries = 2;
+        ];
+        pre_process [
+            label = &quot;Calibration.pre_process()&quot;;
+            peripheries = 2;
+        ];
+        report_add_calibration [
+            label = &quot;Report.add_calibration()&quot;;
+        ];
+        subprocess [
+            label = &quot;subprocess.run()&quot;;
+        ];
+        process [
+            label = &quot;Calibration.process()&quot;;
+            peripheries = 2;
+        ];
+        post_process [
+            label = &quot;Calibration.post_process()&quot;;
+            peripheries = 2;
+        ];
+        report_add_results [
+            label = &quot;Report.add_results()&quot;;
+        ];
+    }
+    subgraph level_3 {
+        handle_substitutions [
+            label = &quot;Handle substitutions&quot;;
+            shape = plaintext;
+            fontname = &quot;sans-serif&quot;;
+        ];
+        handle_pre_placeholders [
+            label = &quot;Handle pre-placeholders&quot;;
+            shape = plaintext;
+            fontname = &quot;sans-serif&quot;;
+        ];
+        handle_results [
+            label = &quot;Handle interfaces\nUpdate assumptions&quot;;
+            shape = plaintext;
+            fontname = &quot;sans-serif&quot;;
+        ];
+        handle_post_placeholders [
+            label = &quot;Handle post-placeholders&quot;;
+            shape = plaintext;
+            fontname = &quot;sans-serif&quot;;
+        ];
+        report_add_results_desc [
+            label = &quot;Update assumptions cells&quot;;
+            shape = plaintext;
+            fontname = &quot;sans-serif&quot;;
+        ];
+    }
+    run_all -&gt; log_init;
+    log_init -&gt; report_init;
+    report_init -&gt; load_calib_scheme;
+    load_calib_scheme -&gt; load_assumptions;
+    load_assumptions -&gt; run;
+    run -&gt; load_utils;
+    load_utils -&gt; load_exopy_template;
+    load_exopy_template -&gt; load_ipynb_template;
+    load_ipynb_template -&gt; calib_init;
+    calib_init -&gt; calib_handle_substitutions;
+    calib_handle_substitutions -&gt; handle_substitutions [style = invis];
+    calib_handle_substitutions -&gt; pre_process;
+    pre_process -&gt; handle_pre_placeholders [style = invis];
+    pre_process -&gt; report_add_calibration;
+    report_add_calibration -&gt; subprocess;
+    subprocess -&gt; process;
+    process -&gt; handle_results [style = invis];
+    process -&gt; post_process;
+    post_process -&gt; handle_post_placeholders [style = invis];
+    post_process -&gt; report_add_results;
+    report_add_results -&gt; report_add_results_desc [style = invis];
+    report_add_results:w -&gt; run:s [constraint = false];
+}</p></object></div>
+</div>
+</div>
+<div class="section" id="substitutions-placeholders-and-interfaces">
+<h2><span class="section-number">2.2. </span>Substitutions, placeholders and interfaces<a class="headerlink" href="#substitutions-placeholders-and-interfaces" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="substitutions">
+<h3><span class="section-number">2.2.1. </span>Substitutions<a class="headerlink" href="#substitutions" title="Permalink to this headline">¶</a></h3>
+<p>A substitution is a mapping handled in <code class="xref py py-meth docutils literal notranslate"><span class="pre">Calibration.handle_substitutions()</span></code>, before any placeholder. Substitutions are typically used to define several variants of a given calibration. Substitutions can be found in:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CALIBRATION_NAME_template.meas.ini</span></code> (format: <code class="docutils literal notranslate"><span class="pre">SUBSTITUTION</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code> (format: <code class="docutils literal notranslate"><span class="pre">SUBSTITUTION</span></code>)</p></li>
+</ul>
+</div></blockquote>
+<p>A substitution can be:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Implicit: hardcoded, “auto”</p></li>
+<li><p>Explicit: user-defined in <code class="docutils literal notranslate"><span class="pre">calibration_scheme.py</span></code>, “user”.</p></li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Special substitutions:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>[auto] <code class="docutils literal notranslate"><span class="pre">HDF5_PATH</span></code> in <code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code>: absolute path to the HDF5 data file; replaced during <code class="docutils literal notranslate"><span class="pre">DefaultCalibration.pre_process()</span></code> with <code class="docutils literal notranslate"><span class="pre">default_path</span></code> (defined in <code class="docutils literal notranslate"><span class="pre">assumptions.py</span></code>) and a timestamp.</p></li>
+<li><p>[user] <code class="docutils literal notranslate"><span class="pre">NAME</span></code> in <code class="docutils literal notranslate"><span class="pre">calibration_scheme.py</span></code>: name of the substitutions group, in <em>camel_case</em>.</p></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="pre-placeholders">
+<h3><span class="section-number">2.2.2. </span>Pre-placeholders<a class="headerlink" href="#pre-placeholders" title="Permalink to this headline">¶</a></h3>
+<p>Pre-placeholders can be found in:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CALIBRATION_NAME_template.meas.ini</span></code> (format: <code class="docutils literal notranslate"><span class="pre">$parameter</span></code> or <code class="docutils literal notranslate"><span class="pre">$section/parameter</span></code>) where <code class="docutils literal notranslate"><span class="pre">section</span></code> and <code class="docutils literal notranslate"><span class="pre">parameter</span></code> are alphanumeric strings (<code class="docutils literal notranslate"><span class="pre">a</span></code>-<code class="docutils literal notranslate"><span class="pre">z</span></code>, <code class="docutils literal notranslate"><span class="pre">A</span></code>-<code class="docutils literal notranslate"><span class="pre">Z</span></code>, <code class="docutils literal notranslate"><span class="pre">0</span></code>-<code class="docutils literal notranslate"><span class="pre">9</span></code>, <code class="docutils literal notranslate"><span class="pre">_</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code> (format: <code class="docutils literal notranslate"><span class="pre">PRE_PLACEHOLDER</span></code>)</p></li>
+</ul>
+</div></blockquote>
+<p>Pre-placeholders are handled in <code class="docutils literal notranslate"><span class="pre">Calibration.pre_process()</span></code>.</p>
+</div>
+<div class="section" id="post-placeholders">
+<h3><span class="section-number">2.2.3. </span>Post-placeholders<a class="headerlink" href="#post-placeholders" title="Permalink to this headline">¶</a></h3>
+<p>Post-placeholders can be found in:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code> (format: <code class="docutils literal notranslate"><span class="pre">$POST_PLACEHOLDER$</span></code>)</p></li>
+</ul>
+</div></blockquote>
+<p>Post-placeholders are handled in <code class="docutils literal notranslate"><span class="pre">Calibration.post_process()</span></code>.</p>
+</div>
+<div class="section" id="interfaces">
+<h3><span class="section-number">2.2.4. </span>Interfaces<a class="headerlink" href="#interfaces" title="Permalink to this headline">¶</a></h3>
+<p>An interface is a special Python variable defined in <code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code> whose value is fetched and processed by <code class="docutils literal notranslate"><span class="pre">Calibration.process()</span></code> (at <code class="docutils literal notranslate"><span class="pre">CALIBRATION_NAME_utils.py</span></code>) and/or <code class="docutils literal notranslate"><span class="pre">DefaultCalibration.process()</span></code> (at <code class="docutils literal notranslate"><span class="pre">calibrations/default.py</span></code>). Currently, there are 4 interfaces:</p>
+<table class="colwidths-given docutils align-default" id="id1">
+<caption><span class="caption-text">List of interfaces currently supported</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Interface</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_results</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code> of <code class="docutils literal notranslate"><span class="pre">name:</span> <span class="pre">value</span></code> pairs summarizing the calibration results</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">_err</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dict</span></code> of <code class="docutils literal notranslate"><span class="pre">error_message:</span> <span class="pre">condition_to_throw</span></code> pairs defining custom runtime errors (for instance to detect whether a curve fit failed or not)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_opt</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">list</span></code>, <code class="docutils literal notranslate"><span class="pre">tuple</span></code>, or <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of optimized parameters, typically returned by <code class="docutils literal notranslate"><span class="pre">scipy.optimize.curve_fit()</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">_cov</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">list</span></code>, <code class="docutils literal notranslate"><span class="pre">tuple</span></code>, or <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of covariance arrays, typically returned by <code class="docutils literal notranslate"><span class="pre">scipy.optimize.curve_fit()</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="calibration-sequences">
+<h2><span class="section-number">2.3. </span>Calibration sequences<a class="headerlink" href="#calibration-sequences" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="assumptions-py">
+<h3><span class="section-number">2.3.1. </span>assumptions.py<a class="headerlink" href="#assumptions-py" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">assumptions.py</span></code> should be a Python dictionary or depth 1 or 2.</p>
+</div>
+<div class="section" id="calibration-scheme-py">
+<h3><span class="section-number">2.3.2. </span>calibration_scheme.py<a class="headerlink" href="#calibration-scheme-py" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">calibration_scheme.py</span></code> should be a Python list. Each element of this list specifies a calibration to run.</p>
+<p>Format:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;a_calibration&quot;</span><span class="p">},</span>
+
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;another_calibration&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span>                <span class="s2">&quot;variant_in_camel_case&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;A_SUBSTITUTION&quot;</span><span class="p">:</span>      <span class="s2">&quot;a_value&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;ANOTHER_SUBTITUTION&quot;</span><span class="p">:</span> <span class="s2">&quot;another_value&quot;</span><span class="p">}}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: the calibration name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">substitutions</span></code>: an optional dictionary of substitutions; if present, <code class="docutils literal notranslate"><span class="pre">NAME</span></code> must be defined.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="calibrations">
+<h2><span class="section-number">2.4. </span>Calibrations<a class="headerlink" href="#calibrations" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="template-ipynb">
+<h3><span class="section-number">2.4.1. </span>template.ipynb<a class="headerlink" href="#template-ipynb" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="typical-template-ipynb">
+<h4><span class="section-number">2.4.1.1. </span>Typical <code class="docutils literal notranslate"><span class="pre">template.ipynb</span></code><a class="headerlink" href="#typical-template-ipynb" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-md notranslate"><div class="highlight"><pre>
+<span></span><span class="gh"># Calibration name (SUBSTITUTION)</span>
+<span class="gu">## Result: $POST_PLACEHOLDER$ unit</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># load experimental data</span>
+<span class="n">file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">HDF5_PATH</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">swmr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">xdata</span> <span class="o">=</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;x&#39;</span><span class="p">][()]</span>
+<span class="n">ydata</span> <span class="o">=</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;y&#39;</span><span class="p">][()];</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># fit experimental data</span>
+<span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">curve_fit</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">guesses</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="sa">f</span><span class="s1">&#39;a, b, c = </span><span class="si">{</span><span class="n">popt</span><span class="si">}</span><span class="s1">&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># plot experimental data and curve fit(s)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="s1">&#39;.-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">function</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="o">*</span><span class="n">popt</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Fit: a = </span><span class="si">{</span><span class="n">popt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># optional interfaces: raises an exception when any(np.sqrt(np.diag(_cov)) &gt;= 0.05*_opt)</span>
+<span class="c1"># where np.sqrt(np.diag(_cov)) gives the standard deviation on the optimized parameters</span>
+<span class="n">_opt</span> <span class="o">=</span> <span class="n">popt</span>
+<span class="n">_cov</span> <span class="o">=</span> <span class="n">pcov</span>
+
+<span class="c1"># optional interface: raises an exception when a specific condition is met</span>
+<span class="n">_err</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Custom error&#39;</span><span class="p">,</span> <span class="n">_opt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">}</span>
+
+<span class="c1"># mandatory interface</span>
+<span class="n">_results</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">popt</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
+<span class="n">_results</span>
+</pre></div>
+</div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">This Jupyter notebook should be saved as <code class="docutils literal notranslate"><span class="pre">calib_name_template.ipynb</span></code> under <code class="docutils literal notranslate"><span class="pre">qualib/calibrations/calib_name</span></code>.</div>
+</div>
+</div>
+<div class="section" id="conditional-code-cells">
+<h4><span class="section-number">2.4.1.2. </span>Conditional code cells<a class="headerlink" href="#conditional-code-cells" title="Permalink to this headline">¶</a></h4>
+<p>One can specify under which condition(s) a given code cell is passed to the report generator. For instance, analysis code can be chosen from several options using a substitution. The first line of a conditional code cell is a commented <cite>if</cite> statement, for exemple:</p>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="reference.html" class="btn btn-neutral float-right" title="3. Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="1. Getting started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Bastien Voirin.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

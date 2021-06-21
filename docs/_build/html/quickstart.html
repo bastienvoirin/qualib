@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>1 User guide &mdash; Qualib  documentation</title>
+  <title>1. Getting started &mdash; Qualib  documentation</title>
   
 
   
@@ -40,7 +40,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="1 Developer guide" href="developing.html" />
+    <link rel="next" title="2. User guide" href="user_guide.html" />
     <link rel="prev" title="Welcome to Qualib’s documentation!" href="index.html" /> 
 </head>
 
@@ -88,23 +88,23 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#"><span class="sectnum">1</span> User guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#defining-a-calibration"><span class="sectnum">1.1</span> Defining a calibration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#exopy-template"><span class="sectnum">1.1.1</span> Exopy template</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#jupyter-notebook-template"><span class="sectnum">1.1.2</span> Jupyter notebook template</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#python-script"><span class="sectnum">1.1.3</span> Python script</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#defining-a-calibration">1.1. Defining a calibration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#exopy-template">1.1.1. Exopy template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jupyter-notebook-template">1.1.2. Jupyter notebook template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-script">1.1.3. Python script</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#defining-a-calibration-sequence"><span class="sectnum">1.2</span> Defining a calibration sequence</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installation-usage"><span class="sectnum">1.3</span> Installation/usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#cli-module-usage"><span class="sectnum">1.3.1</span> CLI/module usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#package-usage"><span class="sectnum">1.3.2</span> Package usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-a-calibration-sequence">1.2. Defining a calibration sequence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-usage">1.3. Installation/usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cli-module-usage">1.3.1. CLI/module usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#package-usage">1.3.2. Package usage</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="developing.html"><span class="sectnum">1</span> Developer guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reference.html"><span class="sectnum">1</span> Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">2. User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">3. Reference</a></li>
 </ul>
 
             
@@ -153,13 +153,13 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li><span class="sectnum">1</span> User guide</li>
+      <li><span class="section-number">1. </span>Getting started</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/usage.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -442,19 +442,19 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="user-guide">
-<h1><span class="sectnum">1</span> User guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="getting-started">
+<h1><span class="section-number">1. </span>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="defining-a-calibration">
-<h2><span class="sectnum">1.1</span> Defining a calibration<a class="headerlink" href="#defining-a-calibration" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">1.1. </span>Defining a calibration<a class="headerlink" href="#defining-a-calibration" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="exopy-template">
-<h3><span class="sectnum">1.1.1</span> Exopy template<a class="headerlink" href="#exopy-template" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">1.1.1. </span>Exopy template<a class="headerlink" href="#exopy-template" title="Permalink to this headline">¶</a></h3>
 <p>Typical usage:</p>
 <ul class="simple">
 <li><p>Set <code class="docutils literal notranslate"><span class="pre">default_path</span> <span class="pre">=</span> <span class="pre">$my_default_path</span></code> in <code class="docutils literal notranslate"><span class="pre">calib_name_template.meas.ini</span></code> and define <code class="docutils literal notranslate"><span class="pre">my_default_path</span></code> value in <code class="docutils literal notranslate"><span class="pre">assumptions.py</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="jupyter-notebook-template">
-<h3><span class="sectnum">1.1.2</span> Jupyter notebook template<a class="headerlink" href="#jupyter-notebook-template" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">1.1.2. </span>Jupyter notebook template<a class="headerlink" href="#jupyter-notebook-template" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -517,11 +517,11 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="section" id="python-script">
-<h3><span class="sectnum">1.1.3</span> Python script<a class="headerlink" href="#python-script" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">1.1.3. </span>Python script<a class="headerlink" href="#python-script" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 <div class="section" id="defining-a-calibration-sequence">
-<h2><span class="sectnum">1.2</span> Defining a calibration sequence<a class="headerlink" href="#defining-a-calibration-sequence" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">1.2. </span>Defining a calibration sequence<a class="headerlink" href="#defining-a-calibration-sequence" title="Permalink to this headline">¶</a></h2>
 <p>Example:</p>
 <div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;spectro_ro&quot;</span><span class="p">,</span>
@@ -559,9 +559,9 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="section" id="installation-usage">
-<h2><span class="sectnum">1.3</span> Installation/usage<a class="headerlink" href="#installation-usage" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">1.3. </span>Installation/usage<a class="headerlink" href="#installation-usage" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="cli-module-usage">
-<h3><span class="sectnum">1.3.1</span> CLI/module usage<a class="headerlink" href="#cli-module-usage" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">1.3.1. </span>CLI/module usage<a class="headerlink" href="#cli-module-usage" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>First, get Qualib locally from <a class="reference external" href="https://github.com/bastienvoirin/qualib.git">https://github.com/bastienvoirin/qualib.git</a></p></li>
 <li><p>Then, open a terminal and run</p></li>
@@ -571,7 +571,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="section" id="package-usage">
-<h3><span class="sectnum">1.3.2</span> Package usage<a class="headerlink" href="#package-usage" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">1.3.2. </span>Package usage<a class="headerlink" href="#package-usage" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip install qualib
 </pre></div>
 </div>
@@ -591,7 +591,7 @@ div.rendered_html tbody tr:hover {
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="developing.html" class="btn btn-neutral float-right" title="1 Developer guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="user_guide.html" class="btn btn-neutral float-right" title="2. User guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Qualib’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
