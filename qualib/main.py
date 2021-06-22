@@ -52,12 +52,9 @@ class Qualib:
             report.add_calibration(calibration)
 
             log.info(prefix, 'Calling Exopy')
-            """
             ini_path = str(Path(os.path.realpath(__file__)).parent / f'calibrations/{name}/{name}.meas.ini')
             subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path], capture_output=True, shell=True)
-            """
-            #subprocess.run(['jupyter', 'nbconvert', '--to', 'notebook', '--execute', report.filename])
-
+            
             log.info(prefix, 'Processing (handling interfaces and updating assumptions)')
             calibration.process(assumptions)
 

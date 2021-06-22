@@ -19,5 +19,8 @@
     #                    "TYPE": "fine"}},
     {"name": "spectro_ro",
      "substitutions": {"NAME": "phase_only",
-                       "TYPE": "phase only"}}
+                       "TYPE": "phase only"}},
+    {"name": "spectro_ro",
+     "substitutions": {"NAME": "circle_fit",
+                       "TYPE": "circle fit"}}
 ]

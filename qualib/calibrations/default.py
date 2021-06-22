@@ -192,8 +192,11 @@ class DefaultCalibration:
         self.log.info(self.pre, self.log.json(mapping))
 
         for key, val in mapping.items():
-            for i, cell in enumerate(self.report.cells):
-                self.report.cells[i]['source'] = cell['source'].replace(key, val)
+            for i in range(len(self.report.cells)):
+                src = self.report.cells[i]['source']
+                if type(src) == list:
+                    src = '\n'.join(src)
+                self.report.cells[i]['source'] = src.replace(key, val)
 
         self.report.update()
 
@@ -237,7 +240,7 @@ class Report:
         self.cell_aftr = len(self.cells)
         self.add_py_cell('')
         self.cell_diff = len(self.cells)
-        self.add_md_cell('')
+        self.add_md_cell('# Assumptions diff')
         
         for cell in self.header:
             if cell['cell_type'] == 'code':
