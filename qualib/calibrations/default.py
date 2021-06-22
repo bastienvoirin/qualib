@@ -10,19 +10,29 @@ import sys
 import os
 
 def get_diff(prev, next):
+    """
+    Args:
+        prev (`list` of `str`):
+        next (`list` of `str`):
+
+    Returns:
+        `list` of `str`: Difference between ``prev`` and ``next``.
+    """
     return [line for line in difflib.Differ().compare(prev, next) if line[0] in ('+', '-')]
 
 def keep_cell(src):
     """Handles conditional cells: skips a given cell if its first line is ``#if condition:`` and ``condition`` evaluates to ``False``.
     
     Args:
-        src (`list` of `str`): lines of a given cell
+        src (`list` of `str`): Lines of a given cell
 
     Returns:
         bool:
     """
     first_line = src[0].strip()
     return first_line[:3] != '#if' or eval(first_line[4:-1])
+
+######################################################################
 
 class DefaultCalibration:
     """
@@ -63,10 +73,10 @@ class DefaultCalibration:
         self.exopy_templ   = exopy_templ
         self.pre           = pre
         self.timestamp     = timestamp
+
         self.report_templ  = nbf.read(f'qualib/calibrations/{name}/template_{name}.ipynb', as_version=4).cells
         self.hdf5_path     = f'{assumptions["default_path"]}/{timestamp}_{id:03d}_{pre[:-1]}.h5'
         self.results       = {}
-        return
     
     def handle_substitutions(self):
         """Handles substitutions. Should be called at the end of :py:func:`Calibration.handle_substitutions`.
@@ -81,7 +91,6 @@ class DefaultCalibration:
             # Handle substitutions in report template
             for i in range(len(self.report_templ)):
                 self.report_templ[i].source = self.report_templ[i].source.replace(key, val)
-        return
 
     def pre_process(self, mapping = {}):
         """Handles pre-placeholders. Should be called at the end of :py:func:`Calibration.pre_process`.
@@ -119,7 +128,6 @@ class DefaultCalibration:
         for key, val in mapping.items():
             for i in range(len(self.report_templ)):
                 self.report_templ[i]['source'] = self.report_templ[i]['source'].replace(key, val)
-        return
 
     def process(self):
         """Executes analysis code and updates assumptions.
@@ -137,13 +145,21 @@ class DefaultCalibration:
         for cell in self.report.header:
             if cell['cell_type'] == 'code':
                 code = '\n'.join(filter(lambda line: line[0] != '%', cell['source'].splitlines())) # Handle magic commands
-                exec(code, globals(), locals())
+                try:
+                    exec(code, globals(), locals())
+                except:
+                    self.log.debug('', code.splitlines())
+                    raise
 
         self.log.info(self.pre, f'Executing "qualib/calibrations/{self.name}/template_{self.name}.ipynb" code cells')
         loc = locals()
         for cell in self.report.cells[self.report.last_calibration:]:
             if cell['type'] == 'py':
-                exec(cell['source'], loc, loc)
+                try:
+                    exec(cell['source'], loc, loc)
+                except:
+                    self.log.debug('', cell['source'].splitlines())
+                    raise
                 if '_results' in loc and '_results' in cell['source']:
                     self.log.info(self.pre, 'Fetching results')
                     self.results = loc['_results']
@@ -165,16 +181,12 @@ class DefaultCalibration:
                             errors.append(message)
                             self.log.error(self.pre, message)
                     assert not errors, '\n  '+'\n  '.join(errors)
-        return
 
     def post_process(self, mapping):
         """Handles post-placeholders. Should be called at the end of :py:func:`Calibration.post_process`.
         
         Args:
             mapping (dict): Dictionary of ``'POST_PLACEHOLDER': value`` pairs.
-        
-        Returns:
-            `None`
         """
         self.log.info(self.pre, f'Handling post_process placeholders defined in "qualib/calibrations/{self.name}/{self.name}_utils.py"')
         self.log.info(self.pre, self.log.json(mapping))
@@ -184,7 +196,6 @@ class DefaultCalibration:
                 self.report.cells[i]['source'] = cell['source'].replace(key, val)
 
         self.report.update()
-        return
 
 ######################################################################
 
@@ -199,20 +210,20 @@ class Report:
     Attributes:
         log (Log):
         filename (str):
-        cells (list):
+        header (list): Default header cells.
         notebook:
-        assumptions_befr (str):
-        assumptions_aftr (str):
+        cells (list):
+        assumptions_befr (str): Assumptions before the current calibration.
+        assumptions_aftr (str): Assumptions after the current calibration.
+        cell_befr (int): Position of the cell receiving the assumptions before the current calibration.
+        cell_aftr (int): Position of the cell receiving the assumptions before the current calibration;
     """
         
     def __init__(self, log, filename, assumptions, calib_scheme_str):
-        self.header = nbf.read('qualib/calibrations/default_header.ipynb', as_version=4).cells
-        #for i in range(len(self.header)):
-        #    self.header[i]['source'] = ''.join(self.header[i]['source'])
-
         self.log      = log
-        self.notebook = nbfv4.new_notebook()
         self.filename = filename
+        self.header   = nbf.read('qualib/calibrations/default_header.ipynb', as_version=4).cells
+        self.notebook = nbfv4.new_notebook()
         self.cells    = []
 
         self.assumptions_befr = json.dumps(assumptions, indent=4)
