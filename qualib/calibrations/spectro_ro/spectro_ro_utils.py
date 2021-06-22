@@ -5,7 +5,7 @@ class Calibration(DefaultCalibration):
         super().handle_substitutions()
 
     def pre_process(self):
-        super().pre_process({'TYPE': self.substitutions.get('TYPE')})
+        super().pre_process()
 
     def process(self, assumptions):
         assumptions['readout']['freq'] = self.results.get('freq') or 0

@@ -18,6 +18,6 @@
     #  "substitutions": {"name": "fine",
     #                    "TYPE": "fine"}},
     {"name": "spectro_ro",
-     "substitutions": {"name": "phase_only",
-                       "TYPE": "phase_only"}}
+     "substitutions": {"NAME": "phase_only",
+                       "TYPE": "phase only"}}
 ]

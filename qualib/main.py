@@ -14,7 +14,7 @@ class Qualib:
     """Wrapper supclass.
 
     """
-    def run(self, log, report, assumptions, id, name, substitutions):
+    def run(self, log, report, assumptions, id, name, substitutions, timestamp):
         """Runs a single calibration with given assumptions and Exopy template.
         
         Args:
@@ -24,11 +24,12 @@ class Qualib:
             id (int): A natural number giving the rank of the calibration to run.
             name (str): The name of the calibration to run.
             substitutions (dict): The dictionary of substitutions.
+            timestamp (str):
         
         Returns:
             `None`
         """
-        full = f'{name}_{substitutions["name"]}' if substitutions['name'] else name
+        full = f'{name}_{substitutions["NAME"]}' if substitutions['NAME'] else name
         prefix = full+':'
 
         log.info(prefix, f'Starting calibration with {len(substitutions)} substitution{"s" if len(substitutions) > 1 else ""}')
@@ -36,10 +37,10 @@ class Qualib:
         
         try:
             Calibration = load_utils(log, name, substitutions)
-            exopy_templ = load_exopy_template(log, name, substitutions['name'])
+            exopy_templ = load_exopy_template(log, name, substitutions['NAME'])
             
             log.info(prefix, f'Generating "qualib/calibrations/{name}/{name}.meas.ini"')
-            calibration = Calibration(log, report, assumptions, id, name, substitutions, exopy_templ, prefix)
+            calibration = Calibration(log, report, assumptions, id, name, substitutions, exopy_templ, prefix, timestamp)
             
             log.info(prefix, 'Handling substitutions')
             calibration.handle_substitutions()
@@ -111,7 +112,7 @@ class Qualib:
         log.info('', 'Starting calibration sequence')
 
         for id, calibration in enumerate(calib_scheme, start=1):
-            self.run(log, report, assumptions, id, calibration['name'], calibration.get('substitutions') or {'name': ''})
+            self.run(log, report, assumptions, id, calibration['name'], calibration.get('substitutions') or {'NAME': ''}, timestamp)
             print()
 
         log.info('', 'Done')

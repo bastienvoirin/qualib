@@ -77,9 +77,8 @@ class Log():
         pre = f'[{now}] [{label.upper()}]' + ' '*(self.max_label_len - len(label)) + f'{" "+prefix if prefix else ""}'
         
         with open(self.path, 'a') as f:
-            f.write(f'{pre} {lines.pop(0)}\n')
             for line in lines:
-                f.write(f'{" "*len(pre)} {line}\n')
+                f.write(f'{pre} {line}\n')
                 
         return self
                 

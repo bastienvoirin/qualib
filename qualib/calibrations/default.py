@@ -9,6 +9,9 @@ import difflib
 import sys
 import os
 
+def get_diff(prev, next):
+    return [line for line in difflib.Differ().compare(prev, next) if line[0] in ('+', '-')]
+
 def keep_cell(src):
     """Handles conditional cells: skips a given cell if its first line is ``#if condition:`` and ``condition`` evaluates to ``False``.
     
@@ -36,19 +39,21 @@ class DefaultCalibration:
         pre (str): Log prefix
         
     Attributes:
-        log:
-        report:
-        assumptions:
-        id:
-        name:
-        substitutions:
+        log (Log):
+        report (Report):
+        assumptions (dict):
+        id (int):
+        name (str):
+        substitutions (dict):
         exopy_templ:
-        pre:
+        pre (str):
+        timestamp (str):
         report_templ:
-        results:
+        hdf5_path (str)
+        results (dict):
     """
     
-    def __init__(self, log, report, assumptions, id, name, substitutions, exopy_templ, pre):
+    def __init__(self, log, report, assumptions, id, name, substitutions, exopy_templ, pre, timestamp):
         self.log           = log
         self.report        = report
         self.assumptions   = assumptions
@@ -57,7 +62,9 @@ class DefaultCalibration:
         self.substitutions = substitutions
         self.exopy_templ   = exopy_templ
         self.pre           = pre
+        self.timestamp     = timestamp
         self.report_templ  = nbf.read(f'qualib/calibrations/{name}/template_{name}.ipynb', as_version=4).cells
+        self.hdf5_path     = f'{assumptions["default_path"]}/{timestamp}_{id:03d}_{pre[:-1]}.h5'
         self.results       = {}
         return
     
@@ -68,7 +75,7 @@ class DefaultCalibration:
             `None`
         """
         for key, val in self.substitutions.items():
-            # Handle substitutions in exopy template
+            # Handle substitutions in Exopy template
             self.exopy_templ = self.exopy_templ.replace(key, val)
 
             # Handle substitutions in report template
@@ -76,7 +83,7 @@ class DefaultCalibration:
                 self.report_templ[i].source = self.report_templ[i].source.replace(key, val)
         return
 
-    def pre_process(self, mapping):
+    def pre_process(self, mapping = {}):
         """Handles pre-placeholders. Should be called at the end of :py:func:`Calibration.pre_process`.
 
         Args:
@@ -85,6 +92,27 @@ class DefaultCalibration:
         Returns:
             `None`
         """
+        # Handle pre-placeholders in Exopy template
+        exopy_templ_befr = self.exopy_templ.splitlines()
+        pre_placeholders = re.findall(r'(\$([a-z0-9_]+)(?:/([a-z0-9_]+))?)', self.exopy_templ, re.MULTILINE)
+        for tree, root, leaf in pre_placeholders:
+            self.log.debug(self.pre, str((tree, root, leaf)))
+            if leaf:
+                # Replace $section/parameter with assumptions[section][parameter]
+                self.exopy_templ = self.exopy_templ.replace(tree, str(self.assumptions[root][leaf]))
+            else:
+                # Replace $parameter with assumptions[parameter]
+                self.exopy_templ = self.exopy_templ.replace(tree, str(self.assumptions[root]))
+        self.exopy_templ = self.exopy_templ.replace(self.assumptions['filename'], self.hdf5_path)
+        exopy_templ_aftr = self.exopy_templ.splitlines()
+        for line in get_diff(exopy_templ_befr, exopy_templ_aftr):
+            self.log.debug(self.pre, f'{line[0]} {line[1:].strip()}')
+
+        # Handle pre-placeholders in report template
+        mapping['HDF5_PATH'] = self.hdf5_path
+        for key, val in mapping.items():
+            for i in range(len(self.report_templ)):
+                self.report_templ[i]['source'] = self.report_templ[i]['source'].replace(key, val)
         return
 
     def post_process(self, mapping):
@@ -121,8 +149,8 @@ class Report:
         filename (str):
         cells (list):
         notebook:
-        assumptions_before (str):
-        assumptions_after (str):
+        assumptions_befr (str):
+        assumptions_aftr (str):
     """
         
     def __init__(self, filename, assumptions, calib_scheme_str):
@@ -135,12 +163,12 @@ class Report:
         self.filename = filename
         self.cells    = []
 
-        self.assumptions_before = json.dumps(assumptions, indent=4)
+        self.assumptions_befr = json.dumps(assumptions, indent=4)
 
         self.add_md_cell('# Calibration sequence')
         self.add_py_cell(calib_scheme_str.strip()+';')
         self.add_md_cell('# Assumptions before calibration sequence')
-        self.add_py_cell(self.assumptions_before+';')
+        self.add_py_cell(self.assumptions_befr+';')
 
         self.add_md_cell('# Assumptions after calibration sequence')
         self.cell_aftr = len(self.cells)
@@ -200,13 +228,15 @@ class Report:
         Returns:
             Report: ``self``.
         """
-        self.assumptions_after = json.dumps(assumptions, indent=4)
-        befr = self.assumptions_before.splitlines(keepends=True)
-        aftr = self.assumptions_after.splitlines(keepends=True)
-        diff = [line for line in difflib.Differ().compare(befr, aftr) if line[0] in ('+', '-')]
+        # Compare assumptions before and assumptions after
+        self.assumptions_aftr = json.dumps(assumptions, indent=4)
+        diff = get_diff(
+            self.assumptions_befr.splitlines(keepends=True),
+            self.assumptions_aftr.splitlines(keepends=True)
+        )
         
         # Update assumptions after and assumptions diff
-        self.cells[self.cell_aftr]['source'] = self.assumptions_after+';'
+        self.cells[self.cell_aftr]['source'] = self.assumptions_aftr+';'
         self.cells[self.cell_diff]['source'] = ['# Assumptions diff\n\n', '```diff\n', *diff, '```']
         return self.update()
 
