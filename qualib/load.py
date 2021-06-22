@@ -7,7 +7,7 @@ def load_calibration_scheme(log, path):
     """
     log.info(f'Loading calibration sequence "{path}"')
     try:
-        with open(path, encoding='utf8') as f:
+        with open(path, encoding='utf-8') as f:
             seq = f.read()
             return eval(seq), seq # calibration_scheme.py should be a Python list
     except:
@@ -23,7 +23,7 @@ def load_exopy_template(log, calib, subs_name):
     path = f'qualib/calibrations/{calib}/{calib}_template.meas.ini'
     log.info(f'{calib}{"_"+subs_name if subs_name else ""}: Loading Exopy measurements template "{path}"')
     try:
-        with open(path, encoding='utf8') as f:
+        with open(path, encoding='utf-8') as f:
             return f.read()
     except:
         log.error(f'Unable to load {path}')
@@ -37,7 +37,7 @@ def load_assumptions(log):
     """
     log.info(f'Loading "assumptions.py"')
     try:
-        with open('assumptions.py', encoding='utf8') as f:
+        with open('assumptions.py', encoding='utf-8') as f:
             return eval(f.read()) # assumptions.py should be a Python dict
     except:
         log.error('Unable to load or evaluate "assumptions.py"')

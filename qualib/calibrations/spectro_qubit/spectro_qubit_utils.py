@@ -52,7 +52,7 @@ class Calibration(DefaultCalibration):
             
         meas_path = f'qualib/calibrations/{calib_name}/{calib_name}.meas.ini'
         self.log.info(f'{self.pre} Generating "{meas_path}"')
-        with open(meas_path, 'w') as f:
+        with open(meas_path, 'w', encoding='utf-8') as f:
             f.write(template)
             
         self.keys = keys

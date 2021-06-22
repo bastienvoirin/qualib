@@ -8,6 +8,7 @@ class Calibration(DefaultCalibration):
         super().pre_process()
 
     def process(self, assumptions):
+        super().process()
         assumptions['readout']['freq'] = self.results.get('freq') or 0
 
     def post_process(self):

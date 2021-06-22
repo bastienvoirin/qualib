@@ -106,13 +106,65 @@ class DefaultCalibration:
         self.exopy_templ = self.exopy_templ.replace(self.assumptions['filename'], self.hdf5_path)
         exopy_templ_aftr = self.exopy_templ.splitlines()
         for line in get_diff(exopy_templ_befr, exopy_templ_aftr):
+            # Remove unnecessary whitespaces and log exopy_templ diff
             self.log.debug(self.pre, f'{line[0]} {line[1:].strip()}')
+
+        meas_path = f'qualib/calibrations/{self.name}/{self.name}.meas.ini'
+        self.log.info(self.pre, f'Generating "{meas_path}"')
+        with open(meas_path, 'w', encoding='utf-8') as f:
+            f.write(self.exopy_templ)
 
         # Handle pre-placeholders in report template
         mapping['HDF5_PATH'] = self.hdf5_path
         for key, val in mapping.items():
             for i in range(len(self.report_templ)):
                 self.report_templ[i]['source'] = self.report_templ[i]['source'].replace(key, val)
+        return
+
+    def process(self):
+        """Executes analysis code and updates assumptions.
+
+        """
+        self.log.info(self.pre, 'Adding final conditional cells ("#if condition and \'STATUS\' == \'done\'")')
+        for i, cell in enumerate(self.report_templ):
+            src = cell['source'].splitlines()
+            if keep_cell(src):
+                self.report.cells.pop()
+            self.report_templ[i]['source'] = self.report_templ[i]['source'].replace('STATE', 'done')
+        self.report.add_calibration(self)
+
+        self.log.info(self.pre, 'Executing header')
+        for cell in self.report.header:
+            if cell['cell_type'] == 'code':
+                code = '\n'.join(filter(lambda line: line[0] != '%', cell['source'].splitlines())) # Handle magic commands
+                exec(code, globals(), locals())
+
+        self.log.info(self.pre, f'Executing "qualib/calibrations/{self.name}/template_{self.name}.ipynb" code cells')
+        loc = locals()
+        for cell in self.report.cells[self.report.last_calibration:]:
+            if cell['type'] == 'py':
+                exec(cell['source'], loc, loc)
+                if '_results' in loc and '_results' in cell['source']:
+                    self.log.info(self.pre, 'Fetching results')
+                    self.results = loc['_results']
+
+                if '_opt' in loc and '_cov' in loc and '_opt' in cell['source'] and '_cov' in cell['source']:
+                    self.log.info(self.pre, 'Checking standard deviations against optimized values')
+                    ratios  = np.sqrt(np.diag(loc['_cov'])) / np.abs(loc['_opt'])
+                    failed  = ', '.join([f'_opt[{ind}]' for ind in np.where(ratios > 0.05)[0]])
+                    message = f'Standard deviation too large for {failed}\n'\
+                              f'  If a parameter is not relevant, exclude it '\
+                              f'from _opt and _cov in template_{self.name}.ipynb'
+                    assert all(ratios <= 0.05), (self.log.error(self.pre, message) and False) or message
+                    
+                if '_err' in loc and '_err' in cell['source']:
+                    self.log.info(self.pre, 'Handling custom errors')
+                    errors = []
+                    for message, condition in loc['_err'].items():
+                        if condition:
+                            errors.append(message)
+                            self.log.error(self.pre, message)
+                    assert not errors, '\n  '+'\n  '.join(errors)
         return
 
     def post_process(self, mapping):
@@ -145,7 +197,7 @@ class Report:
         calib_scheme_str (str): String representation of the calibration sequence.
             
     Attributes:
-        header (list): List of cells defined in ``qualib/calibrations/default_header.py``.
+        log (Log):
         filename (str):
         cells (list):
         notebook:
@@ -153,12 +205,12 @@ class Report:
         assumptions_aftr (str):
     """
         
-    def __init__(self, filename, assumptions, calib_scheme_str):
-        with open('qualib/calibrations/default_header.ipynb', encoding='utf8') as f:
-            self.header = json.loads(f.read())['cells']
-        for i in range(len(self.header)):
-            self.header[i]['source'] = ''.join(self.header[i]['source'])
+    def __init__(self, log, filename, assumptions, calib_scheme_str):
+        self.header = nbf.read('qualib/calibrations/default_header.ipynb', as_version=4).cells
+        #for i in range(len(self.header)):
+        #    self.header[i]['source'] = ''.join(self.header[i]['source'])
 
+        self.log      = log
         self.notebook = nbfv4.new_notebook()
         self.filename = filename
         self.cells    = []
@@ -208,6 +260,7 @@ class Report:
         Returns:
             Report: ``self``.
         """
+        self.last_calibration = len(self.cells)
         for cell in calibration.report_templ:
             src = cell['source'].splitlines()
             if keep_cell(src): # Handle conditional cells
@@ -219,7 +272,7 @@ class Report:
                     self.add_md_cell('\n'.join(src))
         return self
         
-    def add_results(self, assumptions):
+    def add_results(self, calibration, assumptions):
         """Reports results from the previous calibration.
         
         Args:
@@ -228,14 +281,14 @@ class Report:
         Returns:
             Report: ``self``.
         """
-        # Compare assumptions before and assumptions after
+        self.log.info(calibration.pre, 'Comparing assumptions before and assumptions after')
         self.assumptions_aftr = json.dumps(assumptions, indent=4)
         diff = get_diff(
             self.assumptions_befr.splitlines(keepends=True),
             self.assumptions_aftr.splitlines(keepends=True)
         )
-        
-        # Update assumptions after and assumptions diff
+
+        self.log.info(calibration.pre, 'Updating assumptions after and assumptions diff')
         self.cells[self.cell_aftr]['source'] = self.assumptions_aftr+';'
         self.cells[self.cell_diff]['source'] = ['# Assumptions diff\n\n', '```diff\n', *diff, '```']
         return self.update()

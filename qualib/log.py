@@ -76,7 +76,7 @@ class Log():
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
         pre = f'[{now}] [{label.upper()}]' + ' '*(self.max_label_len - len(label)) + f'{" "+prefix if prefix else ""}'
         
-        with open(self.path, 'a') as f:
+        with open(self.path, 'a', encoding='utf-8') as f:
             for line in lines:
                 f.write(f'{pre} {line}\n')
                 

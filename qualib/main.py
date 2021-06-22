@@ -39,7 +39,7 @@ class Qualib:
             Calibration = load_utils(log, name, substitutions)
             exopy_templ = load_exopy_template(log, name, substitutions['NAME'])
             
-            log.info(prefix, f'Generating "qualib/calibrations/{name}/{name}.meas.ini"')
+            log.info(prefix, 'Initializing calibration')
             calibration = Calibration(log, report, assumptions, id, name, substitutions, exopy_templ, prefix, timestamp)
             
             log.info(prefix, 'Handling substitutions')
@@ -56,6 +56,7 @@ class Qualib:
             ini_path = str(Path(os.path.realpath(__file__)).parent / f'calibrations/{name}/{name}.meas.ini')
             subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path], capture_output=True, shell=True)
             """
+            #subprocess.run(['jupyter', 'nbconvert', '--to', 'notebook', '--execute', report.filename])
 
             log.info(prefix, 'Processing (handling interfaces and updating assumptions)')
             calibration.process(assumptions)
@@ -64,7 +65,7 @@ class Qualib:
             calibration.post_process()
 
             log.info(prefix, 'Reporting results')
-            report.add_results(assumptions)
+            report.add_results(calibration, assumptions)
 
         except:
             log.error(prefix, f'{sys.exc_info()[1]}')
@@ -87,8 +88,18 @@ class Qualib:
         Returns:
             `None`
         """
-        global missing_calib_scheme
-        assert len(sys.argv) > 1 or pkg_calib_scheme, missing_calib_scheme
+        assert len(sys.argv) > 1 or pkg_calib_scheme, '\n'.join([
+            'Missing calibration scheme\n',
+            '  CLI usage:',
+            '    python -m qualib.main calibration_scheme.py\n',
+            '  Package usage:',
+            '      pip install qualib',
+            '    then',
+            '      from qualib.main import Qualib',
+            '      qualib = Qualib()',
+            '      qualib.run_all(\'calibration_scheme.py\')'
+        ])
+
         calib_scheme_path = ''
         if len(sys.argv) > 1:
             calib_scheme_path = sys.argv[1]
@@ -107,7 +118,7 @@ class Qualib:
         assumptions = load_assumptions(log)
 
         log.info('', f'Initializing "reports/report_{timestamp}.ipynb"')
-        report = Report(f'reports/report_{timestamp}.ipynb', assumptions, calib_scheme_str)
+        report = Report(log, f'reports/report_{timestamp}.ipynb', assumptions, calib_scheme_str)
 
         log.info('', 'Starting calibration sequence')
 
@@ -117,18 +128,6 @@ class Qualib:
 
         log.info('', 'Done')
         return
-    
-missing_calib_scheme = '''Missing calibration scheme
-
-CLI usage:
-    python -m qualib.main calibration_scheme.py
-
-Package usage:
-    pip install qualib
-  then
-    from qualib.main import Qualib
-    qualib = Qualib()
-    qualib.run_all('calibration_scheme.py')'''
 
 if __name__ == '__main__':
     qualib = Qualib()
