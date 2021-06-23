@@ -211,8 +211,10 @@
 <dl class="py class">
 <dt id="qualib.log.Log">
 <em class="property">class </em><code class="sig-prename descclassname">qualib.log.</code><code class="sig-name descname">Log</code><a class="reference internal" href="_modules/qualib/log.html#Log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.log.Log" title="Permalink to this definition">¶</a></dt>
-<dd><p>Logs timestamped and labeled informations (“info”), debug informations (“debug”), warnings (“warn”), errors (“error”), and/or custom content.</p>
-<p>Keyword arguments <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> are not supported yet, but may be added in future versions.</p>
+<dd><p>Logs timestamped and labeled informations (“info”), debug informations
+(“debug”), warnings (“warn”), errors (“error”), and/or custom content.</p>
+<p>Keyword arguments <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> are not supported yet, but may be added in
+future versions.</p>
 <dl class="py method">
 <dt id="qualib.log.Log.initialize">
 <code class="sig-name descname">initialize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timestamp</span></em>, <em class="sig-param"><span class="n">max_label_len</span><span class="o">=</span><span class="default_value">5</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/log.html#Log.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.log.Log.initialize" title="Permalink to this definition">¶</a></dt>
@@ -425,7 +427,8 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>log</strong> (<a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><em>qualib.log.Log</em></a>) – </p></li>
 <li><p><strong>report</strong> (<a class="reference internal" href="#qualib.calibrations.default.Report" title="qualib.calibrations.default.Report"><em>qualib.calibrations.default.Report</em></a>) – </p></li>
-<li><p><strong>assumptions</strong> (<em>dict</em>) – The current state of the assumptions (updated after each calibration).</p></li>
+<li><p><strong>assumptions</strong> (<em>dict</em>) – The current state of the assumptions
+(updated after each calibration).</p></li>
 <li><p><strong>id</strong> (<em>int</em>) – A natural number giving the rank of the calibration to run.</p></li>
 <li><p><strong>name</strong> (<em>str</em>) – The name of the calibration to run.</p></li>
 <li><p><strong>substitutions</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – The dictionary of substitutions.</p></li>
@@ -444,13 +447,16 @@
 <dd><p>Runs a calibration sequence whose path is either passed:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>As <code class="docutils literal notranslate"><span class="pre">pkg_calib_scheme</span></code> — package usage: <code class="docutils literal notranslate"><span class="pre">Qualib().run_all('calibration_scheme.py')</span></code></p></li>
-<li><p>Or in <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code> — CLI/module usage: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">qualib.main</span> <span class="pre">calibration_scheme.py</span></code>.</p></li>
+<li><p>As <code class="docutils literal notranslate"><span class="pre">pkg_calib_scheme</span></code> — package usage:
+<code class="docutils literal notranslate"><span class="pre">Qualib().run_all('calibration_scheme.py')</span></code></p></li>
+<li><p>Or in <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code> — CLI/module usage:
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">qualib.main</span> <span class="pre">calibration_scheme.py</span></code>.</p></li>
 </ul>
 </div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pkg_calib_scheme</strong> (<em>str</em>) – path to the Python file defining the calibration sequence to run.</p>
+<dd class="field-odd"><p><strong>pkg_calib_scheme</strong> (<em>str</em>) – path to the Python file defining
+the calibration sequence to run.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
@@ -483,7 +489,8 @@
 <dl class="py function">
 <dt id="qualib.calibrations.default.keep_cell">
 <code class="sig-prename descclassname">qualib.calibrations.default.</code><code class="sig-name descname">keep_cell</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/calibrations/default.html#keep_cell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.calibrations.default.keep_cell" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles conditional cells: skips a given cell if its first line is <code class="docutils literal notranslate"><span class="pre">#if</span> <span class="pre">condition:</span></code> and <code class="docutils literal notranslate"><span class="pre">condition</span></code> evaluates to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dd><p>Handles conditional cells: skips a given cell if its first line is
+<code class="docutils literal notranslate"><span class="pre">#if</span> <span class="pre">condition:</span></code> and <code class="docutils literal notranslate"><span class="pre">condition</span></code> evaluates to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>src</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – Lines of a given cell.</p>
@@ -646,7 +653,8 @@
 <dl class="py method">
 <dt id="qualib.calibrations.default.DefaultCalibration.handle_substitutions">
 <code class="sig-name descname">handle_substitutions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mapping</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/calibrations/default.html#DefaultCalibration.handle_substitutions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.handle_substitutions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles substitutions. Should be called at the end of <code class="xref py py-func docutils literal notranslate"><span class="pre">Calibration.handle_substitutions()</span></code>.</p>
+<dd><p>Handles substitutions. Should be called at the end of
+<code class="xref py py-func docutils literal notranslate"><span class="pre">Calibration.handle_substitutions()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>mapping</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – Dictionary of substitutions.</p>
@@ -660,7 +668,8 @@
 <dl class="py method">
 <dt id="qualib.calibrations.default.DefaultCalibration.pre_process">
 <code class="sig-name descname">pre_process</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mapping</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/calibrations/default.html#DefaultCalibration.pre_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.pre_process" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles pre-placeholders. Should be called at the end of <code class="xref py py-func docutils literal notranslate"><span class="pre">Calibration.pre_process()</span></code>.</p>
+<dd><p>Handles pre-placeholders. Should be called at the end of
+<code class="xref py py-func docutils literal notranslate"><span class="pre">Calibration.pre_process()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>mapping</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – Dictionary of <code class="docutils literal notranslate"><span class="pre">'PRE_PLACEHOLDER':</span> <span class="pre">value</span></code> pairs.</p>
@@ -767,8 +776,8 @@
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="qualib.calibrations.default.Report.assumptions_befr">
-<code class="sig-name descname">assumptions_befr</code><a class="headerlink" href="#qualib.calibrations.default.Report.assumptions_befr" title="Permalink to this definition">¶</a></dt>
+<dt id="qualib.calibrations.default.Report.assump_befr">
+<code class="sig-name descname">assump_befr</code><a class="headerlink" href="#qualib.calibrations.default.Report.assump_befr" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>
@@ -777,8 +786,8 @@
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="qualib.calibrations.default.Report.assumptions_aftr">
-<code class="sig-name descname">assumptions_aftr</code><a class="headerlink" href="#qualib.calibrations.default.Report.assumptions_aftr" title="Permalink to this definition">¶</a></dt>
+<dt id="qualib.calibrations.default.Report.assump_aftr">
+<code class="sig-name descname">assump_aftr</code><a class="headerlink" href="#qualib.calibrations.default.Report.assump_aftr" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>

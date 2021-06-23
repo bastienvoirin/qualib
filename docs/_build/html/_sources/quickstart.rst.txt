@@ -16,12 +16,12 @@ Jupyter notebook template
 
 .. nbinput:: md
     
-    # Calibration name (§TYPE§)
-    ## §PLACEHOLDER§
+    # Calibration name ({TYPE})
+    ## {PLACEHOLDER}
 
 .. nbinput:: ipython3
     
-    file = h5py.File(HDF5_PATH, 'r', swmr=True)
+    file = h5py.File('HDF5_PATH', 'r', swmr=True)
     xdata = file['data']['x'][()]
     ydata = file['data']['y'][()]
 
@@ -39,9 +39,14 @@ Jupyter notebook template
 
 .. nbinput:: ipython3
     
+    # optional
     _opt = popt
     _cov = pcov
+    
+    # optional
     _err = {'Custom error', _opt[0] < 0}
+    
+    # mandatory
     _results = {'a': popt[0]}
     _results
 

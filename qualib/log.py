@@ -5,9 +5,12 @@ from datetime import datetime, time
 from typing import Union
 
 class Log():
-    """Logs timestamped and labeled informations ("info"), debug informations ("debug"), warnings ("warn"), errors ("error"), and/or custom content.
+    """
+    Logs timestamped and labeled informations ("info"), debug informations
+    ("debug"), warnings ("warn"), errors ("error"), and/or custom content.
     
-    Keyword arguments ``**kwargs`` are not supported yet, but may be added in future versions.
+    Keyword arguments ``**kwargs`` are not supported yet, but may be added in
+    future versions.
     """
     
     def initialize(self, timestamp: str, max_label_len: int = 5) -> Log:
@@ -34,10 +37,13 @@ class Log():
         if not lines:
             return
         
-        assert hasattr(self, 'path') and hasattr(self, 'max_label_len'), 'Log() instances must be initialized'
+        assert hasattr(self, 'path') and hasattr(self, 'max_label_len'),\
+               'Log() instances must be initialized'
         
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
-        pre = f'[{now}] [{label.upper()}]' + ' '*(self.max_label_len - len(label)) + f'{" "+prefix if prefix else ""}'
+        pre = ''.join([f'[{now}] [{label.upper()}]',
+                       ' '*(self.max_label_len - len(label)),
+                       f'{" "+prefix if prefix else ""}'])
         
         with open(self.path, 'a', encoding='utf-8') as f:
             for line in lines:

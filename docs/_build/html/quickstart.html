@@ -466,8 +466,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-md notranslate"><div class="highlight"><pre>
-<span></span><span class="gh"># Calibration name (§TYPE§)</span>
-<span class="gu">## §PLACEHOLDER§</span>
+<span></span><span class="gh"># Calibration name ({TYPE})</span>
+<span class="gu">## {PLACEHOLDER}</span>
 </pre></div>
 </div>
 </div>
@@ -476,7 +476,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">HDF5_PATH</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">swmr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s1">&#39;HDF5_PATH&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">swmr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">xdata</span> <span class="o">=</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;x&#39;</span><span class="p">][()]</span>
 <span class="n">ydata</span> <span class="o">=</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;y&#39;</span><span class="p">][()]</span>
 </pre></div>
@@ -509,9 +509,14 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">_opt</span> <span class="o">=</span> <span class="n">popt</span>
+<span></span><span class="c1"># optional</span>
+<span class="n">_opt</span> <span class="o">=</span> <span class="n">popt</span>
 <span class="n">_cov</span> <span class="o">=</span> <span class="n">pcov</span>
+
+<span class="c1"># optional</span>
 <span class="n">_err</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Custom error&#39;</span><span class="p">,</span> <span class="n">_opt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">}</span>
+
+<span class="c1"># mandatory</span>
 <span class="n">_results</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="n">popt</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
 <span class="n">_results</span>
 </pre></div>

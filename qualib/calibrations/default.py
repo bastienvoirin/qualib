@@ -25,7 +25,9 @@ def get_diff(prev: List[str], next: List[str]) -> Generator[str, None, None]:
             if line[0] in ('+', '-'))
 
 def keep_cell(src: List[str]) -> bool:
-    """Handles conditional cells: skips a given cell if its first line is ``#if condition:`` and ``condition`` evaluates to ``False``.
+    """
+    Handles conditional cells: skips a given cell if its first line is
+    ``#if condition:`` and ``condition`` evaluates to ``False``.
     
     Args:
         src: Lines of a given cell.
@@ -80,7 +82,9 @@ class DefaultCalibration:
         results (dict):
     """
     
-    def __init__(self, log: Log, report: Report, assumptions: dict, id: int, name: str, substitutions: Dict[str, str], exopy_templ: str, pre: str, timestamp: str):
+    def __init__(self, log: Log, report: Report, assumptions: dict, id: int,
+                 name: str, substitutions: Dict[str, str], exopy_templ: str,
+                 pre: str, timestamp: str):
         self.log           = log
         self.report        = report
         self.assumptions   = assumptions
@@ -96,7 +100,9 @@ class DefaultCalibration:
         self.results       = {}
     
     def handle_substitutions(self, mapping: Dict[str, str] = {}) -> None:
-        """Handles substitutions. Should be called at the end of :py:func:`Calibration.handle_substitutions`.
+        """
+        Handles substitutions. Should be called at the end of
+        :py:func:`Calibration.handle_substitutions`.
         
         Args:
             mapping: Dictionary of substitutions.
@@ -111,14 +117,18 @@ class DefaultCalibration:
                 self.report_templ[i].source = self.report_templ[i].source.replace('{'+key+'}', val)
 
     def pre_process(self, mapping: Dict[str, str] = {}) -> None:
-        """Handles pre-placeholders. Should be called at the end of :py:func:`Calibration.pre_process`.
+        """
+        Handles pre-placeholders. Should be called at the end of
+        :py:func:`Calibration.pre_process`.
 
         Args:
             mapping: Dictionary of ``'PRE_PLACEHOLDER': value`` pairs.
         """
         # Handle pre-placeholders in Exopy template
         exopy_templ_befr = self.exopy_templ.splitlines()
-        pre_placeholders = re.findall(r'(\$([a-z0-9_]+)(?:/([a-z0-9_]+))?)', self.exopy_templ, re.MULTILINE)
+        pre_placeholders = re.findall(r'(\$([a-z0-9_]+)(?:/([a-z0-9_]+))?)',
+                                      self.exopy_templ,
+                                      re.MULTILINE)
         for tree, root, leaf in pre_placeholders:
             self.log.debug(self.pre, str((tree, root, leaf)))
             if leaf:
@@ -243,26 +253,25 @@ class Report:
         notebook:
         cells (list):
         assumptions (dict):
-        assumptions_befr (str):
-        assumptions_aftr (str):
+        assump_befr (str):
+        assump_aftr (str):
         cell_befr (int):
         cell_aftr (int):
     """
-        
+    
     def __init__(self, log: Log, filename: str, assumptions: dict, calib_scheme: str):
-        self.log      = log
-        self.filename = filename
-        self.header   = nb.read('qualib/calibrations/default_header.ipynb', as_version=4).cells
-        self.notebook = new_notebook()
-        self.cells    = []
-        
+        self.log         = log
+        self.filename    = filename
         self.assumptions = dict(assumptions)
-        self.assumptions_befr = json.dumps(assumptions, indent=4)
+        self.assump_befr = json.dumps(assumptions, indent=4)
+        self.header      = nb.read('qualib/calibrations/default_header.ipynb', as_version=4).cells
+        self.notebook    = new_notebook()
+        self.cells       = []
 
         self.add_md_cell('# Calibration sequence')
         self.add_py_cell(calib_scheme.strip()+';')
         self.add_md_cell('# Assumptions before calibration sequence')
-        self.add_py_cell(self.assumptions_befr+';')
+        self.add_py_cell(self.assump_befr+';')
 
         self.add_md_cell('# Assumptions after calibration sequence')
         self.cell_aftr: int = len(self.cells) # Placeholder cell
@@ -318,14 +327,14 @@ class Report:
         
         """
         self.log.info(calibration.pre, 'Comparing assumptions before and assumptions after')
-        self.assumptions_aftr = json.dumps(self.assumptions, indent=4)
+        self.assump_aftr = json.dumps(self.assumptions, indent=4)
         diff = list(get_diff(
-            self.assumptions_befr.splitlines(keepends=True),
-            self.assumptions_aftr.splitlines(keepends=True)
+            self.assump_befr.splitlines(keepends=True),
+            self.assump_aftr.splitlines(keepends=True)
         ))
 
         self.log.info(calibration.pre, 'Updating assumptions after and assumptions diff')
-        self.cells[self.cell_aftr]['source'] = self.assumptions_aftr+';'
+        self.cells[self.cell_aftr]['source'] = self.assump_aftr+';'
         self.cells[self.cell_diff]['source'] = ['# Assumptions diff\n\n', '```diff\n', *diff, '```']
         return self.update()
 
