@@ -13,6 +13,10 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/sphinx-toolbox-code.css" type="text/css" />
+  <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/sphinx-toolbox.css" type="text/css" />
+  <link rel="stylesheet" href="_static/sphinx_toolbox_installation.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
 
   
@@ -33,6 +37,8 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/sphinx_toolbox_installation.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -526,11 +532,11 @@ div.rendered_html tbody tr:hover {
 <div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;spectro_ro&quot;</span><span class="p">,</span>
      <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;phase_only&quot;</span><span class="p">,</span>
-                       <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;phase only&quot;</span><span class="p">}},</span>
+               <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;phase only&quot;</span><span class="p">}},</span>
 
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;spectro_ro&quot;</span><span class="p">,</span>
      <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;circle_fit&quot;</span><span class="p">,</span>
-                       <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;circle fit&quot;</span><span class="p">}},</span>
+               <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;circle fit&quot;</span><span class="p">}},</span>
 
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;spectro_qubit&quot;</span><span class="p">},</span>
 
@@ -538,18 +544,18 @@ div.rendered_html tbody tr:hover {
 
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;rabi&quot;</span><span class="p">,</span>
      <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span>  <span class="s2">&quot;uncond_pi2&quot;</span><span class="p">,</span>
-                       <span class="s2">&quot;PULSE&quot;</span><span class="p">:</span> <span class="s2">&quot;unconditional_pi2_pulse&quot;</span><span class="p">,</span>
-                       <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span>  <span class="s2">&quot;unconditional pi/2 pulse&quot;</span><span class="p">}},</span>
+               <span class="s2">&quot;PULSE&quot;</span><span class="p">:</span> <span class="s2">&quot;unconditional_pi2_pulse&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span>  <span class="s2">&quot;unconditional pi/2 pulse&quot;</span><span class="p">}},</span>
 
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;rabi&quot;</span><span class="p">,</span>
      <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span>  <span class="s2">&quot;uncond_pi&quot;</span><span class="p">,</span>
-                       <span class="s2">&quot;PULSE&quot;</span><span class="p">:</span> <span class="s2">&quot;unconditional_pi_pulse&quot;</span><span class="p">,</span>
-                       <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span>  <span class="s2">&quot;unconditional pi pulse&quot;</span><span class="p">}},</span>
+               <span class="s2">&quot;PULSE&quot;</span><span class="p">:</span> <span class="s2">&quot;unconditional_pi_pulse&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span>  <span class="s2">&quot;unconditional pi pulse&quot;</span><span class="p">}},</span>
 
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;rabi&quot;</span><span class="p">,</span>
      <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span>  <span class="s2">&quot;cond_pi&quot;</span><span class="p">,</span>
-                       <span class="s2">&quot;PULSE&quot;</span><span class="p">:</span> <span class="s2">&quot;conditional_pi_pulse&quot;</span><span class="p">,</span>
-                       <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span>  <span class="s2">&quot;conditional pi pulse&quot;</span><span class="p">}},</span>
+               <span class="s2">&quot;PULSE&quot;</span><span class="p">:</span> <span class="s2">&quot;conditional_pi_pulse&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span>  <span class="s2">&quot;conditional pi pulse&quot;</span><span class="p">}},</span>
 
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;ramsey&quot;</span><span class="p">},</span>
 

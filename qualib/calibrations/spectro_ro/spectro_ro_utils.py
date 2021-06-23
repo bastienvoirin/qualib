@@ -1,25 +1,17 @@
 from ..default import DefaultCalibration
 
 class Calibration(DefaultCalibration):
-    def handle_substitutions(self):
-        ##############################################################
-        ##############################################################
+    def handle_substitutions(self) -> None:
         super().handle_substitutions()
 
-    def pre_process(self):
-        ##############################################################
-        mapping = {}
-        ##############################################################
-        super().pre_process(mapping)
+    def pre_process(self) -> None:
+        super().pre_process(mapping = {})
 
-    def process(self, assumptions):
+    def process(self) -> None:
         super().process()
-        ##############################################################
-        assumptions['readout']['freq'] = self.results.get('freq') or 0
-        ##############################################################
+        self.assumptions['readout']['freq'] = self.results.get('freq') or 0
 
-    def post_process(self):
-        ##############################################################
-        mapping = {'FREQ': f'{self.results.get("freq") or 0:.3f}'}
-        ##############################################################
-        super().post_process(mapping)
+    def post_process(self) -> None:
+        super().post_process(mapping = {
+            'FREQ': f'{self.results.get("freq") or 0:.3f}'
+        })

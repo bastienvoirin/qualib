@@ -13,6 +13,10 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/sphinx-toolbox-code.css" type="text/css" />
+  <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/sphinx-toolbox.css" type="text/css" />
+  <link rel="stylesheet" href="_static/sphinx_toolbox_installation.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
 
   
@@ -33,6 +37,9 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/tabs.js"></script>
+        <script src="_static/sphinx_toolbox_installation.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -163,6 +170,7 @@
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#J"><strong>J</strong></a>
@@ -173,6 +181,8 @@
  | <a href="#P"><strong>P</strong></a>
  | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
  | <a href="#W"><strong>W</strong></a>
  
@@ -190,9 +200,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference.html#qualib.calibrations.default.Report.add_results">add_results() (qualib.calibrations.default.Report method)</a>
 </li>
-      <li><a href="reference.html#qualib.calibrations.default.Report.assumptions_after">assumptions_after (qualib.calibrations.default.Report attribute)</a>
+      <li><a href="reference.html#qualib.calibrations.default.DefaultCalibration.assumptions">assumptions (qualib.calibrations.default.DefaultCalibration attribute)</a>
 </li>
-      <li><a href="reference.html#qualib.calibrations.default.Report.assumptions_before">assumptions_before (qualib.calibrations.default.Report attribute)</a>
+      <li><a href="reference.html#qualib.calibrations.default.Report.assumptions_aftr">assumptions_aftr (qualib.calibrations.default.Report attribute)</a>
+</li>
+      <li><a href="reference.html#qualib.calibrations.default.Report.assumptions_befr">assumptions_befr (qualib.calibrations.default.Report attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -200,12 +212,14 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference.html#qualib.calibrations.default.DefaultCalibration.cells">cells (qualib.calibrations.default.DefaultCalibration attribute)</a>
-
-      <ul>
-        <li><a href="reference.html#qualib.calibrations.default.Report.cells">(qualib.calibrations.default.Report attribute)</a>
+      <li><a href="reference.html#qualib.calibrations.default.Report.cell_aftr">cell_aftr (qualib.calibrations.default.Report attribute)</a>
 </li>
-      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference.html#qualib.calibrations.default.Report.cell_befr">cell_befr (qualib.calibrations.default.Report attribute)</a>
+</li>
+      <li><a href="reference.html#qualib.calibrations.default.Report.cells">cells (qualib.calibrations.default.Report attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -230,6 +244,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference.html#qualib.log.Log.exc">exc() (qualib.log.Log method)</a>
 </li>
+      <li><a href="reference.html#qualib.calibrations.default.DefaultCalibration.exopy_templ">exopy_templ (qualib.calibrations.default.DefaultCalibration attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -241,9 +257,19 @@
   </ul></td>
 </tr></table>
 
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference.html#qualib.calibrations.default.get_diff">get_diff() (in module qualib.calibrations.default)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference.html#qualib.calibrations.default.handle_magic_commands">handle_magic_commands() (in module qualib.calibrations.default)</a>
+</li>
       <li><a href="reference.html#qualib.calibrations.default.DefaultCalibration.handle_substitutions">handle_substitutions() (qualib.calibrations.default.DefaultCalibration method)</a>
 
       <ul>
@@ -252,6 +278,8 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference.html#qualib.calibrations.default.DefaultCalibration.hdf5_path">hdf5_path (qualib.calibrations.default.DefaultCalibration attribute)</a>
+</li>
       <li><a href="reference.html#qualib.calibrations.default.Report.header">header (qualib.calibrations.default.Report attribute)</a>
 </li>
   </ul></td>
@@ -260,12 +288,14 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference.html#qualib.log.Log.info">info() (qualib.log.Log method)</a>
+      <li><a href="reference.html#qualib.calibrations.default.DefaultCalibration.id">id (qualib.calibrations.default.DefaultCalibration attribute)</a>
 </li>
-      <li><a href="reference.html#qualib.log.Log.initialize">initialize() (qualib.log.Log method)</a>
+      <li><a href="reference.html#qualib.log.Log.info">info() (qualib.log.Log method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference.html#qualib.log.Log.initialize">initialize() (qualib.log.Log method)</a>
+</li>
       <li><a href="reference.html#qualib.calibrations.default.Report.ins_md_cell">ins_md_cell() (qualib.calibrations.default.Report method)</a>
 </li>
       <li><a href="reference.html#qualib.calibrations.default.Report.ins_py_cell">ins_py_cell() (qualib.calibrations.default.Report method)</a>
@@ -298,12 +328,18 @@
 </li>
       <li><a href="reference.html#qualib.load.load_exopy_template">load_exopy_template() (in module qualib.load)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference.html#qualib.load.load_utils">load_utils() (in module qualib.load)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference.html#qualib.log.Log">Log (class in qualib.log)</a>
 </li>
+      <li><a href="reference.html#qualib.calibrations.default.DefaultCalibration.log">log (qualib.calibrations.default.DefaultCalibration attribute)</a>
+
+      <ul>
+        <li><a href="reference.html#qualib.calibrations.default.Report.log">(qualib.calibrations.default.Report attribute)</a>
+</li>
+      </ul></li>
       <li><a href="reference.html#qualib.log.Log.log">log() (qualib.log.Log method)</a>
 </li>
   </ul></td>
@@ -331,6 +367,10 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference.html#qualib.calibrations.default.DefaultCalibration.name">name (qualib.calibrations.default.DefaultCalibration attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference.html#qualib.calibrations.default.Report.notebook">notebook (qualib.calibrations.default.Report attribute)</a>
 </li>
   </ul></td>
@@ -345,6 +385,8 @@
         <li><a href="reference.html#qualib.calibrations.default.qualib.calibrations.NAME.NAME_utils.Calibration.post_process">(qualib.calibrations.default.qualib.calibrations.NAME.NAME_utils.Calibration method)</a>
 </li>
       </ul></li>
+      <li><a href="reference.html#qualib.calibrations.default.DefaultCalibration.pre">pre (qualib.calibrations.default.DefaultCalibration attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference.html#qualib.calibrations.default.DefaultCalibration.pre_process">pre_process() (qualib.calibrations.default.DefaultCalibration method)</a>
@@ -353,8 +395,12 @@
         <li><a href="reference.html#qualib.calibrations.default.qualib.calibrations.NAME.NAME_utils.Calibration.pre_process">(qualib.calibrations.default.qualib.calibrations.NAME.NAME_utils.Calibration method)</a>
 </li>
       </ul></li>
-      <li><a href="reference.html#qualib.calibrations.default.qualib.calibrations.NAME.NAME_utils.Calibration.process">process() (qualib.calibrations.default.qualib.calibrations.NAME.NAME_utils.Calibration method)</a>
+      <li><a href="reference.html#qualib.calibrations.default.DefaultCalibration.process">process() (qualib.calibrations.default.DefaultCalibration method)</a>
+
+      <ul>
+        <li><a href="reference.html#qualib.calibrations.default.qualib.calibrations.NAME.NAME_utils.Calibration.process">(qualib.calibrations.default.qualib.calibrations.NAME.NAME_utils.Calibration method)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -403,11 +449,33 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference.html#qualib.calibrations.default.Report">Report (class in qualib.calibrations.default)</a>
 </li>
+      <li><a href="reference.html#qualib.calibrations.default.DefaultCalibration.report">report (qualib.calibrations.default.DefaultCalibration attribute)</a>
+</li>
+      <li><a href="reference.html#qualib.calibrations.default.DefaultCalibration.report_templ">report_templ (qualib.calibrations.default.DefaultCalibration attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference.html#qualib.calibrations.default.DefaultCalibration.results">results (qualib.calibrations.default.DefaultCalibration attribute)</a>
+</li>
       <li><a href="reference.html#qualib.main.Qualib.run">run() (qualib.main.Qualib method)</a>
 </li>
       <li><a href="reference.html#qualib.main.Qualib.run_all">run_all() (qualib.main.Qualib method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference.html#qualib.calibrations.default.DefaultCalibration.substitutions">substitutions (qualib.calibrations.default.DefaultCalibration attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference.html#qualib.calibrations.default.DefaultCalibration.timestamp">timestamp (qualib.calibrations.default.DefaultCalibration attribute)</a>
 </li>
   </ul></td>
 </tr></table>

@@ -1,36 +1,51 @@
+from __future__ import annotations
 import re
 import subprocess
-import nbformat as nbf
-import nbformat.v4 as nbfv4
+import nbformat as nb
+from nbformat.v4 import new_notebook
+from nbformat.v4 import new_markdown_cell as new_md_cell
+from nbformat.v4 import new_code_cell as new_py_cell
 import json
 import numpy as np
 import scipy
 import difflib
 import sys
 import os
+from typing import List, Dict, Generator
+from ..log import Log
 
-def get_diff(prev, next):
-    """
+def get_diff(prev: List[str], next: List[str]) -> Generator[str, None, None]:
+    """Generator of diff lines between ``prev`` and ``next``.
+    
     Args:
-        prev (`list` of `str`):
-        next (`list` of `str`):
-
-    Returns:
-        `list` of `str`: Difference between ``prev`` and ``next``.
+        prev: First list of lines.
+        next: Second list of lines.
     """
-    return [line for line in difflib.Differ().compare(prev, next) if line[0] in ('+', '-')]
+    return (line for line in difflib.Differ().compare(prev, next) if line[0] in ('+', '-'))
 
-def keep_cell(src):
+def keep_cell(src: List[str]) -> bool:
     """Handles conditional cells: skips a given cell if its first line is ``#if condition:`` and ``condition`` evaluates to ``False``.
     
     Args:
-        src (`list` of `str`): Lines of a given cell
-
-    Returns:
-        bool:
+        src: Lines of a given cell.
     """
     first_line = src[0].strip()
     return first_line[:3] != '#if' or eval(first_line[4:-1])
+
+def handle_magic_commands(log: Log, pre: str, line: str) -> bool:
+    """Filters magic commands and runs ``%run path_or_url`` ones.
+    
+    Args:
+        log:
+        pre: Log prefix.
+        line:
+        
+    Returns:
+        ``False`` if ``line`` is a magic command, ``True`` otherwise.
+    """
+    if line[0][:4] == r'%run':
+        log.debug(pre, line)
+    return line[0] != '%'
 
 ######################################################################
 
@@ -46,7 +61,7 @@ class DefaultCalibration:
         name (str):
         substitutions (dict):
         exopy_templ (str):
-        pre (str): Log prefix
+        pre (str): Log prefix.
         
     Attributes:
         log (Log):
@@ -63,7 +78,7 @@ class DefaultCalibration:
         results (dict):
     """
     
-    def __init__(self, log, report, assumptions, id, name, substitutions, exopy_templ, pre, timestamp):
+    def __init__(self, log: Log, report: Report, assumptions: dict, id: int, name: str, substitutions: Dict[str, str], exopy_templ: str, pre: str, timestamp: str):
         self.log           = log
         self.report        = report
         self.assumptions   = assumptions
@@ -74,32 +89,30 @@ class DefaultCalibration:
         self.pre           = pre
         self.timestamp     = timestamp
 
-        self.report_templ  = nbf.read(f'qualib/calibrations/{name}/template_{name}.ipynb', as_version=4).cells
+        self.report_templ  = nb.read(f'qualib/calibrations/{name}/template_{name}.ipynb', as_version=4).cells
         self.hdf5_path     = f'{assumptions["default_path"]}/{timestamp}_{id:03d}_{pre[:-1]}.h5'
         self.results       = {}
     
-    def handle_substitutions(self):
+    def handle_substitutions(self, mapping: Dict[str, str] = {}) -> None:
         """Handles substitutions. Should be called at the end of :py:func:`Calibration.handle_substitutions`.
         
-        Returns:
-            `None`
+        Args:
+            mapping: Dictionary of substitutions.
         """
-        for key, val in self.substitutions.items():
+        mapping['HDF5_PATH'] = self.hdf5_path
+        for key, val in {**mapping, **self.substitutions.items()}:
             # Handle substitutions in Exopy template
             self.exopy_templ = self.exopy_templ.replace(key, val)
 
             # Handle substitutions in report template
             for i in range(len(self.report_templ)):
-                self.report_templ[i].source = self.report_templ[i].source.replace(key, val)
+                self.report_templ[i].source = self.report_templ[i].source.replace('{'+key+'}', val)
 
-    def pre_process(self, mapping = {}):
+    def pre_process(self, mapping: Dict[str, str] = {}) -> None:
         """Handles pre-placeholders. Should be called at the end of :py:func:`Calibration.pre_process`.
 
         Args:
-            mapping (dict): Dictionary of ``'PRE_PLACEHOLDER': value`` pairs.
-        
-        Returns:
-            `None`
+            mapping: Dictionary of ``'PRE_PLACEHOLDER': value`` pairs.
         """
         # Handle pre-placeholders in Exopy template
         exopy_templ_befr = self.exopy_templ.splitlines()
@@ -124,12 +137,11 @@ class DefaultCalibration:
             f.write(self.exopy_templ)
 
         # Handle pre-placeholders in report template
-        mapping['HDF5_PATH'] = self.hdf5_path
         for key, val in mapping.items():
             for i in range(len(self.report_templ)):
-                self.report_templ[i]['source'] = self.report_templ[i]['source'].replace(key, val)
+                self.report_templ[i]['source'] = self.report_templ[i]['source'].replace('{'+key+'}', val)
 
-    def process(self):
+    def process(self) -> None:
         """Executes analysis code and updates assumptions.
 
         """
@@ -144,7 +156,12 @@ class DefaultCalibration:
         self.log.info(self.pre, 'Executing header')
         for cell in self.report.header:
             if cell['cell_type'] == 'code':
-                code = '\n'.join(filter(lambda line: line[0] != '%', cell['source'].splitlines())) # Handle magic commands
+                # Handle magic commands
+                code = '\n'.join([
+                    line for line in cell['source'].splitlines()
+                    if handle_magic_commands(self.log, self.pre, line)
+                ])
+                
                 try:
                     exec(code, globals(), locals())
                 except:
@@ -182,11 +199,11 @@ class DefaultCalibration:
                             self.log.error(self.pre, message)
                     assert not errors, '\n  '+'\n  '.join(errors)
 
-    def post_process(self, mapping):
+    def post_process(self, mapping: Dict[str, str] = {}) -> None:
         """Handles post-placeholders. Should be called at the end of :py:func:`Calibration.post_process`.
         
         Args:
-            mapping (dict): Dictionary of ``'POST_PLACEHOLDER': value`` pairs.
+            mapping: Dictionary of ``'POST_PLACEHOLDER': value`` pairs.
         """
         self.log.info(self.pre, f'Handling post_process placeholders defined in "qualib/calibrations/{self.name}/{self.name}_utils.py"')
         self.log.info(self.pre, self.log.json(mapping))
@@ -206,40 +223,40 @@ class Report:
     """Generates and updates a Jupyter notebook to report the calibrations results.
         
     Args:
-        filename (str): Report filename.
-        assumptions (dict): State of the assumptions before the calibrations.
-        calib_scheme_str (str): String representation of the calibration sequence.
+        filename (str):
+        assumptions (dict):
+        calib_scheme_str (str):
             
     Attributes:
         log (Log):
         filename (str):
-        header (list): Default header cells.
+        header (list):
         notebook:
         cells (list):
-        assumptions_befr (str): Assumptions before the current calibration.
-        assumptions_aftr (str): Assumptions after the current calibration.
-        cell_befr (int): Position of the cell receiving the assumptions before the current calibration.
-        cell_aftr (int): Position of the cell receiving the assumptions before the current calibration;
+        assumptions_befr (str):
+        assumptions_aftr (str):
+        cell_befr (int):
+        cell_aftr (int):
     """
         
-    def __init__(self, log, filename, assumptions, calib_scheme_str):
+    def __init__(self, log: Log, filename: str, assumptions: dict, calib_scheme: str):
         self.log      = log
         self.filename = filename
-        self.header   = nbf.read('qualib/calibrations/default_header.ipynb', as_version=4).cells
-        self.notebook = nbfv4.new_notebook()
+        self.header   = nb.read('qualib/calibrations/default_header.ipynb', as_version=4).cells
+        self.notebook = new_notebook()
         self.cells    = []
 
         self.assumptions_befr = json.dumps(assumptions, indent=4)
 
         self.add_md_cell('# Calibration sequence')
-        self.add_py_cell(calib_scheme_str.strip()+';')
+        self.add_py_cell(calib_scheme.strip()+';')
         self.add_md_cell('# Assumptions before calibration sequence')
         self.add_py_cell(self.assumptions_befr+';')
 
         self.add_md_cell('# Assumptions after calibration sequence')
-        self.cell_aftr = len(self.cells)
+        self.cell_aftr: int = len(self.cells)
         self.add_py_cell('')
-        self.cell_diff = len(self.cells)
+        self.cell_diff: int = len(self.cells)
         self.add_md_cell('# Assumptions diff')
         
         for cell in self.header:
@@ -248,36 +265,34 @@ class Report:
             if cell['cell_type'] == 'markdown':
                 self.add_md_cell(cell['source'])
 
-    def update(self):
-        """Overwrites ``self.notebook`` and ``reports/report_TIMESTAMP.ipynb`` from the list of cells ``self.cells``.
-
-        Returns:
-            Report: ``self``.
+    def update(self) -> Report:
+        """Overwrites ``self.notebook`` and ``reports/report_TIMESTAMP.ipynb``
+        from the list of cells ``self.cells``.
+        
         """
-        self.notebook = nbfv4.new_notebook()
+        self.notebook = new_notebook()
 
         for cell in self.cells:
             if cell['type'] == 'md':
-                self.notebook['cells'].append(nbfv4.new_markdown_cell(cell['source']))
+                self.notebook['cells'].append(new_md_cell(cell['source']))
             if cell['type'] == 'py':
-                self.notebook['cells'].append(nbfv4.new_code_cell(cell['source']))
+                self.notebook['cells'].append(new_py_cell(cell['source']))
 
-        nbf.write(self.notebook, self.filename, version=4)
+        nb.write(self.notebook, self.filename, version=4)
         return self
     
-    def add_calibration(self, calibration):
+    def add_calibration(self, calibration) -> Report:
         """Appends a calibration to the report.
         
         Args:
-            calibration (Calibration): Instance of the current Calibration class.
-
-        Returns:
-            Report: ``self``.
+            calibration: Instance of the current Calibration class.
         """
         self.last_calibration = len(self.cells)
         for cell in calibration.report_templ:
             src = cell['source'].splitlines()
-            if keep_cell(src): # Handle conditional cells
+            
+            # Handle conditional cells
+            if keep_cell(src):
                 if src[0][:3] == '#if':
                     src = src[1:]
                 if cell['cell_type'] == 'code':
@@ -286,39 +301,36 @@ class Report:
                     self.add_md_cell('\n'.join(src))
         return self
         
-    def add_results(self, calibration, assumptions):
-        """Reports results from the previous calibration.
+    def add_results(self, calibration, assumptions: dict) -> Report:
+        """Reports results from the current calibration.
         
         Args:
-            assumptions (dict): Dictionary of assumptions.
-            
-        Returns:
-            Report: ``self``.
+            assumptions: Assumptions after the current calibration.
         """
         self.log.info(calibration.pre, 'Comparing assumptions before and assumptions after')
         self.assumptions_aftr = json.dumps(assumptions, indent=4)
-        diff = get_diff(
+        diff = list(get_diff(
             self.assumptions_befr.splitlines(keepends=True),
             self.assumptions_aftr.splitlines(keepends=True)
-        )
+        ))
 
         self.log.info(calibration.pre, 'Updating assumptions after and assumptions diff')
         self.cells[self.cell_aftr]['source'] = self.assumptions_aftr+';'
         self.cells[self.cell_diff]['source'] = ['# Assumptions diff\n\n', '```diff\n', *diff, '```']
         return self.update()
 
-    def add_md_cell(self, src):
+    def add_md_cell(self, src) -> Report:
         self.cells.append({'type': 'md', 'source': src})
         return self.update()
 
-    def add_py_cell(self, src):
+    def add_py_cell(self, src) -> Report:
         self.cells.append({'type': 'py', 'source': src})
         return self.update()
 
-    def ins_md_cell(self, pos, src):
+    def ins_md_cell(self, pos: int, src) -> Report:
         self.cells.insert(pos, {'type': 'md', 'source': src})
         return self.update()
 
-    def ins_py_cell(self, pos, src):
+    def ins_py_cell(self, pos: int, src) -> Report:
         self.cells.insert(pos, {'type': 'py', 'source': src})
         return self.update()

@@ -140,7 +140,7 @@ Substitutions
 A substitution is a mapping handled in :py:meth:`Calibration.handle_substitutions`, before any placeholder. Substitutions are typically used to define several variants of a given calibration. Substitutions can be found in:
 
     * ``CALIBRATION_NAME_template.meas.ini`` (format: ``SUBSTITUTION``)
-    * ``template_CALIBRATION_NAME.ipynb`` (format: ``SUBSTITUTION``)
+    * ``template_CALIBRATION_NAME.ipynb`` (format: ``{SUBSTITUTION}``)
 
 A substitution can be:
 
@@ -150,8 +150,8 @@ A substitution can be:
 .. note::
     Special substitutions:
     
-        * [auto] ``HDF5_PATH`` in ``template_CALIBRATION_NAME.ipynb``: absolute path to the HDF5 data file; replaced during ``DefaultCalibration.pre_process()`` with ``default_path`` (defined in ``assumptions.py``) and a timestamp.
-        * [user] ``NAME`` in ``calibration_scheme.py``: name of the substitutions group, in *camel\_case*.
+        * [auto] ``{HDF5_PATH}`` in ``template_CALIBRATION_NAME.ipynb``: absolute path to the HDF5 data file; replaced with ``default_path`` (defined in ``assumptions.py``) and a timestamp.
+        * [user] ``{NAME}`` in ``calibration_scheme.py``: name of the substitutions group, in *camel\_case*.
     
 Pre-placeholders
 ----------------------------------
@@ -159,7 +159,7 @@ Pre-placeholders
 Pre-placeholders can be found in:
 
     * ``CALIBRATION_NAME_template.meas.ini`` (format: ``$parameter`` or ``$section/parameter``) where ``section`` and ``parameter`` are alphanumeric strings (``a``-``z``, ``A``-``Z``, ``0``-``9``, ``_``)
-    * ``template_CALIBRATION_NAME.ipynb`` (format: ``PRE_PLACEHOLDER``)
+    * ``template_CALIBRATION_NAME.ipynb`` (format: ``{PRE_PLACEHOLDER}``)
     
 Pre-placeholders are handled in ``Calibration.pre_process()``.
 
@@ -168,7 +168,7 @@ Post-placeholders
 
 Post-placeholders can be found in:
 
-    * ``template_CALIBRATION_NAME.ipynb`` (format: ``$POST_PLACEHOLDER$``)
+    * ``template_CALIBRATION_NAME.ipynb`` (format: ``{POST_PLACEHOLDER}``)
     
 Post-placeholders are handled in ``Calibration.post_process()``.
         

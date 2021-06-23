@@ -13,6 +13,10 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/sphinx-toolbox-code.css" type="text/css" />
+  <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/sphinx-toolbox.css" type="text/css" />
+  <link rel="stylesheet" href="_static/sphinx_toolbox_installation.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
 
   
@@ -33,6 +37,8 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/sphinx_toolbox_installation.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -586,7 +592,7 @@ div.rendered_html tbody tr:hover {
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">CALIBRATION_NAME_template.meas.ini</span></code> (format: <code class="docutils literal notranslate"><span class="pre">SUBSTITUTION</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code> (format: <code class="docutils literal notranslate"><span class="pre">SUBSTITUTION</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code> (format: <code class="docutils literal notranslate"><span class="pre">{SUBSTITUTION}</span></code>)</p></li>
 </ul>
 </div></blockquote>
 <p>A substitution can be:</p>
@@ -601,8 +607,8 @@ div.rendered_html tbody tr:hover {
 <p>Special substitutions:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>[auto] <code class="docutils literal notranslate"><span class="pre">HDF5_PATH</span></code> in <code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code>: absolute path to the HDF5 data file; replaced during <code class="docutils literal notranslate"><span class="pre">DefaultCalibration.pre_process()</span></code> with <code class="docutils literal notranslate"><span class="pre">default_path</span></code> (defined in <code class="docutils literal notranslate"><span class="pre">assumptions.py</span></code>) and a timestamp.</p></li>
-<li><p>[user] <code class="docutils literal notranslate"><span class="pre">NAME</span></code> in <code class="docutils literal notranslate"><span class="pre">calibration_scheme.py</span></code>: name of the substitutions group, in <em>camel_case</em>.</p></li>
+<li><p>[auto] <code class="docutils literal notranslate"><span class="pre">{HDF5_PATH}</span></code> in <code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code>: absolute path to the HDF5 data file; replaced with <code class="docutils literal notranslate"><span class="pre">default_path</span></code> (defined in <code class="docutils literal notranslate"><span class="pre">assumptions.py</span></code>) and a timestamp.</p></li>
+<li><p>[user] <code class="docutils literal notranslate"><span class="pre">{NAME}</span></code> in <code class="docutils literal notranslate"><span class="pre">calibration_scheme.py</span></code>: name of the substitutions group, in <em>camel_case</em>.</p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -613,7 +619,7 @@ div.rendered_html tbody tr:hover {
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">CALIBRATION_NAME_template.meas.ini</span></code> (format: <code class="docutils literal notranslate"><span class="pre">$parameter</span></code> or <code class="docutils literal notranslate"><span class="pre">$section/parameter</span></code>) where <code class="docutils literal notranslate"><span class="pre">section</span></code> and <code class="docutils literal notranslate"><span class="pre">parameter</span></code> are alphanumeric strings (<code class="docutils literal notranslate"><span class="pre">a</span></code>-<code class="docutils literal notranslate"><span class="pre">z</span></code>, <code class="docutils literal notranslate"><span class="pre">A</span></code>-<code class="docutils literal notranslate"><span class="pre">Z</span></code>, <code class="docutils literal notranslate"><span class="pre">0</span></code>-<code class="docutils literal notranslate"><span class="pre">9</span></code>, <code class="docutils literal notranslate"><span class="pre">_</span></code>)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code> (format: <code class="docutils literal notranslate"><span class="pre">PRE_PLACEHOLDER</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code> (format: <code class="docutils literal notranslate"><span class="pre">{PRE_PLACEHOLDER}</span></code>)</p></li>
 </ul>
 </div></blockquote>
 <p>Pre-placeholders are handled in <code class="docutils literal notranslate"><span class="pre">Calibration.pre_process()</span></code>.</p>
@@ -623,7 +629,7 @@ div.rendered_html tbody tr:hover {
 <p>Post-placeholders can be found in:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code> (format: <code class="docutils literal notranslate"><span class="pre">$POST_PLACEHOLDER$</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code> (format: <code class="docutils literal notranslate"><span class="pre">{POST_PLACEHOLDER}</span></code>)</p></li>
 </ul>
 </div></blockquote>
 <p>Post-placeholders are handled in <code class="docutils literal notranslate"><span class="pre">Calibration.post_process()</span></code>.</p>
@@ -674,8 +680,8 @@ div.rendered_html tbody tr:hover {
 
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;another_calibration&quot;</span><span class="p">,</span>
      <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span>                <span class="s2">&quot;variant_in_camel_case&quot;</span><span class="p">,</span>
-                       <span class="s2">&quot;A_SUBSTITUTION&quot;</span><span class="p">:</span>      <span class="s2">&quot;a_value&quot;</span><span class="p">,</span>
-                       <span class="s2">&quot;ANOTHER_SUBTITUTION&quot;</span><span class="p">:</span> <span class="s2">&quot;another_value&quot;</span><span class="p">}}</span>
+               <span class="s2">&quot;A_SUBSTITUTION&quot;</span><span class="p">:</span>      <span class="s2">&quot;a_value&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;ANOTHER_SUBTITUTION&quot;</span><span class="p">:</span> <span class="s2">&quot;another_value&quot;</span><span class="p">}}</span>
 <span class="p">]</span>
 </pre></div>
 </div>

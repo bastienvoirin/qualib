@@ -1,13 +1,19 @@
-from ..default import DefaultCalibration, Report
-import json
+from ..default import DefaultCalibration
 
-class Calibration(DefaultCalibration): 
-    def process(self, calib_name, calib_id, subs_name, subs_misc, report_filename, timestamp, assumptions):
-        """
-        Analyze and report the current calibration
-        """
-        repl = {'§FREQ§': str(assumptions['ramsey']['freq'])}
-        cells = self.pre_process(calib_name, calib_id, subs_name, subs_misc, timestamp, assumptions, repl)
+class Calibration(DefaultCalibration):
+    def handle_substitutions(self) -> None:
+        super().handle_substitutions()
+
+    def pre_process(self) -> None:
+        super().pre_process(mapping = {
+            'FREQ': str(self.assumptions['ramsey']['freq'])
+        })
+
+    def process(self) -> None:
+        super().process()
+
+    def post_process(self) -> None:
+        super().post_process(mapping = {
+            'DELTA_F': f'{self.results["delta_fr"]:.6f}'
+        })
         
-        repl = {'§DELTA_F§': f'{self.results["delta_fr"]:.6f}'}
-        self.post_process(calib_name, report_filename, cells, repl)

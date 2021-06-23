@@ -1,19 +1,21 @@
-from ..default import DefaultCalibration, Report
-import json
+from ..default import DefaultCalibration
 
-class Calibration(DefaultCalibration): 
-    def process(self, calib_name, calib_id, subs_name, subs_misc, report_filename, timestamp, assumptions):
-        """
-        Analyze and report the current calibration
-        """
-        repl = {'§FREQ§': str(assumptions['ramsey']['freq'])}
-        cells = self.pre_process(calib_name, calib_id, subs_name, subs_misc, timestamp, assumptions, repl)
-        
-        assumptions['qubit']['freq'] = self.results['f_LO']
-        assumptions['ramsey']['freq'] = self.results['f_LO'] - assumptions['ramsey']['delta_freq']
-        
-        repl = {
-            '§f_LO§': f'{self.results["f_LO"]:.6f}',
-            '§T2§':   f'{abs(self.results["T2"])/1000:.3f}',
-        }
-        self.post_process(calib_name, report_filename, cells, repl)
+class Calibration(DefaultCalibration):
+    def handle_substitutions(self) -> None:
+        super().handle_substitutions()
+
+    def pre_process(self) -> None:
+        super().pre_process(mapping = {
+            'FREQ': str(self.assumptions['ramsey']['freq'])
+        })
+
+    def process(self) -> None:
+        super().process()
+        self.assumptions['qubit']['freq']  = self.results['f_LO']
+        self.assumptions['ramsey']['freq'] = self.results['f_LO'] - self.assumptions['ramsey']['delta_freq']
+
+    def post_process(self) -> None:
+        super().post_process(mapping = {
+            'f_LO': f'{self.results["f_LO"]:.6f}',
+            'T2':   f'{abs(self.results["T2"])/1000:.3f}',
+        })

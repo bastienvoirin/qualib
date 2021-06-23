@@ -1,9 +1,12 @@
+from __future__ import annotations
 import importlib
+from typing import Tuple
+from .calibrations.CALIBRATION_NAME_utils import Calibration
 
-def load_calibration_scheme(log, path):
+def load_calibration_scheme(log, path: str) -> Tuple[list, str]:
     """
     Returns:
-        `tuple` (`dict`, `str`): Parsed calibration sequence, raw calibration sequence.
+        Parsed calibration sequence, raw calibration sequence.
     """
     log.info(f'Loading calibration sequence "{path}"')
     try:
@@ -15,22 +18,7 @@ def load_calibration_scheme(log, path):
         log.exc()
         raise
     
-def load_exopy_template(log, calib, subs_name):
-    """
-    Returns:
-        `str`: Contents of the Exopy template for a given calibration name.
-    """
-    path = f'qualib/calibrations/{calib}/{calib}_template.meas.ini'
-    log.info(f'{calib}{"_"+subs_name if subs_name else ""}: Loading Exopy measurements template "{path}"')
-    try:
-        with open(path, encoding='utf-8') as f:
-            return f.read()
-    except:
-        log.error(f'Unable to load {path}')
-        log.exc()
-        raise
-    
-def load_assumptions(log):
+def load_assumptions(log) -> dict:
     """
     Returns:
         `dict`: Assumptions before any calibration.
@@ -44,17 +32,32 @@ def load_assumptions(log):
         log.exc()
         raise
 
-def load_utils(log, calib, sub):
+def load_utils(log, name: str, prefix: str) -> Calibration:
     """
     Returns:
-        Calibration: Calibration class from ``CALIBRATION_NAME_utils.py``.
+        Calibration class from ``CALIBRATION_NAME_utils.py``.
     """
-    path = f'qualib.calibrations.{calib}.{calib}_utils'
-    log.info(f'{calib}{sub}: Importing Calibration class from "qualib/calibrations/{calib}/{calib}_utils.py"')
+    path = f'qualib.calibrations.{name}.{name}_utils'
+    log.info(prefix, f'Importing Calibration class from "qualib/calibrations/{name}/{name}_utils.py"')
     try:
         module = importlib.import_module(path)
         return getattr(module, 'Calibration')
     except:
         log.error(f'Unable to import Calibration class from {path}')
+        log.exc()
+        raise
+    
+def load_exopy_template(log, name: str, prefix: str) -> str:
+    """
+    Returns:
+        Contents of the Exopy template for a given calibration name.
+    """
+    path = f'qualib/calibrations/{name}/{name}_template.meas.ini'
+    log.info(prefix, f'Loading Exopy measurements template "{path}"')
+    try:
+        with open(path, encoding='utf-8') as f:
+            return f.read()
+    except:
+        log.error(f'Unable to load {path}')
         log.exc()
         raise

@@ -6,6 +6,7 @@ import subprocess
 
 from pathlib import Path
 from datetime import datetime, time
+from typing import List, Dict
 from .load import load_calibration_scheme, load_assumptions, load_exopy_template, load_utils
 from .log import Log
 from .calibrations.default import Report
@@ -14,7 +15,7 @@ class Qualib:
     """Wrapper supclass.
 
     """
-    def run(self, log, report, assumptions, id, name, substitutions, timestamp):
+    def run(self, log: Log, report: Report, assumptions: dict, id: int, name: str, substitutions: Dict[str, str], timestamp: str) -> None:
         """Runs a single calibration with given assumptions and Exopy template.
         
         Args:
@@ -37,7 +38,7 @@ class Qualib:
         
         try:
             Calibration = load_utils(log, name, substitutions)
-            exopy_templ = load_exopy_template(log, name, substitutions['NAME'])
+            exopy_templ = load_exopy_template(log, name, prefix)
             
             log.info(prefix, 'Initializing calibration')
             calibration = Calibration(log, report, assumptions, id, name, substitutions, exopy_templ, prefix, timestamp)
@@ -73,7 +74,7 @@ class Qualib:
 
         return
     
-    def run_all(self, pkg_calib_scheme = ''):
+    def run_all(self, pkg_calib_scheme: str = '') -> None:
         """Runs a calibration sequence whose path is either passed:
         
             * As ``pkg_calib_scheme`` --- package usage: ``Qualib().run_all('calibration_scheme.py')``

@@ -20,6 +20,8 @@ sys.path.insert(0, os.path.abspath('../'))
 project = 'Qualib'
 copyright = '2021, Bastien Voirin'
 author = 'Bastien Voirin'
+github_username = 'bastienvoirin'
+github_repository = 'qualib'
 
 
 # -- General configuration ---------------------------------------------------
@@ -28,11 +30,18 @@ author = 'Bastien Voirin'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx_toolbox',
+    'sphinx_toolbox.more_autodoc',
+    'sphinx_toolbox.more_autodoc.augment_defaults',
+    'sphinx_toolbox.more_autodoc.generic_bases',
+    'sphinx_toolbox.more_autodoc.typehints',
     'nbsphinx',
     'sphinx.ext.graphviz',
-    'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
-    'sphinx.ext.napoleon'
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
+    'sphinx_tabs.tabs',
+    'sphinx.ext.autodoc'
 ]
 
 graphviz_output_format = 'svg'
@@ -64,3 +73,5 @@ autodoc_default_options = {
     #'special-members': '__init__',
     'undoc-members': True
 }
+
+autodoc_typehints = "description"
