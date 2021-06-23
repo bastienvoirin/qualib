@@ -21,7 +21,8 @@ def get_diff(prev: List[str], next: List[str]) -> Generator[str, None, None]:
         prev: First list of lines.
         next: Second list of lines.
     """
-    return (line for line in difflib.Differ().compare(prev, next) if line[0] in ('+', '-'))
+    return (line for line in difflib.Differ().compare(prev, next)
+            if line[0] in ('+', '-'))
 
 def keep_cell(src: List[str]) -> bool:
     """Handles conditional cells: skips a given cell if its first line is ``#if condition:`` and ``condition`` evaluates to ``False``.
@@ -38,12 +39,13 @@ def handle_magic_commands(log: Log, pre: str, line: str) -> bool:
     Args:
         log:
         pre: Log prefix.
-        line:
+        line: Line to process.
         
     Returns:
         ``False`` if ``line`` is a magic command, ``True`` otherwise.
     """
     if line[0][:4] == r'%run':
+        # TODO: Execute script at specified URL
         log.debug(pre, line)
     return line[0] != '%'
 
@@ -131,6 +133,7 @@ class DefaultCalibration:
             # Remove unnecessary whitespaces and log exopy_templ diff
             self.log.debug(self.pre, f'{line[0]} {line[1:].strip()}')
 
+        # Generating NAME.meas.ini file
         meas_path = f'qualib/calibrations/{self.name}/{self.name}.meas.ini'
         self.log.info(self.pre, f'Generating "{meas_path}"')
         with open(meas_path, 'w', encoding='utf-8') as f:
@@ -162,6 +165,7 @@ class DefaultCalibration:
                     if handle_magic_commands(self.log, self.pre, line)
                 ])
                 
+                # Execute code cell
                 try:
                     exec(code, globals(), locals())
                 except:
@@ -172,15 +176,19 @@ class DefaultCalibration:
         loc = locals()
         for cell in self.report.cells[self.report.last_calibration:]:
             if cell['type'] == 'py':
+                # Execute code cell
                 try:
                     exec(cell['source'], loc, loc)
                 except:
                     self.log.debug('', cell['source'].splitlines())
                     raise
+                
+                # Fetch results
                 if '_results' in loc and '_results' in cell['source']:
                     self.log.info(self.pre, 'Fetching results')
                     self.results = loc['_results']
 
+                # Check standard deviations against optimized values
                 if '_opt' in loc and '_cov' in loc and '_opt' in cell['source'] and '_cov' in cell['source']:
                     self.log.info(self.pre, 'Checking standard deviations against optimized values')
                     ratios  = np.sqrt(np.diag(loc['_cov'])) / np.abs(loc['_opt'])
@@ -190,6 +198,7 @@ class DefaultCalibration:
                               f'from _opt and _cov in template_{self.name}.ipynb'
                     assert all(ratios <= 0.05), (self.log.error(self.pre, message) and False) or message
                     
+                # Handle user-defined errors
                 if '_err' in loc and '_err' in cell['source']:
                     self.log.info(self.pre, 'Handling custom errors')
                     errors = []
@@ -233,6 +242,7 @@ class Report:
         header (list):
         notebook:
         cells (list):
+        assumptions (dict):
         assumptions_befr (str):
         assumptions_aftr (str):
         cell_befr (int):
@@ -245,7 +255,8 @@ class Report:
         self.header   = nb.read('qualib/calibrations/default_header.ipynb', as_version=4).cells
         self.notebook = new_notebook()
         self.cells    = []
-
+        
+        self.assumptions = dict(assumptions)
         self.assumptions_befr = json.dumps(assumptions, indent=4)
 
         self.add_md_cell('# Calibration sequence')
@@ -254,11 +265,12 @@ class Report:
         self.add_py_cell(self.assumptions_befr+';')
 
         self.add_md_cell('# Assumptions after calibration sequence')
-        self.cell_aftr: int = len(self.cells)
+        self.cell_aftr: int = len(self.cells) # Placeholder cell
         self.add_py_cell('')
-        self.cell_diff: int = len(self.cells)
+        self.cell_diff: int = len(self.cells) # Placeholder cell
         self.add_md_cell('# Assumptions diff')
         
+        # Add default header (imports and useful functions)
         for cell in self.header:
             if cell['cell_type'] == 'code':
                 self.add_py_cell(cell['source'])
@@ -301,14 +313,12 @@ class Report:
                     self.add_md_cell('\n'.join(src))
         return self
         
-    def add_results(self, calibration, assumptions: dict) -> Report:
+    def add_results(self, calibration) -> Report:
         """Reports results from the current calibration.
         
-        Args:
-            assumptions: Assumptions after the current calibration.
         """
         self.log.info(calibration.pre, 'Comparing assumptions before and assumptions after')
-        self.assumptions_aftr = json.dumps(assumptions, indent=4)
+        self.assumptions_aftr = json.dumps(self.assumptions, indent=4)
         diff = list(get_diff(
             self.assumptions_befr.splitlines(keepends=True),
             self.assumptions_aftr.splitlines(keepends=True)

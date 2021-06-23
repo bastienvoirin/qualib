@@ -15,20 +15,18 @@ class Qualib:
     """Wrapper supclass.
 
     """
+    
     def run(self, log: Log, report: Report, assumptions: dict, id: int, name: str, substitutions: Dict[str, str], timestamp: str) -> None:
         """Runs a single calibration with given assumptions and Exopy template.
         
         Args:
-            log (Log):
-            report (Report):
-            assumptions (dict): The current state of the assumptions (updated after each calibration).
-            id (int): A natural number giving the rank of the calibration to run.
-            name (str): The name of the calibration to run.
-            substitutions (dict): The dictionary of substitutions.
-            timestamp (str):
-        
-        Returns:
-            `None`
+            log:
+            report:
+            assumptions: The current state of the assumptions (updated after each calibration).
+            id: A natural number giving the rank of the calibration to run.
+            name: The name of the calibration to run.
+            substitutions: The dictionary of substitutions.
+            timestamp:
         """
         full = f'{name}_{substitutions["NAME"]}' if substitutions['NAME'] else name
         prefix = full+':'
@@ -57,13 +55,14 @@ class Qualib:
             subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path], capture_output=True, shell=True)
             
             log.info(prefix, 'Processing (handling interfaces and updating assumptions)')
-            calibration.process(assumptions)
+            calibration.process()
 
             log.info(prefix, 'Post-processing')
             calibration.post_process()
 
             log.info(prefix, 'Reporting results')
-            report.add_results(calibration, assumptions)
+            report.add_results(calibration)
+            assumptions = dict(calibration.assumptions)
 
         except:
             log.error(prefix, f'{sys.exc_info()[1]}')
@@ -81,10 +80,7 @@ class Qualib:
             * Or in ``sys.argv`` --- CLI/module usage: ``python qualib.main calibration_scheme.py``.
         
         Args:
-            pkg_calib_scheme (`str`, optional): path to the Python file defining the calibration sequence to run.
-        
-        Returns:
-            `None`
+            pkg_calib_scheme: path to the Python file defining the calibration sequence to run.
         """
         assert len(sys.argv) > 1 or pkg_calib_scheme, '\n'.join([
             'Missing calibration scheme\n',

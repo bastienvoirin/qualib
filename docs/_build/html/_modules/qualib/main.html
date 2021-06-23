@@ -179,20 +179,18 @@
     <span class="sd">&quot;&quot;&quot;Wrapper supclass.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    
 <div class="viewcode-block" id="Qualib.run"><a class="viewcode-back" href="../../reference.html#qualib.main.Qualib.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log</span><span class="p">:</span> <span class="n">Log</span><span class="p">,</span> <span class="n">report</span><span class="p">:</span> <span class="n">Report</span><span class="p">,</span> <span class="n">assumptions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">substitutions</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Runs a single calibration with given assumptions and Exopy template.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            log (Log):</span>
-<span class="sd">            report (Report):</span>
-<span class="sd">            assumptions (dict): The current state of the assumptions (updated after each calibration).</span>
-<span class="sd">            id (int): A natural number giving the rank of the calibration to run.</span>
-<span class="sd">            name (str): The name of the calibration to run.</span>
-<span class="sd">            substitutions (dict): The dictionary of substitutions.</span>
-<span class="sd">            timestamp (str):</span>
-<span class="sd">        </span>
-<span class="sd">        Returns:</span>
-<span class="sd">            `None`</span>
+<span class="sd">            log:</span>
+<span class="sd">            report:</span>
+<span class="sd">            assumptions: The current state of the assumptions (updated after each calibration).</span>
+<span class="sd">            id: A natural number giving the rank of the calibration to run.</span>
+<span class="sd">            name: The name of the calibration to run.</span>
+<span class="sd">            substitutions: The dictionary of substitutions.</span>
+<span class="sd">            timestamp:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">full</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">substitutions</span><span class="p">[</span><span class="s2">&quot;NAME&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">substitutions</span><span class="p">[</span><span class="s1">&#39;NAME&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">name</span>
         <span class="n">prefix</span> <span class="o">=</span> <span class="n">full</span><span class="o">+</span><span class="s1">&#39;:&#39;</span>
@@ -221,13 +219,14 @@
             <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;exopy&#39;</span><span class="p">,</span> <span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="s1">&#39;-x&#39;</span><span class="p">,</span> <span class="n">ini_path</span><span class="p">],</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             
             <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="s1">&#39;Processing (handling interfaces and updating assumptions)&#39;</span><span class="p">)</span>
-            <span class="n">calibration</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">assumptions</span><span class="p">)</span>
+            <span class="n">calibration</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
 
             <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="s1">&#39;Post-processing&#39;</span><span class="p">)</span>
             <span class="n">calibration</span><span class="o">.</span><span class="n">post_process</span><span class="p">()</span>
 
             <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="s1">&#39;Reporting results&#39;</span><span class="p">)</span>
-            <span class="n">report</span><span class="o">.</span><span class="n">add_results</span><span class="p">(</span><span class="n">calibration</span><span class="p">,</span> <span class="n">assumptions</span><span class="p">)</span>
+            <span class="n">report</span><span class="o">.</span><span class="n">add_results</span><span class="p">(</span><span class="n">calibration</span><span class="p">)</span>
+            <span class="n">assumptions</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">calibration</span><span class="o">.</span><span class="n">assumptions</span><span class="p">)</span>
 
         <span class="k">except</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -245,10 +244,7 @@
 <span class="sd">            * Or in ``sys.argv`` --- CLI/module usage: ``python qualib.main calibration_scheme.py``.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            pkg_calib_scheme (`str`, optional): path to the Python file defining the calibration sequence to run.</span>
-<span class="sd">        </span>
-<span class="sd">        Returns:</span>
-<span class="sd">            `None`</span>
+<span class="sd">            pkg_calib_scheme: path to the Python file defining the calibration sequence to run.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">pkg_calib_scheme</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
             <span class="s1">&#39;Missing calibration scheme</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span>

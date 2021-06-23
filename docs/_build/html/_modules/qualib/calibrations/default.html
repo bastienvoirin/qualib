@@ -185,7 +185,8 @@
 <span class="sd">        prev: First list of lines.</span>
 <span class="sd">        next: Second list of lines.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">difflib</span><span class="o">.</span><span class="n">Differ</span><span class="p">()</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">prev</span><span class="p">,</span> <span class="nb">next</span><span class="p">)</span> <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">difflib</span><span class="o">.</span><span class="n">Differ</span><span class="p">()</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">prev</span><span class="p">,</span> <span class="nb">next</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="keep_cell"><a class="viewcode-back" href="../../../reference.html#qualib.calibrations.default.keep_cell">[docs]</a><span class="k">def</span> <span class="nf">keep_cell</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Handles conditional cells: skips a given cell if its first line is ``#if condition:`` and ``condition`` evaluates to ``False``.</span>
@@ -202,12 +203,13 @@
 <span class="sd">    Args:</span>
 <span class="sd">        log:</span>
 <span class="sd">        pre: Log prefix.</span>
-<span class="sd">        line:</span>
+<span class="sd">        line: Line to process.</span>
 <span class="sd">        </span>
 <span class="sd">    Returns:</span>
 <span class="sd">        ``False`` if ``line`` is a magic command, ``True`` otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="sa">r</span><span class="s1">&#39;</span><span class="si">%r</span><span class="s1">un&#39;</span><span class="p">:</span>
+        <span class="c1"># TODO: Execute script at specified URL</span>
         <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;%&#39;</span></div>
 
@@ -295,6 +297,7 @@
             <span class="c1"># Remove unnecessary whitespaces and log exopy_templ diff</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pre</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
+        <span class="c1"># Generating NAME.meas.ini file</span>
         <span class="n">meas_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;qualib/calibrations/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.meas.ini&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pre</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Generating &quot;</span><span class="si">{</span><span class="n">meas_path</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">meas_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -326,6 +329,7 @@
                     <span class="k">if</span> <span class="n">handle_magic_commands</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
                 <span class="p">])</span>
                 
+                <span class="c1"># Execute code cell</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">exec</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="nb">globals</span><span class="p">(),</span> <span class="nb">locals</span><span class="p">())</span>
                 <span class="k">except</span><span class="p">:</span>
@@ -336,15 +340,19 @@
         <span class="n">loc</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">report</span><span class="o">.</span><span class="n">last_calibration</span><span class="p">:]:</span>
             <span class="k">if</span> <span class="n">cell</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;py&#39;</span><span class="p">:</span>
+                <span class="c1"># Execute code cell</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">exec</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">],</span> <span class="n">loc</span><span class="p">,</span> <span class="n">loc</span><span class="p">)</span>
                 <span class="k">except</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">cell</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
                     <span class="k">raise</span>
+                
+                <span class="c1"># Fetch results</span>
                 <span class="k">if</span> <span class="s1">&#39;_results&#39;</span> <span class="ow">in</span> <span class="n">loc</span> <span class="ow">and</span> <span class="s1">&#39;_results&#39;</span> <span class="ow">in</span> <span class="n">cell</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pre</span><span class="p">,</span> <span class="s1">&#39;Fetching results&#39;</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">loc</span><span class="p">[</span><span class="s1">&#39;_results&#39;</span><span class="p">]</span>
 
+                <span class="c1"># Check standard deviations against optimized values</span>
                 <span class="k">if</span> <span class="s1">&#39;_opt&#39;</span> <span class="ow">in</span> <span class="n">loc</span> <span class="ow">and</span> <span class="s1">&#39;_cov&#39;</span> <span class="ow">in</span> <span class="n">loc</span> <span class="ow">and</span> <span class="s1">&#39;_opt&#39;</span> <span class="ow">in</span> <span class="n">cell</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="s1">&#39;_cov&#39;</span> <span class="ow">in</span> <span class="n">cell</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pre</span><span class="p">,</span> <span class="s1">&#39;Checking standard deviations against optimized values&#39;</span><span class="p">)</span>
                     <span class="n">ratios</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;_cov&#39;</span><span class="p">]))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;_opt&#39;</span><span class="p">])</span>
@@ -354,6 +362,7 @@
                               <span class="sa">f</span><span class="s1">&#39;from _opt and _cov in template_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.ipynb&#39;</span>
                     <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">ratios</span> <span class="o">&lt;=</span> <span class="mf">0.05</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pre</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span> <span class="ow">and</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="n">message</span>
                     
+                <span class="c1"># Handle user-defined errors</span>
                 <span class="k">if</span> <span class="s1">&#39;_err&#39;</span> <span class="ow">in</span> <span class="n">loc</span> <span class="ow">and</span> <span class="s1">&#39;_err&#39;</span> <span class="ow">in</span> <span class="n">cell</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pre</span><span class="p">,</span> <span class="s1">&#39;Handling custom errors&#39;</span><span class="p">)</span>
                     <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
@@ -397,6 +406,7 @@
 <span class="sd">        header (list):</span>
 <span class="sd">        notebook:</span>
 <span class="sd">        cells (list):</span>
+<span class="sd">        assumptions (dict):</span>
 <span class="sd">        assumptions_befr (str):</span>
 <span class="sd">        assumptions_aftr (str):</span>
 <span class="sd">        cell_befr (int):</span>
@@ -409,7 +419,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">header</span>   <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;qualib/calibrations/default_header.ipynb&#39;</span><span class="p">,</span> <span class="n">as_version</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">cells</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">notebook</span> <span class="o">=</span> <span class="n">new_notebook</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cells</span>    <span class="o">=</span> <span class="p">[]</span>
-
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">assumptions</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">assumptions</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assumptions_befr</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">assumptions</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add_md_cell</span><span class="p">(</span><span class="s1">&#39;# Calibration sequence&#39;</span><span class="p">)</span>
@@ -418,11 +429,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">add_py_cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assumptions_befr</span><span class="o">+</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add_md_cell</span><span class="p">(</span><span class="s1">&#39;# Assumptions after calibration sequence&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cell_aftr</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_aftr</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">)</span> <span class="c1"># Placeholder cell</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_py_cell</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cell_diff</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_diff</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">)</span> <span class="c1"># Placeholder cell</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_md_cell</span><span class="p">(</span><span class="s1">&#39;# Assumptions diff&#39;</span><span class="p">)</span>
         
+        <span class="c1"># Add default header (imports and useful functions)</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">cell</span><span class="p">[</span><span class="s1">&#39;cell_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;code&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_py_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">])</span>
@@ -465,14 +477,12 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">add_md_cell</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span></div>
         
-<div class="viewcode-block" id="Report.add_results"><a class="viewcode-back" href="../../../reference.html#qualib.calibrations.default.Report.add_results">[docs]</a>    <span class="k">def</span> <span class="nf">add_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calibration</span><span class="p">,</span> <span class="n">assumptions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Report</span><span class="p">:</span>
+<div class="viewcode-block" id="Report.add_results"><a class="viewcode-back" href="../../../reference.html#qualib.calibrations.default.Report.add_results">[docs]</a>    <span class="k">def</span> <span class="nf">add_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calibration</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Report</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Reports results from the current calibration.</span>
 <span class="sd">        </span>
-<span class="sd">        Args:</span>
-<span class="sd">            assumptions: Assumptions after the current calibration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">calibration</span><span class="o">.</span><span class="n">pre</span><span class="p">,</span> <span class="s1">&#39;Comparing assumptions before and assumptions after&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assumptions_aftr</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">assumptions</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assumptions_aftr</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assumptions</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
         <span class="n">diff</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">get_diff</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assumptions_befr</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(</span><span class="n">keepends</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assumptions_aftr</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(</span><span class="n">keepends</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
