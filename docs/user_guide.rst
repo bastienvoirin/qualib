@@ -178,7 +178,6 @@ Interfaces
 An interface is a special Python variable defined in ``template_CALIBRATION_NAME.ipynb`` whose value is fetched and processed by ``Calibration.process()`` (at ``CALIBRATION_NAME_utils.py``) and/or ``DefaultCalibration.process()`` (at ``calibrations/default.py``). Currently, there are 4 interfaces:
 
 .. list-table:: List of interfaces currently supported
-    :widths: 10 90
     :header-rows: 1
 
     *   - Interface
@@ -198,7 +197,7 @@ Calibration sequences
 assumptions.py
 ----------------------------------
 
-``assumptions.py`` should be a Python dictionary or depth 1 or 2.
+``assumptions.py`` should be a Python dictionary of depth 1 or 2.
 
 calibration_scheme.py
 ----------------------------------
@@ -232,13 +231,13 @@ Typical ``template.ipynb``
 
 .. nbinput:: md
     
-    # Calibration name (SUBSTITUTION)
-    ## Result: $POST_PLACEHOLDER$ unit
+    # Calibration name ({SUBSTITUTION})
+    ## Result: {POST_PLACEHOLDER} unit
 
 .. nbinput:: ipython3
     
     # load experimental data
-    file = h5py.File(HDF5_PATH, 'r', swmr=True)
+    file = h5py.File('HDF5_PATH', 'r', swmr=True)
     xdata = file['data']['x'][()]
     ydata = file['data']['y'][()];
 
@@ -258,7 +257,7 @@ Typical ``template.ipynb``
 
 .. nbinput:: ipython3
     
-    # optional interfaces: raises an exception when any(np.sqrt(np.diag(_cov)) >= 0.05*_opt)
+    # optional interfaces: raise an exception when any(np.sqrt(np.diag(_cov)) >= 0.05*_opt)
     # where np.sqrt(np.diag(_cov)) gives the standard deviation on the optimized parameters
     _opt = popt
     _cov = pcov

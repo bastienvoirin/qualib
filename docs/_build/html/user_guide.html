@@ -637,11 +637,11 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="interfaces">
 <h3><span class="section-number">2.2.4. </span>Interfaces<a class="headerlink" href="#interfaces" title="Permalink to this headline">¶</a></h3>
 <p>An interface is a special Python variable defined in <code class="docutils literal notranslate"><span class="pre">template_CALIBRATION_NAME.ipynb</span></code> whose value is fetched and processed by <code class="docutils literal notranslate"><span class="pre">Calibration.process()</span></code> (at <code class="docutils literal notranslate"><span class="pre">CALIBRATION_NAME_utils.py</span></code>) and/or <code class="docutils literal notranslate"><span class="pre">DefaultCalibration.process()</span></code> (at <code class="docutils literal notranslate"><span class="pre">calibrations/default.py</span></code>). Currently, there are 4 interfaces:</p>
-<table class="colwidths-given docutils align-default" id="id1">
+<table class="docutils align-default" id="id1">
 <caption><span class="caption-text">List of interfaces currently supported</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
 <colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
+<col style="width: 50%" />
+<col style="width: 50%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Interface</p></th>
@@ -669,7 +669,7 @@ div.rendered_html tbody tr:hover {
 <h2><span class="section-number">2.3. </span>Calibration sequences<a class="headerlink" href="#calibration-sequences" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="assumptions-py">
 <h3><span class="section-number">2.3.1. </span>assumptions.py<a class="headerlink" href="#assumptions-py" title="Permalink to this headline">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">assumptions.py</span></code> should be a Python dictionary or depth 1 or 2.</p>
+<p><code class="docutils literal notranslate"><span class="pre">assumptions.py</span></code> should be a Python dictionary of depth 1 or 2.</p>
 </div>
 <div class="section" id="calibration-scheme-py">
 <h3><span class="section-number">2.3.2. </span>calibration_scheme.py<a class="headerlink" href="#calibration-scheme-py" title="Permalink to this headline">¶</a></h3>
@@ -702,8 +702,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-md notranslate"><div class="highlight"><pre>
-<span></span><span class="gh"># Calibration name (SUBSTITUTION)</span>
-<span class="gu">## Result: $POST_PLACEHOLDER$ unit</span>
+<span></span><span class="gh"># Calibration name ({SUBSTITUTION})</span>
+<span class="gu">## Result: {POST_PLACEHOLDER} unit</span>
 </pre></div>
 </div>
 </div>
@@ -713,7 +713,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># load experimental data</span>
-<span class="n">file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">HDF5_PATH</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">swmr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s1">&#39;HDF5_PATH&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">swmr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">xdata</span> <span class="o">=</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;x&#39;</span><span class="p">][()]</span>
 <span class="n">ydata</span> <span class="o">=</span> <span class="n">file</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;y&#39;</span><span class="p">][()];</span>
 </pre></div>
@@ -748,7 +748,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># optional interfaces: raises an exception when any(np.sqrt(np.diag(_cov)) &gt;= 0.05*_opt)</span>
+<span></span><span class="c1"># optional interfaces: raise an exception when any(np.sqrt(np.diag(_cov)) &gt;= 0.05*_opt)</span>
 <span class="c1"># where np.sqrt(np.diag(_cov)) gives the standard deviation on the optimized parameters</span>
 <span class="n">_opt</span> <span class="o">=</span> <span class="n">popt</span>
 <span class="n">_cov</span> <span class="o">=</span> <span class="n">pcov</span>
