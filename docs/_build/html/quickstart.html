@@ -529,41 +529,88 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="section" id="python-script">
 <h3><span class="section-number">1.1.3. </span>Python script<a class="headerlink" href="#python-script" title="Permalink to this headline">¶</a></h3>
+<p>Template:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.default</span> <span class="kn">import</span> <span class="n">DefaultCalibration</span>
+
+<span class="k">class</span> <span class="nc">Calibration</span><span class="p">(</span><span class="n">DefaultCalibration</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">handle_substitutions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Define substitutions here</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">handle_substitutions</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">pre_process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pre_process</span><span class="p">(</span><span class="n">mapping</span> <span class="o">=</span> <span class="p">{})</span>
+
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+        <span class="c1"># Update assumptions here</span>
+
+    <span class="k">def</span> <span class="nf">post_process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">post_process</span><span class="p">(</span><span class="n">mapping</span> <span class="o">=</span> <span class="p">{})</span>
+</pre></div>
+</div>
+<p>Example (“Rabi” calibration):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">..default</span> <span class="kn">import</span> <span class="n">DefaultCalibration</span>
+
+<span class="k">class</span> <span class="nc">Calibration</span><span class="p">(</span><span class="n">DefaultCalibration</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">handle_substitutions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">handle_substitutions</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">pre_process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pre_process</span><span class="p">({</span>
+            <span class="s1">&#39;LINEARITY_AMP_LIMIT&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assumptions</span><span class="p">[</span><span class="s1">&#39;rabi&#39;</span><span class="p">][</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">substitutions</span><span class="p">[</span><span class="s2">&quot;PULSE&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">_linearity_amp_limit&#39;</span><span class="p">])</span>
+        <span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assumptions</span><span class="p">[</span><span class="s1">&#39;qubit&#39;</span><span class="p">][</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">substitutions</span><span class="p">[</span><span class="s2">&quot;PULSE&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">_amp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;a_rabi&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">post_process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="s1">&#39;_pi_&#39;</span>  <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">substitutions</span><span class="p">[</span><span class="s1">&#39;PULSE&#39;</span><span class="p">]:</span> <span class="n">factor</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="s1">&#39;_pi2_&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">substitutions</span><span class="p">[</span><span class="s1">&#39;PULSE&#39;</span><span class="p">]:</span> <span class="n">factor</span> <span class="o">=</span> <span class="mi">4</span>
+        
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">post_process</span><span class="p">({</span>
+            <span class="s1">&#39;TYPE&#39;</span><span class="p">:</span>         <span class="bp">self</span><span class="o">.</span><span class="n">assumptions</span><span class="p">[</span><span class="s1">&#39;TYPE&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;PULSE_AMP&#39;</span><span class="p">:</span>    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;a_rabi&quot;</span><span class="p">]</span><span class="o">/</span><span class="n">factor</span><span class="si">:</span><span class="s1">f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;PULSE_LENGTH&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assumptions</span><span class="p">[</span><span class="s1">&#39;qubit&#39;</span><span class="p">][</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">substitutions</span><span class="p">[</span><span class="s2">&quot;PULSE&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">_length&#39;</span><span class="p">])</span>
+        <span class="p">})</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="defining-a-calibration-sequence">
 <h2><span class="section-number">1.2. </span>Defining a calibration sequence<a class="headerlink" href="#defining-a-calibration-sequence" title="Permalink to this headline">¶</a></h2>
 <p>Example:</p>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;spectro_ro&quot;</span><span class="p">,</span>
-     <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;phase_only&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;phase only&quot;</span><span class="p">}},</span>
-
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;spectro_ro&quot;</span><span class="p">,</span>
-     <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;circle_fit&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;circle fit&quot;</span><span class="p">}},</span>
-
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;spectro_qubit&quot;</span><span class="p">},</span>
-
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;rabi_probe&quot;</span><span class="p">},</span>
-
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;rabi&quot;</span><span class="p">,</span>
-     <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span>  <span class="s2">&quot;uncond_pi2&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;PULSE&quot;</span><span class="p">:</span> <span class="s2">&quot;unconditional_pi2_pulse&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span>  <span class="s2">&quot;unconditional pi/2 pulse&quot;</span><span class="p">}},</span>
-
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;rabi&quot;</span><span class="p">,</span>
-     <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span>  <span class="s2">&quot;uncond_pi&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;PULSE&quot;</span><span class="p">:</span> <span class="s2">&quot;unconditional_pi_pulse&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span>  <span class="s2">&quot;unconditional pi pulse&quot;</span><span class="p">}},</span>
-
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;rabi&quot;</span><span class="p">,</span>
-     <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span>  <span class="s2">&quot;cond_pi&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;PULSE&quot;</span><span class="p">:</span> <span class="s2">&quot;conditional_pi_pulse&quot;</span><span class="p">,</span>
-               <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span>  <span class="s2">&quot;conditional pi pulse&quot;</span><span class="p">}},</span>
-
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+   <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;spectro_ro&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;phase_only&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;phase only&quot;</span><span class="p">}},</span>
+   
+   <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;spectro_ro&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span> <span class="s2">&quot;circle_fit&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;circle fit&quot;</span><span class="p">}},</span>
+   
+   <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;spectro_qubit&quot;</span><span class="p">},</span>
+   
+   <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;rabi_probe&quot;</span><span class="p">},</span>
+   
+   <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;rabi&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span>  <span class="s2">&quot;uncond_pi2&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;PULSE&quot;</span><span class="p">:</span> <span class="s2">&quot;unconditional_pi2_pulse&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span>  <span class="s2">&quot;unconditional pi/2 pulse&quot;</span><span class="p">}},</span>
+   
+   <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;rabi&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span>  <span class="s2">&quot;uncond_pi&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;PULSE&quot;</span><span class="p">:</span> <span class="s2">&quot;unconditional_pi_pulse&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span>  <span class="s2">&quot;unconditional pi pulse&quot;</span><span class="p">}},</span>
+   
+   <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;rabi&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;substitutions&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;NAME&quot;</span><span class="p">:</span>  <span class="s2">&quot;cond_pi&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;PULSE&quot;</span><span class="p">:</span> <span class="s2">&quot;conditional_pi_pulse&quot;</span><span class="p">,</span>
+                      <span class="s2">&quot;TYPE&quot;</span><span class="p">:</span>  <span class="s2">&quot;conditional pi pulse&quot;</span><span class="p">}},</span>
+   
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;ramsey&quot;</span><span class="p">},</span>
-
+    
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;t1_qubit&quot;</span><span class="p">}</span>
 <span class="p">]</span>
 </pre></div>
@@ -574,7 +621,7 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="cli-module-usage">
 <h3><span class="section-number">1.3.1. </span>CLI/module usage<a class="headerlink" href="#cli-module-usage" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>First, get Qualib locally from <a class="reference external" href="https://github.com/bastienvoirin/qualib.git">https://github.com/bastienvoirin/qualib.git</a></p></li>
+<li><p>First, install Qualib locally from <a class="reference external" href="https://github.com/bastienvoirin/qualib.git">https://github.com/bastienvoirin/qualib.git</a></p></li>
 <li><p>Then, open a terminal and run</p></li>
 </ul>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python -m qualib.main calibration_scheme.py

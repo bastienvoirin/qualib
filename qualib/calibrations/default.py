@@ -39,8 +39,8 @@ def handle_magic_commands(log: Log, pre: str, line: str) -> bool:
     """Filters magic commands and runs ``%run path_or_url`` ones.
     
     Args:
-        log:
-        pre: Log prefix.
+        log: Logging object.
+        pre: Optional log entry prefix.
         line: Line to process.
         
     Returns:
@@ -58,28 +58,31 @@ class DefaultCalibration:
     Defines the code shared between all calibrations.
     
     Args:
-        log (Log):
-        report (Report):
-        assumptions (dict):
-        id (int):
-        name (str):
-        substitutions (dict):
-        exopy_templ (str):
-        pre (str): Log prefix.
+        log (Log): Logging object.
+        report (Report): Default report object.
+        assumptions (dict): Current state of the assumptions
+                            (updated after each calibration).
+        id (int): Natural number giving the rank of the calibration to run.
+        name (str): Name of the calibration to run (in lowercase).
+        substitutions (dict): Dictionary of substitutions.
+        exopy_templ (str): Content of the Exopy measurement template.
+        pre (str): Default prefix for log entries.
+        timestamp (str): Timestamp used to create the log and report files.
         
     Attributes:
-        log (Log):
-        report (Report):
-        assumptions (dict):
-        id (int):
-        name (str):
-        substitutions (dict):
-        exopy_templ:
-        pre (str):
-        timestamp (str):
-        report_templ:
-        hdf5_path (str)
-        results (dict):
+        log (Log): Logging object.
+        report (Report): Default report object.
+        assumptions (dict): Current state of the assumptions
+                            (updated after each calibration).
+        id (int): Natural number giving the rank of the calibration to run.
+        name (str): Name of the calibration to run (in lowercase).
+        substitutions (dict): Dictionary of substitutions.
+        exopy_templ (str):
+        pre (str): Default prefix for log entries.
+        timestamp (str): Timestamp used to create the log and report files.
+        report_templ (list): Cells of the calibration report template.
+        hdf5_path (str): Relative path to the HDF5 measurement file.
+        results (dict): Dictionary of results.
     """
     
     def __init__(self, log: Log, report: Report, assumptions: dict, id: int,
@@ -100,9 +103,8 @@ class DefaultCalibration:
         self.results       = {}
     
     def handle_substitutions(self, mapping: Dict[str, str] = {}) -> None:
-        """
-        Handles substitutions. Should be called at the end of
-        :py:func:`Calibration.handle_substitutions`.
+        """Handles substitutions. Should be called at the
+        end of :py:func:`Calibration.handle_substitutions`.
         
         Args:
             mapping: Dictionary of substitutions.
@@ -117,9 +119,8 @@ class DefaultCalibration:
                 self.report_templ[i].source = self.report_templ[i].source.replace('{'+key+'}', val)
 
     def pre_process(self, mapping: Dict[str, str] = {}) -> None:
-        """
-        Handles pre-placeholders. Should be called at the end of
-        :py:func:`Calibration.pre_process`.
+        """Handles pre-placeholders. Should be called at
+        the end of :py:func:`Calibration.pre_process`.
 
         Args:
             mapping: Dictionary of ``'PRE_PLACEHOLDER': value`` pairs.
@@ -219,7 +220,8 @@ class DefaultCalibration:
                     assert not errors, '\n  '+'\n  '.join(errors)
 
     def post_process(self, mapping: Dict[str, str] = {}) -> None:
-        """Handles post-placeholders. Should be called at the end of :py:func:`Calibration.post_process`.
+        """Handles post-placeholders. Should be called at
+        the end of :py:func:`Calibration.post_process`.
         
         Args:
             mapping: Dictionary of ``'POST_PLACEHOLDER': value`` pairs.
@@ -243,11 +245,11 @@ class Report:
         
     Args:
         filename (str):
-        assumptions (dict):
+        assumptions (dict): Dictionary of assumptions.
         calib_scheme_str (str):
             
     Attributes:
-        log (Log):
+        log (Log): Logging object.
         filename (str):
         header (list):
         notebook:

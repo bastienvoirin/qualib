@@ -203,8 +203,8 @@
     <span class="sd">&quot;&quot;&quot;Filters magic commands and runs ``%run path_or_url`` ones.</span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
-<span class="sd">        log:</span>
-<span class="sd">        pre: Log prefix.</span>
+<span class="sd">        log: Logging object.</span>
+<span class="sd">        pre: Optional log entry prefix.</span>
 <span class="sd">        line: Line to process.</span>
 <span class="sd">        </span>
 <span class="sd">    Returns:</span>
@@ -222,28 +222,31 @@
 <span class="sd">    Defines the code shared between all calibrations.</span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
-<span class="sd">        log (Log):</span>
-<span class="sd">        report (Report):</span>
-<span class="sd">        assumptions (dict):</span>
-<span class="sd">        id (int):</span>
-<span class="sd">        name (str):</span>
-<span class="sd">        substitutions (dict):</span>
-<span class="sd">        exopy_templ (str):</span>
-<span class="sd">        pre (str): Log prefix.</span>
+<span class="sd">        log (Log): Logging object.</span>
+<span class="sd">        report (Report): Default report object.</span>
+<span class="sd">        assumptions (dict): Current state of the assumptions</span>
+<span class="sd">                            (updated after each calibration).</span>
+<span class="sd">        id (int): Natural number giving the rank of the calibration to run.</span>
+<span class="sd">        name (str): Name of the calibration to run (in lowercase).</span>
+<span class="sd">        substitutions (dict): Dictionary of substitutions.</span>
+<span class="sd">        exopy_templ (str): Content of the Exopy measurement template.</span>
+<span class="sd">        pre (str): Default prefix for log entries.</span>
+<span class="sd">        timestamp (str): Timestamp used to create the log and report files.</span>
 <span class="sd">        </span>
 <span class="sd">    Attributes:</span>
-<span class="sd">        log (Log):</span>
-<span class="sd">        report (Report):</span>
-<span class="sd">        assumptions (dict):</span>
-<span class="sd">        id (int):</span>
-<span class="sd">        name (str):</span>
-<span class="sd">        substitutions (dict):</span>
-<span class="sd">        exopy_templ:</span>
-<span class="sd">        pre (str):</span>
-<span class="sd">        timestamp (str):</span>
-<span class="sd">        report_templ:</span>
-<span class="sd">        hdf5_path (str)</span>
-<span class="sd">        results (dict):</span>
+<span class="sd">        log (Log): Logging object.</span>
+<span class="sd">        report (Report): Default report object.</span>
+<span class="sd">        assumptions (dict): Current state of the assumptions</span>
+<span class="sd">                            (updated after each calibration).</span>
+<span class="sd">        id (int): Natural number giving the rank of the calibration to run.</span>
+<span class="sd">        name (str): Name of the calibration to run (in lowercase).</span>
+<span class="sd">        substitutions (dict): Dictionary of substitutions.</span>
+<span class="sd">        exopy_templ (str):</span>
+<span class="sd">        pre (str): Default prefix for log entries.</span>
+<span class="sd">        timestamp (str): Timestamp used to create the log and report files.</span>
+<span class="sd">        report_templ (list): Cells of the calibration report template.</span>
+<span class="sd">        hdf5_path (str): Relative path to the HDF5 measurement file.</span>
+<span class="sd">        results (dict): Dictionary of results.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log</span><span class="p">:</span> <span class="n">Log</span><span class="p">,</span> <span class="n">report</span><span class="p">:</span> <span class="n">Report</span><span class="p">,</span> <span class="n">assumptions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -264,9 +267,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span>       <span class="o">=</span> <span class="p">{}</span>
     
 <div class="viewcode-block" id="DefaultCalibration.handle_substitutions"><a class="viewcode-back" href="../../../reference.html#qualib.calibrations.default.DefaultCalibration.handle_substitutions">[docs]</a>    <span class="k">def</span> <span class="nf">handle_substitutions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{})</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Handles substitutions. Should be called at the end of</span>
-<span class="sd">        :py:func:`Calibration.handle_substitutions`.</span>
+        <span class="sd">&quot;&quot;&quot;Handles substitutions. Should be called at the</span>
+<span class="sd">        end of :py:func:`Calibration.handle_substitutions`.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            mapping: Dictionary of substitutions.</span>
@@ -281,9 +283,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">report_templ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">report_templ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;{&#39;</span><span class="o">+</span><span class="n">key</span><span class="o">+</span><span class="s1">&#39;}&#39;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DefaultCalibration.pre_process"><a class="viewcode-back" href="../../../reference.html#qualib.calibrations.default.DefaultCalibration.pre_process">[docs]</a>    <span class="k">def</span> <span class="nf">pre_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{})</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Handles pre-placeholders. Should be called at the end of</span>
-<span class="sd">        :py:func:`Calibration.pre_process`.</span>
+        <span class="sd">&quot;&quot;&quot;Handles pre-placeholders. Should be called at</span>
+<span class="sd">        the end of :py:func:`Calibration.pre_process`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            mapping: Dictionary of ``&#39;PRE_PLACEHOLDER&#39;: value`` pairs.</span>
@@ -383,7 +384,8 @@
                     <span class="k">assert</span> <span class="ow">not</span> <span class="n">errors</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  &#39;</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DefaultCalibration.post_process"><a class="viewcode-back" href="../../../reference.html#qualib.calibrations.default.DefaultCalibration.post_process">[docs]</a>    <span class="k">def</span> <span class="nf">post_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{})</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Handles post-placeholders. Should be called at the end of :py:func:`Calibration.post_process`.</span>
+        <span class="sd">&quot;&quot;&quot;Handles post-placeholders. Should be called at</span>
+<span class="sd">        the end of :py:func:`Calibration.post_process`.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            mapping: Dictionary of ``&#39;POST_PLACEHOLDER&#39;: value`` pairs.</span>
@@ -407,11 +409,11 @@
 <span class="sd">        </span>
 <span class="sd">    Args:</span>
 <span class="sd">        filename (str):</span>
-<span class="sd">        assumptions (dict):</span>
+<span class="sd">        assumptions (dict): Dictionary of assumptions.</span>
 <span class="sd">        calib_scheme_str (str):</span>
 <span class="sd">            </span>
 <span class="sd">    Attributes:</span>
-<span class="sd">        log (Log):</span>
+<span class="sd">        log (Log): Logging object.</span>
 <span class="sd">        filename (str):</span>
 <span class="sd">        header (list):</span>
 <span class="sd">        notebook:</span>

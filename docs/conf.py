@@ -41,7 +41,8 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
     'sphinx_tabs.tabs',
-    'sphinx.ext.autodoc'
+    'sphinx.ext.autodoc',
+    'sphinx.ext.todo'
 ]
 
 graphviz_output_format = 'svg'
@@ -75,3 +76,4 @@ autodoc_default_options = {
 }
 
 autodoc_typehints = "description"
+todo_include_todos = True

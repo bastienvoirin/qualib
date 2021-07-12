@@ -186,14 +186,14 @@
         <span class="sd">&quot;&quot;&quot;Runs a single calibration with given assumptions and Exopy template.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            log:</span>
-<span class="sd">            report:</span>
-<span class="sd">            assumptions: The current state of the assumptions</span>
+<span class="sd">            log: Logging object.</span>
+<span class="sd">            report: Default report object.</span>
+<span class="sd">            assumptions: Current state of the assumptions</span>
 <span class="sd">                         (updated after each calibration).</span>
-<span class="sd">            id: A natural number giving the rank of the calibration to run.</span>
-<span class="sd">            name: The name of the calibration to run.</span>
-<span class="sd">            substitutions: The dictionary of substitutions.</span>
-<span class="sd">            timestamp:</span>
+<span class="sd">            id: Natural number giving the rank of the calibration to run.</span>
+<span class="sd">            name: Name of the calibration to run (in lowercase).</span>
+<span class="sd">            substitutions: Dictionary of substitutions.</span>
+<span class="sd">            timestamp: Timestamp used to create the log and report files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">subs_name</span> <span class="o">=</span> <span class="n">substitutions</span><span class="p">[</span><span class="s1">&#39;NAME&#39;</span><span class="p">]</span>
         <span class="n">full</span>      <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">subs_name</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">subs_name</span> <span class="k">else</span> <span class="n">name</span>

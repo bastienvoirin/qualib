@@ -206,16 +206,8 @@ calibration_scheme.py
 
 Format:
 
-.. code-block:: py
-    
-    [
-        {"name": "a_calibration"},
-
-        {"name": "another_calibration",
-         "substitutions": {"NAME":                "variant_in_camel_case",
-                           "A_SUBSTITUTION":      "a_value",
-                           "ANOTHER_SUBTITUTION": "another_value"}}
-    ]
+.. literalinclude:: literalinclude/min_calib_scheme.py
+    :language: python
 
 * ``name``: the calibration name
 * ``substitutions``: an optional dictionary of substitutions; if present, ``NAME`` must be defined.
@@ -275,8 +267,20 @@ Typical ``template.ipynb``
 Conditional code cells
 ++++++++++++++++++++++++++++++++++
 
-One can specify under which condition(s) a given code cell is passed to the report generator. For instance, analysis code can be chosen from several options using a substitution. The first line of a conditional code cell is a commented `if` statement, for exemple:
+One can specify under which condition(s) a given code cell is passed to the report generator. For instance, analysis code can be chosen from several options using a substitution. The first line of a conditional code cell is a commented `if` statement, for example:
 
-.. nbinput::ipython3
+.. nbinput:: ipython3
 
-    #if 
+    #if SUBSTITUTION == value:
+    do_something()
+
+|
+
+Magic commands
+++++++++++++++++++++++++++++++++++
+
+Magic commands (IPython directives starting with ``%``) are ignored by default (that is, they have no effect during the parsing of Jupyter templates and the report's generation). However, some magic commands might come in handy during these processes, such as ``%load``.
+
+.. todo::
+
+    Handle ``%load``, or provide a hook to let the user handle magic commands.

@@ -169,8 +169,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
 <div class="viewcode-block" id="Log"><a class="viewcode-back" href="../../reference.html#qualib.log.Log">[docs]</a><span class="k">class</span> <span class="nc">Log</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Logs timestamped and labeled informations (&quot;info&quot;), debug informations</span>
+    <span class="sd">&quot;&quot;&quot;Logs timestamped and labeled informations (&quot;info&quot;), debug informations</span>
 <span class="sd">    (&quot;debug&quot;), warnings (&quot;warn&quot;), errors (&quot;error&quot;), and/or custom content.</span>
 <span class="sd">    </span>
 <span class="sd">    Keyword arguments ``**kwargs`` are not supported yet, but may be added in</span>
@@ -178,26 +177,85 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     
 <div class="viewcode-block" id="Log.initialize"><a class="viewcode-back" href="../../reference.html#qualib.log.Log.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">max_label_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Log</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            timestamp: Timestamp string</span>
+<span class="sd">            max_label_len: Maximum label length in characters (e.g. ``5`` if the possible labels are ``DEBUG``, ``INFO``, ``WARN`` and ``ERROR``). Log entries (``prefix: message`` or ``message``) are aligned according to this constant: set ``max_label_len`` to ``0`` to disable log entries alignment.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A logging object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;logs/</span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s1">.log&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_label_len</span> <span class="o">=</span> <span class="n">max_label_len</span>
         <span class="k">return</span> <span class="bp">self</span></div>
-        
+    
+<div class="viewcode-block" id="Log.debug"><a class="viewcode-back" href="../../reference.html#qualib.log.Log.debug">[docs]</a>    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">lines</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Log</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Logs a debug message.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            prefix: Optional log entry prefix (set ``prefix`` to ``&quot;&quot;`` to log a message without a prefix).</span>
+<span class="sd">            lines: Lines to log (1 argument each: use the unpack operator ``*`` to log a list of lines).</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            ``self``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">*</span><span class="n">lines</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+    
 <div class="viewcode-block" id="Log.info"><a class="viewcode-back" href="../../reference.html#qualib.log.Log.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">lines</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Log</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Logs an information message.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            prefix: Optional log entry prefix (set ``prefix`` to ``&quot;&quot;`` to log a message without a prefix).</span>
+<span class="sd">            lines: Lines to log (1 argument each: use the unpack operator ``*`` to log a list of lines).</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            ``self``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">*</span><span class="n">lines</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
         
-<div class="viewcode-block" id="Log.debug"><a class="viewcode-back" href="../../reference.html#qualib.log.Log.debug">[docs]</a>    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">lines</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Log</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">*</span><span class="n">lines</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-        
 <div class="viewcode-block" id="Log.warn"><a class="viewcode-back" href="../../reference.html#qualib.log.Log.warn">[docs]</a>    <span class="k">def</span> <span class="nf">warn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">lines</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Log</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Logs a warning message.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            prefix: Optional log entry prefix (set ``prefix`` to ``&quot;&quot;`` to log a message without a prefix).</span>
+<span class="sd">            lines: Lines to log (1 argument each: use the unpack operator ``*`` to log a list of lines).</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            ``self``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;warn&#39;</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">*</span><span class="n">lines</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
         
 <div class="viewcode-block" id="Log.error"><a class="viewcode-back" href="../../reference.html#qualib.log.Log.error">[docs]</a>    <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">lines</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Log</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Logs an error message.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            prefix: Optional log entry prefix (set ``prefix`` to ``&quot;&quot;`` to log a message without a prefix).</span>
+<span class="sd">            lines: Lines to log (1 argument each: use the unpack operator ``*`` to log a list of lines).</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            ``self``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">*</span><span class="n">lines</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
         
 <div class="viewcode-block" id="Log.exc"><a class="viewcode-back" href="../../reference.html#qualib.log.Log.exc">[docs]</a>    <span class="k">def</span> <span class="nf">exc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Log</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Logs the current exception traceback as an error message.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            ``self``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="Log.log"><a class="viewcode-back" href="../../reference.html#qualib.log.Log.log">[docs]</a>    <span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">lines</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Log</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Logs a message with given label and prefix.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            label: Label of the log entry (e.g. ``warn``).</span>
+<span class="sd">            prefix: Optional log entry prefix (set ``prefix`` to ``&quot;&quot;`` to log a message without a prefix).</span>
+<span class="sd">            lines: Lines to log (1 argument each: use the unpack operator ``*`` to log a list of lines).</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            ``self``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">:</span>
             <span class="k">return</span>
         
@@ -219,6 +277,9 @@
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            obj: Object to stringify.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Indented string representation of ``obj``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span></div></div>
 </pre></div>

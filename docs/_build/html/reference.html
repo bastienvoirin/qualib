@@ -107,8 +107,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#name-utils-py">3.2.1. NAME_utils.py</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#reports">3.3. reports/</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#logs">3.4. logs/</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reports-timestamp-ipynb">3.3. reports/TIMESTAMP.ipynb</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#logs-timestamp-log">3.4. logs/TIMESTAMP.log</a></li>
 </ul>
 </li>
 </ul>
@@ -219,30 +219,17 @@ future versions.</p>
 <dt id="qualib.log.Log.initialize">
 <code class="sig-name descname">initialize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timestamp</span></em>, <em class="sig-param"><span class="n">max_label_len</span><span class="o">=</span><span class="default_value">5</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/log.html#Log.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.log.Log.initialize" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Log</span></code></a></p>
-</dd>
-<dt class="field-even">Parameters</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>timestamp</strong> (<em>str</em>) – </p></li>
-<li><p><strong>max_label_len</strong> (<em>int</em>) – </p></li>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timestamp</strong> (<em>str</em>) – Timestamp string</p></li>
+<li><p><strong>max_label_len</strong> (<em>int</em>) – Maximum label length in characters (e.g. <code class="docutils literal notranslate"><span class="pre">5</span></code> if the possible labels are <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>, <code class="docutils literal notranslate"><span class="pre">INFO</span></code>, <code class="docutils literal notranslate"><span class="pre">WARN</span></code> and <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>). Log entries (<code class="docutils literal notranslate"><span class="pre">prefix:</span> <span class="pre">message</span></code> or <code class="docutils literal notranslate"><span class="pre">message</span></code>) are aligned according to this constant: set <code class="docutils literal notranslate"><span class="pre">max_label_len</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code> to disable log entries alignment.</p></li>
 </ul>
 </dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="qualib.log.Log.info">
-<code class="sig-name descname">info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prefix</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">lines</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/log.html#Log.info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.log.Log.info" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A logging object.</p>
+</dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Log</span></code></a></p>
-</dd>
-<dt class="field-even">Parameters</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>prefix</strong> (<em>str</em>) – </p></li>
-<li><p><strong>lines</strong> (<em>str</em>) – </p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -250,15 +237,39 @@ future versions.</p>
 <dl class="py method">
 <dt id="qualib.log.Log.debug">
 <code class="sig-name descname">debug</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prefix</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">lines</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/log.html#Log.debug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.log.Log.debug" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Logs a debug message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prefix</strong> (<em>str</em>) – Optional log entry prefix (set <code class="docutils literal notranslate"><span class="pre">prefix</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> to log a message without a prefix).</p></li>
+<li><p><strong>lines</strong> (<em>str</em>) – Lines to log (1 argument each: use the unpack operator <code class="docutils literal notranslate"><span class="pre">*</span></code> to log a list of lines).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">self</span></code></p>
+</dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Log</span></code></a></p>
 </dd>
-<dt class="field-even">Parameters</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>prefix</strong> (<em>str</em>) – </p></li>
-<li><p><strong>lines</strong> (<em>str</em>) – </p></li>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="qualib.log.Log.info">
+<code class="sig-name descname">info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prefix</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">lines</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/log.html#Log.info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.log.Log.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logs an information message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prefix</strong> (<em>str</em>) – Optional log entry prefix (set <code class="docutils literal notranslate"><span class="pre">prefix</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> to log a message without a prefix).</p></li>
+<li><p><strong>lines</strong> (<em>str</em>) – Lines to log (1 argument each: use the unpack operator <code class="docutils literal notranslate"><span class="pre">*</span></code> to log a list of lines).</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">self</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Log</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -266,15 +277,19 @@ future versions.</p>
 <dl class="py method">
 <dt id="qualib.log.Log.warn">
 <code class="sig-name descname">warn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prefix</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">lines</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/log.html#Log.warn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.log.Log.warn" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Logs a warning message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prefix</strong> (<em>str</em>) – Optional log entry prefix (set <code class="docutils literal notranslate"><span class="pre">prefix</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> to log a message without a prefix).</p></li>
+<li><p><strong>lines</strong> (<em>str</em>) – Lines to log (1 argument each: use the unpack operator <code class="docutils literal notranslate"><span class="pre">*</span></code> to log a list of lines).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">self</span></code></p>
+</dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Log</span></code></a></p>
-</dd>
-<dt class="field-even">Parameters</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>prefix</strong> (<em>str</em>) – </p></li>
-<li><p><strong>lines</strong> (<em>str</em>) – </p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -282,15 +297,19 @@ future versions.</p>
 <dl class="py method">
 <dt id="qualib.log.Log.error">
 <code class="sig-name descname">error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prefix</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">lines</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/log.html#Log.error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.log.Log.error" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Logs an error message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prefix</strong> (<em>str</em>) – Optional log entry prefix (set <code class="docutils literal notranslate"><span class="pre">prefix</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> to log a message without a prefix).</p></li>
+<li><p><strong>lines</strong> (<em>str</em>) – Lines to log (1 argument each: use the unpack operator <code class="docutils literal notranslate"><span class="pre">*</span></code> to log a list of lines).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">self</span></code></p>
+</dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Log</span></code></a></p>
-</dd>
-<dt class="field-even">Parameters</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>prefix</strong> (<em>str</em>) – </p></li>
-<li><p><strong>lines</strong> (<em>str</em>) – </p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -298,9 +317,13 @@ future versions.</p>
 <dl class="py method">
 <dt id="qualib.log.Log.exc">
 <code class="sig-name descname">exc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/log.html#Log.exc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.log.Log.exc" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Log</span></code></a></p>
+<dd><p>Logs the current exception traceback as an error message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">self</span></code></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Log</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -308,16 +331,20 @@ future versions.</p>
 <dl class="py method">
 <dt id="qualib.log.Log.log">
 <code class="sig-name descname">log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">label</span></em>, <em class="sig-param"><span class="n">prefix</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">lines</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/log.html#Log.log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.log.Log.log" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Logs a message with given label and prefix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label</strong> (<em>str</em>) – Label of the log entry (e.g. <code class="docutils literal notranslate"><span class="pre">warn</span></code>).</p></li>
+<li><p><strong>prefix</strong> (<em>str</em>) – Optional log entry prefix (set <code class="docutils literal notranslate"><span class="pre">prefix</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> to log a message without a prefix).</p></li>
+<li><p><strong>lines</strong> (<em>str</em>) – Lines to log (1 argument each: use the unpack operator <code class="docutils literal notranslate"><span class="pre">*</span></code> to log a list of lines).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">self</span></code></p>
+</dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Log</span></code></a></p>
-</dd>
-<dt class="field-even">Parameters</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>label</strong> (<em>str</em>) – </p></li>
-<li><p><strong>prefix</strong> (<em>str</em>) – </p></li>
-<li><p><strong>lines</strong> (<em>str</em>) – </p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -330,8 +357,11 @@ future versions.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>obj</strong> (<em>list | dict</em>) – Object to stringify.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Indented string representation of <code class="docutils literal notranslate"><span class="pre">obj</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -345,14 +375,17 @@ future versions.</p>
 <dt id="qualib.load.load_calibration_scheme">
 <code class="sig-prename descclassname">qualib.load.</code><code class="sig-name descname">load_calibration_scheme</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log</span></em>, <em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/load.html#load_calibration_scheme"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.load.load_calibration_scheme" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Parsed calibration sequence, raw calibration sequence.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
-</dd>
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>log</strong> (<a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><em>qualib.log.Log</em></a>) – Logging object.</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – Absolute or relative path to the Python file describing the calibration sequence to run.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Parsed calibration sequence, raw calibration sequence.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -361,11 +394,11 @@ future versions.</p>
 <dt id="qualib.load.load_assumptions">
 <code class="sig-prename descclassname">qualib.load.</code><code class="sig-name descname">load_assumptions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/load.html#load_assumptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.load.load_assumptions" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Assumptions before any calibration.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>log</strong> (<a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><em>qualib.log.Log</em></a>) – Logging object.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><cite>dict</cite></p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Assumptions before any calibration.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
@@ -377,17 +410,18 @@ future versions.</p>
 <dt id="qualib.load.load_utils">
 <code class="sig-prename descclassname">qualib.load.</code><code class="sig-name descname">load_utils</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log</span></em>, <em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">prefix</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/load.html#load_utils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.load.load_utils" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Calibration class from <code class="docutils literal notranslate"><span class="pre">CALIBRATION_NAME_utils.py</span></code>.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Calibration</span></code></p>
-</dd>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) – </p></li>
-<li><p><strong>prefix</strong> (<em>str</em>) – </p></li>
+<li><p><strong>log</strong> (<a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><em>qualib.log.Log</em></a>) – Logging object.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the calibration. The Python script to load should be named <code class="docutils literal notranslate"><span class="pre">{name}_utils.py</span></code> under <code class="docutils literal notranslate"><span class="pre">qualib/calibrations/{name}</span></code>.</p></li>
+<li><p><strong>prefix</strong> (<em>str</em>) – Prefix of the log entry (whose format will be <code class="docutils literal notranslate"><span class="pre">[timestamp]</span> <span class="pre">[INFO]</span> <span class="pre">prefix:</span> <span class="pre">message</span></code>).</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Calibration class from <code class="docutils literal notranslate"><span class="pre">CALIBRATION_NAME_utils.py</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Calibration</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -396,17 +430,18 @@ future versions.</p>
 <dt id="qualib.load.load_exopy_template">
 <code class="sig-prename descclassname">qualib.load.</code><code class="sig-name descname">load_exopy_template</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log</span></em>, <em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">prefix</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/load.html#load_exopy_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.load.load_exopy_template" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Contents of the Exopy template for a given calibration name.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) – </p></li>
-<li><p><strong>prefix</strong> (<em>str</em>) – </p></li>
+<li><p><strong>log</strong> (<a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><em>qualib.log.Log</em></a>) – Logging object.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the calibration. The Exopy template to load should be named <code class="docutils literal notranslate"><span class="pre">{name}_template.meas.ini</span></code> under <code class="docutils literal notranslate"><span class="pre">qualib/calibrations/{name}</span></code>.</p></li>
+<li><p><strong>prefix</strong> (<em>str</em>) – Prefix of the log entry (whose format will be <code class="docutils literal notranslate"><span class="pre">[timestamp]</span> <span class="pre">[INFO]</span> <span class="pre">prefix:</span> <span class="pre">message</span></code>).</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Contents of the Exopy template for a given calibration name.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -425,14 +460,14 @@ future versions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>log</strong> (<a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><em>qualib.log.Log</em></a>) – </p></li>
-<li><p><strong>report</strong> (<a class="reference internal" href="#qualib.calibrations.default.Report" title="qualib.calibrations.default.Report"><em>qualib.calibrations.default.Report</em></a>) – </p></li>
-<li><p><strong>assumptions</strong> (<em>dict</em>) – The current state of the assumptions
+<li><p><strong>log</strong> (<a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><em>qualib.log.Log</em></a>) – Logging object.</p></li>
+<li><p><strong>report</strong> (<a class="reference internal" href="#qualib.calibrations.default.Report" title="qualib.calibrations.default.Report"><em>qualib.calibrations.default.Report</em></a>) – Default report object.</p></li>
+<li><p><strong>assumptions</strong> (<em>dict</em>) – Current state of the assumptions
 (updated after each calibration).</p></li>
-<li><p><strong>id</strong> (<em>int</em>) – A natural number giving the rank of the calibration to run.</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – The name of the calibration to run.</p></li>
-<li><p><strong>substitutions</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – The dictionary of substitutions.</p></li>
-<li><p><strong>timestamp</strong> (<em>str</em>) – </p></li>
+<li><p><strong>id</strong> (<em>int</em>) – Natural number giving the rank of the calibration to run.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the calibration to run (in lowercase).</p></li>
+<li><p><strong>substitutions</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – Dictionary of substitutions.</p></li>
+<li><p><strong>timestamp</strong> (<em>str</em>) – Timestamp used to create the log and report files.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -508,8 +543,8 @@ the calibration sequence to run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>log</strong> (<a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><em>qualib.log.Log</em></a>) – </p></li>
-<li><p><strong>pre</strong> (<em>str</em>) – Log prefix.</p></li>
+<li><p><strong>log</strong> (<a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><em>qualib.log.Log</em></a>) – Logging object.</p></li>
+<li><p><strong>pre</strong> (<em>str</em>) – Optional log entry prefix.</p></li>
 <li><p><strong>line</strong> (<em>str</em>) – Line to process.</p></li>
 </ul>
 </dd>
@@ -529,21 +564,24 @@ the calibration sequence to run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>log</strong> (<a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><em>Log</em></a>) – </p></li>
-<li><p><strong>report</strong> (<a class="reference internal" href="#qualib.calibrations.default.Report" title="qualib.calibrations.default.Report"><em>Report</em></a>) – </p></li>
-<li><p><strong>assumptions</strong> (<em>dict</em>) – </p></li>
-<li><p><strong>id</strong> (<em>int</em>) – </p></li>
-<li><p><strong>name</strong> (<em>str</em>) – </p></li>
-<li><p><strong>substitutions</strong> (<em>dict</em>) – </p></li>
-<li><p><strong>exopy_templ</strong> (<em>str</em>) – </p></li>
-<li><p><strong>pre</strong> (<em>str</em>) – Log prefix.</p></li>
+<li><p><strong>log</strong> (<a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log"><em>Log</em></a>) – Logging object.</p></li>
+<li><p><strong>report</strong> (<a class="reference internal" href="#qualib.calibrations.default.Report" title="qualib.calibrations.default.Report"><em>Report</em></a>) – Default report object.</p></li>
+<li><p><strong>assumptions</strong> (<em>dict</em>) – Current state of the assumptions
+(updated after each calibration).</p></li>
+<li><p><strong>id</strong> (<em>int</em>) – Natural number giving the rank of the calibration to run.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the calibration to run (in lowercase).</p></li>
+<li><p><strong>substitutions</strong> (<em>dict</em>) – Dictionary of substitutions.</p></li>
+<li><p><strong>exopy_templ</strong> (<em>str</em>) – Content of the Exopy measurement template.</p></li>
+<li><p><strong>pre</strong> (<em>str</em>) – Default prefix for log entries.</p></li>
+<li><p><strong>timestamp</strong> (<em>str</em>) – Timestamp used to create the log and report files.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.DefaultCalibration.log">
 <code class="sig-name descname">log</code><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.log" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Logging object.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log">Log</a></p>
 </dd>
@@ -553,7 +591,8 @@ the calibration sequence to run.</p>
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.DefaultCalibration.report">
 <code class="sig-name descname">report</code><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.report" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Default report object.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#qualib.calibrations.default.Report" title="qualib.calibrations.default.Report">Report</a></p>
 </dd>
@@ -563,7 +602,9 @@ the calibration sequence to run.</p>
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.DefaultCalibration.assumptions">
 <code class="sig-name descname">assumptions</code><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.assumptions" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Current state of the assumptions
+(updated after each calibration).</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
@@ -573,7 +614,8 @@ the calibration sequence to run.</p>
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.DefaultCalibration.id">
 <code class="sig-name descname">id</code><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.id" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Natural number giving the rank of the calibration to run.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>int</p>
 </dd>
@@ -583,7 +625,8 @@ the calibration sequence to run.</p>
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.DefaultCalibration.name">
 <code class="sig-name descname">name</code><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.name" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Name of the calibration to run (in lowercase).</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>
 </dd>
@@ -593,7 +636,8 @@ the calibration sequence to run.</p>
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.DefaultCalibration.substitutions">
 <code class="sig-name descname">substitutions</code><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.substitutions" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Dictionary of substitutions.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
@@ -603,12 +647,18 @@ the calibration sequence to run.</p>
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.DefaultCalibration.exopy_templ">
 <code class="sig-name descname">exopy_templ</code><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.exopy_templ" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.DefaultCalibration.pre">
 <code class="sig-name descname">pre</code><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.pre" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Default prefix for log entries.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>
 </dd>
@@ -618,7 +668,8 @@ the calibration sequence to run.</p>
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.DefaultCalibration.timestamp">
 <code class="sig-name descname">timestamp</code><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.timestamp" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Timestamp used to create the log and report files.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>
 </dd>
@@ -628,12 +679,19 @@ the calibration sequence to run.</p>
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.DefaultCalibration.report_templ">
 <code class="sig-name descname">report_templ</code><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.report_templ" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Cells of the calibration report template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.DefaultCalibration.hdf5_path">
 <code class="sig-name descname">hdf5_path</code><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.hdf5_path" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Relative path to the HDF5 measurement file.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>
 </dd>
@@ -643,7 +701,8 @@ the calibration sequence to run.</p>
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.DefaultCalibration.results">
 <code class="sig-name descname">results</code><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.results" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Dictionary of results.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
@@ -653,8 +712,8 @@ the calibration sequence to run.</p>
 <dl class="py method">
 <dt id="qualib.calibrations.default.DefaultCalibration.handle_substitutions">
 <code class="sig-name descname">handle_substitutions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mapping</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/calibrations/default.html#DefaultCalibration.handle_substitutions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.handle_substitutions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles substitutions. Should be called at the end of
-<code class="xref py py-func docutils literal notranslate"><span class="pre">Calibration.handle_substitutions()</span></code>.</p>
+<dd><p>Handles substitutions. Should be called at the
+end of <code class="xref py py-func docutils literal notranslate"><span class="pre">Calibration.handle_substitutions()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>mapping</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – Dictionary of substitutions.</p>
@@ -668,8 +727,8 @@ the calibration sequence to run.</p>
 <dl class="py method">
 <dt id="qualib.calibrations.default.DefaultCalibration.pre_process">
 <code class="sig-name descname">pre_process</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mapping</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/calibrations/default.html#DefaultCalibration.pre_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.pre_process" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles pre-placeholders. Should be called at the end of
-<code class="xref py py-func docutils literal notranslate"><span class="pre">Calibration.pre_process()</span></code>.</p>
+<dd><p>Handles pre-placeholders. Should be called at
+the end of <code class="xref py py-func docutils literal notranslate"><span class="pre">Calibration.pre_process()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>mapping</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – Dictionary of <code class="docutils literal notranslate"><span class="pre">'PRE_PLACEHOLDER':</span> <span class="pre">value</span></code> pairs.</p>
@@ -694,7 +753,8 @@ the calibration sequence to run.</p>
 <dl class="py method">
 <dt id="qualib.calibrations.default.DefaultCalibration.post_process">
 <code class="sig-name descname">post_process</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mapping</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qualib/calibrations/default.html#DefaultCalibration.post_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qualib.calibrations.default.DefaultCalibration.post_process" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles post-placeholders. Should be called at the end of <code class="xref py py-func docutils literal notranslate"><span class="pre">Calibration.post_process()</span></code>.</p>
+<dd><p>Handles post-placeholders. Should be called at
+the end of <code class="xref py py-func docutils literal notranslate"><span class="pre">Calibration.post_process()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>mapping</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – Dictionary of <code class="docutils literal notranslate"><span class="pre">'POST_PLACEHOLDER':</span> <span class="pre">value</span></code> pairs.</p>
@@ -715,7 +775,7 @@ the calibration sequence to run.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<em>str</em>) – </p></li>
-<li><p><strong>assumptions</strong> (<em>dict</em>) – </p></li>
+<li><p><strong>assumptions</strong> (<em>dict</em>) – Dictionary of assumptions.</p></li>
 <li><p><strong>calib_scheme_str</strong> (<em>str</em>) – </p></li>
 </ul>
 </dd>
@@ -723,7 +783,8 @@ the calibration sequence to run.</p>
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.Report.log">
 <code class="sig-name descname">log</code><a class="headerlink" href="#qualib.calibrations.default.Report.log" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Logging object.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#qualib.log.Log" title="qualib.log.Log">Log</a></p>
 </dd>
@@ -934,8 +995,8 @@ from the list of cells <code class="docutils literal notranslate"><span class="p
 
 </div>
 </div>
-<div class="section" id="reports">
-<h2><span class="section-number">3.3. </span>reports/<a class="headerlink" href="#reports" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="reports-timestamp-ipynb">
+<h2><span class="section-number">3.3. </span>reports/TIMESTAMP.ipynb<a class="headerlink" href="#reports-timestamp-ipynb" title="Permalink to this headline">¶</a></h2>
 <p>Each report consists in:</p>
 <blockquote>
 <div><ul class="simple">
@@ -948,8 +1009,8 @@ from the list of cells <code class="docutils literal notranslate"><span class="p
 </ul>
 </div></blockquote>
 </div>
-<div class="section" id="logs">
-<h2><span class="section-number">3.4. </span>logs/<a class="headerlink" href="#logs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="logs-timestamp-log">
+<h2><span class="section-number">3.4. </span>logs/TIMESTAMP.log<a class="headerlink" href="#logs-timestamp-log" title="Permalink to this headline">¶</a></h2>
 <p>Logs consist in timestamped and labeled lines of information (“info”), debug information (“debug”), warning (“warn”), errors (“error”) and/or custom content.</p>
 </div>
 </div>

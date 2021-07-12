@@ -22,14 +22,14 @@ class Qualib:
         """Runs a single calibration with given assumptions and Exopy template.
         
         Args:
-            log:
-            report:
-            assumptions: The current state of the assumptions
+            log: Logging object.
+            report: Default report object.
+            assumptions: Current state of the assumptions
                          (updated after each calibration).
-            id: A natural number giving the rank of the calibration to run.
-            name: The name of the calibration to run.
-            substitutions: The dictionary of substitutions.
-            timestamp:
+            id: Natural number giving the rank of the calibration to run.
+            name: Name of the calibration to run (in lowercase).
+            substitutions: Dictionary of substitutions.
+            timestamp: Timestamp used to create the log and report files.
         """
         subs_name = substitutions['NAME']
         full      = f'{name}_{subs_name}' if subs_name else name

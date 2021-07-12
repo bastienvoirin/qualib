@@ -45,7 +45,7 @@ NAME_utils.py
 
     .. py:method:: post_process
 
-reports/
+reports/TIMESTAMP.ipynb
 **********************************
 
 Each report consists in:
@@ -57,7 +57,7 @@ Each report consists in:
     * Report header (imports, utility functions) (:py:meth:`Report.__init__()<Report>`)
     * Calibrations reports (:py:meth:`Report.add_calibration()`, :py:meth:`Report.add_results()`)
 
-logs/
+logs/TIMESTAMP.log
 **********************************
 
 Logs consist in timestamped and labeled lines of information ("info"), debug information ("debug"), warning ("warn"), errors ("error") and/or custom content.

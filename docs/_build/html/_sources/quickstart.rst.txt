@@ -56,45 +56,23 @@ Jupyter notebook template
 Python script
 ----------------------------------
 
+Template:
+
+.. literalinclude:: literalinclude/calib_utils.py
+    :language: python
+
+Example ("Rabi" calibration):
+
+.. literalinclude:: literalinclude/rabi_utils.py
+    :language: python
+
 Defining a calibration sequence
 **********************************
 
 Example:
 
-.. code-block:: py
-    
-    [
-        {"name": "spectro_ro",
-         "substitutions": {"NAME": "phase_only",
-                           "TYPE": "phase only"}},
-         
-        {"name": "spectro_ro",
-         "substitutions": {"NAME": "circle_fit",
-                           "TYPE": "circle fit"}},
-                           
-        {"name": "spectro_qubit"},
-        
-        {"name": "rabi_probe"},
-        
-        {"name": "rabi",
-         "substitutions": {"NAME":  "uncond_pi2",
-                           "PULSE": "unconditional_pi2_pulse",
-                           "TYPE":  "unconditional pi/2 pulse"}},
-                           
-        {"name": "rabi",
-         "substitutions": {"NAME":  "uncond_pi",
-                           "PULSE": "unconditional_pi_pulse",
-                           "TYPE":  "unconditional pi pulse"}},
-                           
-        {"name": "rabi",
-         "substitutions": {"NAME":  "cond_pi",
-                           "PULSE": "conditional_pi_pulse",
-                           "TYPE":  "conditional pi pulse"}},
-                           
-        {"name": "ramsey"},
-        
-        {"name": "t1_qubit"}
-    ]
+.. literalinclude:: literalinclude/calib_scheme_example.py
+    :language: python
 
 Installation/usage
 **********************************
@@ -102,7 +80,7 @@ Installation/usage
 CLI/module usage
 ----------------------------------
 
-* First, get Qualib locally from https://github.com/bastienvoirin/qualib.git
+* First, install Qualib locally from https://github.com/bastienvoirin/qualib.git
 * Then, open a terminal and run
 
 .. code-block:: sh

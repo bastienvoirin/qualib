@@ -2,9 +2,14 @@ from __future__ import annotations
 import importlib
 from typing import Tuple
 from .calibrations.CALIBRATION_NAME_utils import Calibration
+from .log import Log
 
-def load_calibration_scheme(log, path: str) -> Tuple[list, str]:
+def load_calibration_scheme(log: Log, path: str) -> Tuple[list, str]:
     """
+    Args:
+        log: Logging object.
+        path: Absolute or relative path to the Python file describing the calibration sequence to run.
+    
     Returns:
         Parsed calibration sequence, raw calibration sequence.
     """
@@ -18,10 +23,13 @@ def load_calibration_scheme(log, path: str) -> Tuple[list, str]:
         log.exc()
         raise
     
-def load_assumptions(log) -> dict:
+def load_assumptions(log: Log) -> dict:
     """
+    Args:
+        log: Logging object.
+    
     Returns:
-        `dict`: Assumptions before any calibration.
+        Assumptions before any calibration.
     """
     log.info(f'Loading "assumptions.py"')
     try:
@@ -32,8 +40,13 @@ def load_assumptions(log) -> dict:
         log.exc()
         raise
 
-def load_utils(log, name: str, prefix: str) -> Calibration:
+def load_utils(log: Log, name: str, prefix: str) -> Calibration:
     """
+    Args:
+        log: Logging object.
+        name: Name of the calibration. The Python script to load should be named ``{name}_utils.py`` under ``qualib/calibrations/{name}``.
+        prefix: Prefix of the log entry (whose format will be ``[timestamp] [INFO] prefix: message``).
+    
     Returns:
         Calibration class from ``CALIBRATION_NAME_utils.py``.
     """
@@ -47,8 +60,13 @@ def load_utils(log, name: str, prefix: str) -> Calibration:
         log.exc()
         raise
     
-def load_exopy_template(log, name: str, prefix: str) -> str:
+def load_exopy_template(log: Log, name: str, prefix: str) -> str:
     """
+    Args:
+        log: Logging object.
+        name: Name of the calibration. The Exopy template to load should be named ``{name}_template.meas.ini`` under ``qualib/calibrations/{name}``.
+        prefix: Prefix of the log entry (whose format will be ``[timestamp] [INFO] prefix: message``).
+    
     Returns:
         Contents of the Exopy template for a given calibration name.
     """
