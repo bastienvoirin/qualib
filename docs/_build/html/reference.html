@@ -485,7 +485,7 @@ future versions.</p>
 <li><p>As <code class="docutils literal notranslate"><span class="pre">pkg_calib_scheme</span></code> — package usage:
 <code class="docutils literal notranslate"><span class="pre">Qualib().run_all('calibration_scheme.py')</span></code></p></li>
 <li><p>Or in <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code> — CLI/module usage:
-<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">qualib.main</span> <span class="pre">calibration_scheme.py</span></code>.</p></li>
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">qualib.main</span> <span class="pre">calibration_scheme.py</span></code>.</p></li>
 </ul>
 </div></blockquote>
 <dl class="field-list simple">
@@ -774,9 +774,9 @@ the end of <code class="xref py py-func docutils literal notranslate"><span clas
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str</em>) – </p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – Report filename.</p></li>
 <li><p><strong>assumptions</strong> (<em>dict</em>) – Dictionary of assumptions.</p></li>
-<li><p><strong>calib_scheme_str</strong> (<em>str</em>) – </p></li>
+<li><p><strong>calib_scheme_str</strong> (<em>str</em>) – String representation of the calibration sequence.</p></li>
 </ul>
 </dd>
 </dl>
@@ -794,7 +794,8 @@ the end of <code class="xref py py-func docutils literal notranslate"><span clas
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.Report.filename">
 <code class="sig-name descname">filename</code><a class="headerlink" href="#qualib.calibrations.default.Report.filename" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Report filename.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>
 </dd>
@@ -804,7 +805,8 @@ the end of <code class="xref py py-func docutils literal notranslate"><span clas
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.Report.header">
 <code class="sig-name descname">header</code><a class="headerlink" href="#qualib.calibrations.default.Report.header" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>List of header cells.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>list</p>
 </dd>
@@ -814,12 +816,14 @@ the end of <code class="xref py py-func docutils literal notranslate"><span clas
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.Report.notebook">
 <code class="sig-name descname">notebook</code><a class="headerlink" href="#qualib.calibrations.default.Report.notebook" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p><code class="docutils literal notranslate"><span class="pre">nbformat.v4</span></code> notebook object.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.Report.cells">
 <code class="sig-name descname">cells</code><a class="headerlink" href="#qualib.calibrations.default.Report.cells" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>List of cells in the report notebook.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>list</p>
 </dd>
@@ -829,7 +833,8 @@ the end of <code class="xref py py-func docutils literal notranslate"><span clas
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.Report.assumptions">
 <code class="sig-name descname">assumptions</code><a class="headerlink" href="#qualib.calibrations.default.Report.assumptions" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Dictionary of assumptions.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
@@ -839,7 +844,9 @@ the end of <code class="xref py py-func docutils literal notranslate"><span clas
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.Report.assump_befr">
 <code class="sig-name descname">assump_befr</code><a class="headerlink" href="#qualib.calibrations.default.Report.assump_befr" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>String representation of the assumptions
+before the current calibration.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>
 </dd>
@@ -849,7 +856,9 @@ the end of <code class="xref py py-func docutils literal notranslate"><span clas
 <dl class="py attribute">
 <dt id="qualib.calibrations.default.Report.assump_aftr">
 <code class="sig-name descname">assump_aftr</code><a class="headerlink" href="#qualib.calibrations.default.Report.assump_aftr" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>String representation of the assumptions
+after the current calibration.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>
 </dd>
@@ -857,9 +866,11 @@ the end of <code class="xref py py-func docutils literal notranslate"><span clas
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="qualib.calibrations.default.Report.cell_befr">
-<code class="sig-name descname">cell_befr</code><a class="headerlink" href="#qualib.calibrations.default.Report.cell_befr" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dt id="qualib.calibrations.default.Report.cell_aftr">
+<code class="sig-name descname">cell_aftr</code><a class="headerlink" href="#qualib.calibrations.default.Report.cell_aftr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index of the cell containing the assumptions
+after the current calibration.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>int</p>
 </dd>
@@ -867,9 +878,12 @@ the end of <code class="xref py py-func docutils literal notranslate"><span clas
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="qualib.calibrations.default.Report.cell_aftr">
-<code class="sig-name descname">cell_aftr</code><a class="headerlink" href="#qualib.calibrations.default.Report.cell_aftr" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dt id="qualib.calibrations.default.Report.cell_diff">
+<code class="sig-name descname">cell_diff</code><a class="headerlink" href="#qualib.calibrations.default.Report.cell_diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index of the cell containing the differences
+between the assumptions before and after the
+current calibration.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>int</p>
 </dd>

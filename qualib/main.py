@@ -43,7 +43,7 @@ class Qualib:
         log_info(log.json(substitutions))
         
         try:
-            Calibration = load_utils(log, name, substitutions)
+            Calibration = load_utils(log, name, prefix)
             exopy_templ = load_exopy_template(log, name, prefix)
             
             log_info('Initializing calibration')
@@ -91,7 +91,7 @@ class Qualib:
             * As ``pkg_calib_scheme`` --- package usage:
               ``Qualib().run_all('calibration_scheme.py')``
             * Or in ``sys.argv`` --- CLI/module usage:
-              ``python qualib.main calibration_scheme.py``.
+              ``python -m qualib.main calibration_scheme.py``.
         
         Args:
             pkg_calib_scheme: path to the Python file defining

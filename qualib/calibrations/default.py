@@ -244,21 +244,26 @@ class Report:
     """Generates and updates a Jupyter notebook to report the calibrations results.
         
     Args:
-        filename (str):
+        filename (str): Report filename.
         assumptions (dict): Dictionary of assumptions.
-        calib_scheme_str (str):
+        calib_scheme_str (str): String representation of the calibration sequence.
             
     Attributes:
         log (Log): Logging object.
-        filename (str):
-        header (list):
-        notebook:
-        cells (list):
-        assumptions (dict):
-        assump_befr (str):
-        assump_aftr (str):
-        cell_befr (int):
-        cell_aftr (int):
+        filename (str): Report filename.
+        header (list): List of header cells.
+        notebook: ``nbformat.v4`` notebook object.
+        cells (list): List of cells in the report notebook.
+        assumptions (dict): Dictionary of assumptions.
+        assump_befr (str): String representation of the assumptions
+                           before the current calibration.
+        assump_aftr (str): String representation of the assumptions
+                           after the current calibration.
+        cell_aftr (int): Index of the cell containing the assumptions
+                         after the current calibration.
+        cell_diff (int): Index of the cell containing the differences
+                         between the assumptions before and after the
+                         current calibration.
     """
     
     def __init__(self, log: Log, filename: str, assumptions: dict, calib_scheme: str):

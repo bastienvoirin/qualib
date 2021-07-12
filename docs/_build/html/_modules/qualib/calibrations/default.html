@@ -408,21 +408,26 @@
     <span class="sd">&quot;&quot;&quot;Generates and updates a Jupyter notebook to report the calibrations results.</span>
 <span class="sd">        </span>
 <span class="sd">    Args:</span>
-<span class="sd">        filename (str):</span>
+<span class="sd">        filename (str): Report filename.</span>
 <span class="sd">        assumptions (dict): Dictionary of assumptions.</span>
-<span class="sd">        calib_scheme_str (str):</span>
+<span class="sd">        calib_scheme_str (str): String representation of the calibration sequence.</span>
 <span class="sd">            </span>
 <span class="sd">    Attributes:</span>
 <span class="sd">        log (Log): Logging object.</span>
-<span class="sd">        filename (str):</span>
-<span class="sd">        header (list):</span>
-<span class="sd">        notebook:</span>
-<span class="sd">        cells (list):</span>
-<span class="sd">        assumptions (dict):</span>
-<span class="sd">        assump_befr (str):</span>
-<span class="sd">        assump_aftr (str):</span>
-<span class="sd">        cell_befr (int):</span>
-<span class="sd">        cell_aftr (int):</span>
+<span class="sd">        filename (str): Report filename.</span>
+<span class="sd">        header (list): List of header cells.</span>
+<span class="sd">        notebook: ``nbformat.v4`` notebook object.</span>
+<span class="sd">        cells (list): List of cells in the report notebook.</span>
+<span class="sd">        assumptions (dict): Dictionary of assumptions.</span>
+<span class="sd">        assump_befr (str): String representation of the assumptions</span>
+<span class="sd">                           before the current calibration.</span>
+<span class="sd">        assump_aftr (str): String representation of the assumptions</span>
+<span class="sd">                           after the current calibration.</span>
+<span class="sd">        cell_aftr (int): Index of the cell containing the assumptions</span>
+<span class="sd">                         after the current calibration.</span>
+<span class="sd">        cell_diff (int): Index of the cell containing the differences</span>
+<span class="sd">                         between the assumptions before and after the</span>
+<span class="sd">                         current calibration.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log</span><span class="p">:</span> <span class="n">Log</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">assumptions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">calib_scheme</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
