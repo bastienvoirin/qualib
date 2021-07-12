@@ -11,7 +11,7 @@ class Log():
     Keyword arguments ``**kwargs`` are not supported yet, but may be added in
     future versions.
     """
-    
+
     def initialize(self, timestamp: str, max_label_len: int = 5) -> Log:
         """
         Args:
@@ -21,6 +21,7 @@ class Log():
         Returns:
             A logging object.
         """
+        self.show_debug_messages = False
         self.path = f'logs/{timestamp}.log'
         self.max_label_len = max_label_len
         return self
@@ -35,6 +36,8 @@ class Log():
         Returns:
             ``self``
         """
+        if not self.show_debug_messages:
+            return self
         return self.log('debug', prefix, *lines, **kwargs)
     
     def info(self, prefix: str, *lines: str, **kwargs) -> Log:

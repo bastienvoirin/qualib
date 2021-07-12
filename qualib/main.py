@@ -1,4 +1,5 @@
 import os
+from re import sub
 import sys
 import json
 import traceback
@@ -40,7 +41,7 @@ class Qualib:
 
         log_info(f'Starting calibration with {len(substitutions)} '
                  f'substitution{"s" if len(substitutions) > 1 else ""}')
-        log_info(log.json(substitutions))
+        log_info(*log.json(substitutions))
         
         try:
             Calibration = load_utils(log, name, prefix)

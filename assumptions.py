@@ -22,6 +22,7 @@
         'power': 6      # updated by [twpa]
     },
     'averaging': 1000,
+    'flux': -0.065, # V
     
     ######## calibration-specific parameters ########
     

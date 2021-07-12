@@ -1,5 +1,6 @@
 from __future__ import annotations
 import re
+import traceback
 import subprocess
 import nbformat as nb
 from nbformat.v4 import new_notebook
@@ -48,6 +49,9 @@ def handle_magic_commands(log: Log, pre: str, line: str) -> bool:
     """
     if line[0][:4] == r'%run':
         # TODO: Execute script at specified URL
+        log.debug(pre, line)
+    if line[0][:4] == r'%load':
+        # TODO: Load script at specified URL
         log.debug(pre, line)
     return line[0] != '%'
 
@@ -99,7 +103,8 @@ class DefaultCalibration:
         self.timestamp     = timestamp
 
         self.report_templ  = nb.read(f'qualib/calibrations/{name}/template_{name}.ipynb', as_version=4).cells
-        self.hdf5_path     = f'{assumptions["default_path"]}/{timestamp}_{id:03d}_{pre[:-1]}.h5'
+        self.hdf5_filename = f'{timestamp}_{id:03d}_{pre[:-1]}.h5'
+        self.hdf5_path     = f'{assumptions["default_path"]}/{self.hdf5_filename}'
         self.results       = {}
     
     def handle_substitutions(self, mapping: Dict[str, str] = {}) -> None:
@@ -110,7 +115,7 @@ class DefaultCalibration:
             mapping: Dictionary of substitutions.
         """
         mapping['HDF5_PATH'] = self.hdf5_path
-        for key, val in {**mapping, **self.substitutions.items()}:
+        for key, val in ({**mapping, **self.substitutions}).items():
             # Handle substitutions in Exopy template
             self.exopy_templ = self.exopy_templ.replace(key, val)
 
@@ -138,7 +143,7 @@ class DefaultCalibration:
             else:
                 # Replace $parameter with assumptions[parameter]
                 self.exopy_templ = self.exopy_templ.replace(tree, str(self.assumptions[root]))
-        self.exopy_templ = self.exopy_templ.replace(self.assumptions['filename'], self.hdf5_path)
+        self.exopy_templ = self.exopy_templ.replace(self.assumptions['filename'], self.hdf5_filename)
         exopy_templ_aftr = self.exopy_templ.splitlines()
         for line in get_diff(exopy_templ_befr, exopy_templ_aftr):
             # Remove unnecessary whitespaces and log exopy_templ diff
@@ -191,7 +196,9 @@ class DefaultCalibration:
                 try:
                     exec(cell['source'], loc, loc)
                 except:
-                    self.log.debug('', cell['source'].splitlines())
+                    # Debug: print source code of erroneous cell
+                    lines =  cell['source'].splitlines()
+                    [self.log.debug(str(i+1).zfill(len(str(len(lines))))+':', line) for i, line in enumerate(lines)]
                     raise
                 
                 # Fetch results
