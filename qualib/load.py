@@ -1,5 +1,6 @@
 from __future__ import annotations
 import importlib
+import os
 from typing import Tuple
 from .calibrations.CALIBRATION_NAME_utils import Calibration
 from .log import Log
@@ -23,17 +24,18 @@ def load_calibration_scheme(log: Log, path: str) -> Tuple[list, str]:
         log.exc()
         raise
     
-def load_assumptions(log: Log) -> dict:
+def load_assumptions(log: Log, path: str = 'assumptions.py') -> dict:
     """
     Args:
         log: Logging object.
+        path: Path to the assumptions file (``assumptions.py`` by default).
     
     Returns:
         Assumptions before any calibration.
     """
     log.info(f'Loading "assumptions.py"')
     try:
-        with open('assumptions.py', encoding='utf-8') as f:
+        with open(path, encoding='utf-8') as f:
             return eval(f.read()) # assumptions.py should be a Python dict
     except:
         log.error('Unable to load or evaluate "assumptions.py"')
@@ -70,7 +72,7 @@ def load_exopy_template(log: Log, name: str, prefix: str) -> str:
     Returns:
         Contents of the Exopy template for a given calibration name.
     """
-    path = f'qualib/calibrations/{name}/{name}_template.meas.ini'
+    path = os.path.join(os.path.dirname(__file__), f'calibrations/{name}/{name}_template.meas.ini')
     log.info(prefix, f'Loading Exopy measurements template "{path}"')
     try:
         with open(path, encoding='utf-8') as f:

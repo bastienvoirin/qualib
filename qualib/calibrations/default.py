@@ -102,7 +102,7 @@ class DefaultCalibration:
         self.pre           = pre
         self.timestamp     = timestamp
 
-        self.report_templ  = nb.read(f'qualib/calibrations/{name}/template_{name}.ipynb', as_version=4).cells
+        self.report_templ  = nb.read(os.path.join(os.path.dirname(__file__), f'{name}/template_{name}.ipynb'), as_version=4).cells
         self.hdf5_filename = f'{timestamp}_{id:03d}_{pre[:-1]}.h5'
         self.hdf5_path     = f'{assumptions["default_path"]}/{self.hdf5_filename}'
         self.results       = {}
@@ -150,7 +150,7 @@ class DefaultCalibration:
             self.log.debug(self.pre, f'{line[0]} {line[1:].strip()}')
 
         # Generating NAME.meas.ini file
-        meas_path = f'qualib/calibrations/{self.name}/{self.name}.meas.ini'
+        meas_path = os.path.join(os.path.dirname(__file__), f'{self.name}/{self.name}.meas.ini')
         self.log.info(self.pre, f'Generating "{meas_path}"')
         with open(meas_path, 'w', encoding='utf-8') as f:
             f.write(self.exopy_templ)
@@ -214,7 +214,7 @@ class DefaultCalibration:
                     message = f'Standard deviation too large for {failed}\n'\
                               f'  If a parameter is not relevant, exclude it '\
                               f'from _opt and _cov in template_{self.name}.ipynb'
-                    assert all(ratios <= 0.05), (self.log.error(self.pre, message) and False) or message
+                    assert all(ratios <= 0.05), message
                     
                 # Handle user-defined errors
                 if '_err' in loc and '_err' in cell['source']:
@@ -234,14 +234,14 @@ class DefaultCalibration:
             mapping: Dictionary of ``'POST_PLACEHOLDER': value`` pairs.
         """
         self.log.info(self.pre, f'Handling post_process placeholders defined in "qualib/calibrations/{self.name}/{self.name}_utils.py"')
-        self.log.info(self.pre, self.log.json(mapping))
+        self.log.info(self.pre, *self.log.json(mapping))
 
         for key, val in mapping.items():
             for i in range(len(self.report.cells)):
                 src = self.report.cells[i]['source']
                 if type(src) == list:
                     src = '\n'.join(src)
-                self.report.cells[i]['source'] = src.replace(key, val)
+                self.report.cells[i]['source'] = src.replace('{'+key+'}', val)
 
         self.report.update()
 
@@ -278,7 +278,7 @@ class Report:
         self.filename    = filename
         self.assumptions = dict(assumptions)
         self.assump_befr = json.dumps(assumptions, indent=4)
-        self.header      = nb.read('qualib/calibrations/default_header.ipynb', as_version=4).cells
+        self.header      = nb.read(os.path.join(os.path.dirname(__file__), 'default_header.ipynb'), as_version=4).cells
         self.notebook    = new_notebook()
         self.cells       = []
 

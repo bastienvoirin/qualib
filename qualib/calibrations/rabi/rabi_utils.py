@@ -19,7 +19,6 @@ class Calibration(DefaultCalibration):
         if '_pi2_' in self.substitutions['PULSE']: factor = 4
         
         super().post_process(mapping = {
-            'TYPE':         self.assumptions['TYPE'],
             'PULSE_AMP':    f'{self.results["a_rabi"]/factor:f}',
             'PULSE_LENGTH': str(self.assumptions['qubit'][f'{self.substitutions["PULSE"]}_length'])
         })

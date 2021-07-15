@@ -7,7 +7,9 @@ import subprocess
 
 from pathlib import Path
 from datetime import datetime, time
-from typing import List, Dict
+from typing import List, Dict, Union
+
+from numpy.lib.function_base import place
 from .load import load_calibration_scheme, load_assumptions
 from .load import load_exopy_template, load_utils
 from .log import Log
@@ -17,6 +19,8 @@ class Qualib:
     """Wrapper supclass.
 
     """
+
+    retries = 0
     
     def run(self, log: Log, report: Report, assumptions: dict, id: int,
             name: str, substitutions: Dict[str, str], timestamp: str) -> None:
@@ -76,27 +80,37 @@ class Qualib:
 
             log_info('Reporting results')
             report.add_results(calibration)
-            assumptions = dict(calibration.assumptions)
-
+            assumptions = calibration.assumptions.copy()
+            Qualib.retries = 0
+            return assumptions.copy()
         except:
             log.error(prefix, f'{sys.exc_info()[1]}')
             for line in traceback.format_exc().splitlines():
                 log.error('', line)
+            if Qualib.retries < (assumptions.get('retries') or 0):
+                log_info('Retrying ')
+                Qualib.retries += 1
+                return self.run(log, report, assumptions,
+                                id, calibration['name'],
+                                substitutions, timestamp)
+            Qualib.retries = 0
             raise # Propagate the exception to show the stack
                   # trace and prevent the next calibration
-        return
+        
     
-    def run_all(self, pkg_calib_scheme: str = '') -> None:
+    def run_all(self, pkg_calib_scheme: Union[str, list] = '', assumptions: dict = {}) -> None:
         """Runs a calibration sequence whose path is either passed:
         
-            * As ``pkg_calib_scheme`` --- package usage:
-              ``Qualib().run_all('calibration_scheme.py')``
+            * As ``pkg_calib_scheme`` --- package usage examples:
+              ``Qualib().run_all('calibration_scheme.py', assumptions_dict)``, ``Qualib().run_all(calibration_scheme_list)``
             * Or in ``sys.argv`` --- CLI/module usage:
               ``python -m qualib.main calibration_scheme.py``.
         
         Args:
-            pkg_calib_scheme: path to the Python file defining
-                              the calibration sequence to run.
+            pkg_calib_scheme: Path to the Python file defining
+                              the calibration sequence to run (``str``)
+                              or calibration sequence to run (``list``).
+            assumptions: Optional. Custom assumptions ``dict``.
         """
         assert len(sys.argv) > 1 or pkg_calib_scheme, '\n'.join([
             'Missing calibration scheme\n',
@@ -120,15 +134,20 @@ class Qualib:
 
         log = Log()
         log.initialize(timestamp)
+        log.show_debug_messages = True
         
         def log_info(*lines):
             log.info('', *lines) # Define global prefix here
 
-        log_info(f'Reading and parsing "{calib_scheme_path}"')
-        seq_list, seq_str = load_calibration_scheme(log, calib_scheme_path)
+        if type(pkg_calib_scheme) is list:
+            seq_list, seq_str = pkg_calib_scheme, json.dumps(pkg_calib_scheme, indent=4)
+        else:
+            log_info(f'Reading and parsing "{calib_scheme_path}"')
+            seq_list, seq_str = load_calibration_scheme(log, calib_scheme_path)
 
-        log_info('Reading and parsing "assumptions.py"')
-        assumptions = load_assumptions(log)
+        if not assumptions:
+            log_info('Reading and parsing "assumptions.py"')
+            assumptions = load_assumptions(log)
 
         report_path = f'reports/report_{timestamp}.ipynb'
         log_info(f'Initializing "{report_path}"')
@@ -136,10 +155,11 @@ class Qualib:
 
         log_info('Starting calibration sequence')
         for id, calibration in enumerate(seq_list, start=1):
-            self.run(log, report, assumptions, id, calibration['name'],
-                     calibration.get('substitutions') or {'NAME': ''}, timestamp)
+            substitutions = calibration.get('substitutions') or {'NAME': ''}
+            assumptions = self.run(log, report, assumptions, id, calibration['name'],
+                                   substitutions, timestamp)
         log_info('Done')
-        return
+        return assumptions.copy()
 
 if __name__ == '__main__':
     qualib = Qualib()

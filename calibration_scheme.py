@@ -15,6 +15,11 @@
      "substitutions": {"NAME":  "uncond_pi2",
                        "PULSE": "unconditional_pi2_pulse",
                        "TYPE":  "unconditional pi/2 pulse"}},
+    {"name": "ramsey"},
+    {"name": "rabi",
+     "substitutions": {"NAME":  "uncond_pi2",
+                       "PULSE": "unconditional_pi2_pulse",
+                       "TYPE":  "unconditional pi/2 pulse"}},
     {"name": "rabi",
      "substitutions": {"NAME":  "uncond_pi",
                        "PULSE": "unconditional_pi_pulse",
@@ -23,5 +28,5 @@
      "substitutions": {"NAME":  "cond_pi",
                        "PULSE": "conditional_pi_pulse",
                        "TYPE":  "conditional pi pulse"}},
-    {"name": "ramsey"}
+    {"name": "t1_qubit"}
 ]
