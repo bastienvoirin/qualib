@@ -83,6 +83,12 @@ class Qualib:
             assumptions = calibration.assumptions.copy()
             Qualib.retries = 0
             return assumptions.copy()
+        except KeyboardInterrupt:
+            log.error(prefix, f'{sys.exc_info()[1]}')
+            for line in traceback.format_exc().splitlines():
+                log.error('', line)
+            raise # Propagate the exception to show the stack
+                  # trace and prevent the next calibration
         except:
             log.error(prefix, f'{sys.exc_info()[1]}')
             for line in traceback.format_exc().splitlines():
@@ -90,9 +96,8 @@ class Qualib:
             if Qualib.retries < (assumptions.get('retries') or 0):
                 log_info('Retrying ')
                 Qualib.retries += 1
-                return self.run(log, report, assumptions,
-                                id, calibration['name'],
-                                substitutions, timestamp)
+                return self.run(log, report, assumptions, id,
+                                name, substitutions, timestamp)
             Qualib.retries = 0
             raise # Propagate the exception to show the stack
                   # trace and prevent the next calibration

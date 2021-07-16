@@ -173,58 +173,52 @@ class DefaultCalibration:
         self.report.add_calibration(self)
 
         self.log.info(self.pre, 'Executing header')
+        locs = {}
+        code = ''
         for cell in self.report.header:
             if cell['cell_type'] == 'code':
                 # Handle magic commands
-                code = '\n'.join([
+                code += '\n'+'\n'.join([
                     line for line in cell['source'].splitlines()
                     if handle_magic_commands(self.log, self.pre, line)
                 ])
-                
-                # Execute code cell
-                try:
-                    exec(code, globals(), locals())
-                except:
-                    self.log.debug('', code.splitlines())
-                    raise
 
         self.log.info(self.pre, f'Executing "qualib/calibrations/{self.name}/template_{self.name}.ipynb" code cells')
-        loc = locals()
         for cell in self.report.cells[self.report.last_calibration:]:
             if cell['type'] == 'py':
-                # Execute code cell
-                try:
-                    exec(cell['source'], loc, loc)
-                except:
-                    # Debug: print source code of erroneous cell
-                    lines =  cell['source'].splitlines()
-                    [self.log.debug(str(i+1).zfill(len(str(len(lines))))+':', line) for i, line in enumerate(lines)]
-                    raise
-                
-                # Fetch results
-                if '_results' in loc and '_results' in cell['source']:
-                    self.log.info(self.pre, 'Fetching results')
-                    self.results = loc['_results']
+                code += '\n'+cell['source']
 
-                # Check standard deviations against optimized values
-                if '_opt' in loc and '_cov' in loc and '_opt' in cell['source'] and '_cov' in cell['source']:
-                    self.log.info(self.pre, 'Checking standard deviations against optimized values')
-                    ratios  = np.sqrt(np.diag(loc['_cov'])) / np.abs(loc['_opt'])
-                    failed  = ', '.join([f'_opt[{ind}]' for ind in np.where(ratios > 0.05)[0]])
-                    message = f'Standard deviation too large for {failed}\n'\
-                              f'  If a parameter is not relevant, exclude it '\
-                              f'from _opt and _cov in template_{self.name}.ipynb'
-                    assert all(ratios <= 0.05), message
-                    
-                # Handle user-defined errors
-                if '_err' in loc and '_err' in cell['source']:
-                    self.log.info(self.pre, 'Handling custom errors')
-                    errors = []
-                    for message, condition in loc['_err'].items():
-                        if condition:
-                            errors.append(message)
-                            self.log.error(self.pre, message)
-                    assert not errors, '\n  '+'\n  '.join(errors)
+        try:
+            exec(code, locs, locs)
+        except:
+            lines = code.splitlines()
+            [self.log.debug(str(i+1).zfill(len(str(len(lines))))+':', line) for i, line in enumerate(lines)]
+            raise
+        
+        # Fetch results
+        if '_results' in locs and '_results' in cell['source']:
+            self.log.info(self.pre, 'Fetching results')
+            self.results = locs['_results']
+
+        # Check standard deviations against optimized values
+        if '_opt' in locs and '_cov' in locs and '_opt' in cell['source'] and '_cov' in cell['source']:
+            self.log.info(self.pre, 'Checking standard deviations against optimized values')
+            ratios  = np.sqrt(np.diag(locs['_cov'])) / np.abs(locs['_opt'])
+            failed  = ', '.join([f'_opt[{ind}]' for ind in np.where(ratios > 0.05)[0]])
+            message = f'Standard deviation too large for {failed}\n'\
+                        f'  If a parameter is not relevant, exclude it '\
+                        f'from _opt and _cov in template_{self.name}.ipynb'
+            assert all(ratios <= 0.05), message
+            
+        # Handle user-defined errors
+        if '_err' in locs and '_err' in cell['source']:
+            self.log.info(self.pre, 'Handling custom errors')
+            errors = []
+            for message, condition in locs['_err'].items():
+                if condition:
+                    errors.append(message)
+                    self.log.error(self.pre, message)
+            assert not errors, '\n  '+'\n  '.join(errors)
 
     def post_process(self, mapping: Dict[str, str] = {}) -> None:
         """Handles post-placeholders. Should be called at
