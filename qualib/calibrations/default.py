@@ -2,6 +2,8 @@ from __future__ import annotations
 import re
 import traceback
 import subprocess
+import requests
+from copy import deepcopy
 import nbformat as nb
 from nbformat.v4 import new_notebook
 from nbformat.v4 import new_markdown_cell as new_md_cell
@@ -36,7 +38,7 @@ def keep_cell(src: List[str]) -> bool:
     first_line = src[0].strip()
     return first_line[:3] != '#if' or eval(first_line[4:-1])
 
-def handle_magic_commands(log: Log, pre: str, line: str) -> bool:
+def handle_magic_commands(log: Log, pre: str, line: str) -> str:
     """Filters magic commands and runs ``%run path_or_url`` ones.
     
     Args:
@@ -45,15 +47,11 @@ def handle_magic_commands(log: Log, pre: str, line: str) -> bool:
         line: Line to process.
         
     Returns:
-        ``False`` if ``line`` is a magic command, ``True`` otherwise.
+        ``''`` if ``line`` is a magic command or an empty string, ``line`` otherwise.
     """
-    if line[0][:4] == r'%run':
-        # TODO: Execute script at specified URL
-        log.debug(pre, line)
-    if line[0][:4] == r'%load':
-        # TODO: Load script at specified URL
-        log.debug(pre, line)
-    return line[0] != '%'
+    if not line or line[0] != '%':
+        return line
+    return ''
 
 ######################################################################
 
@@ -81,7 +79,7 @@ class DefaultCalibration:
         id (int): Natural number giving the rank of the calibration to run.
         name (str): Name of the calibration to run (in lowercase).
         substitutions (dict): Dictionary of substitutions.
-        exopy_templ (str):
+        exopy_templ (str): Exopy measurement template for the current calibration.
         pre (str): Default prefix for log entries.
         timestamp (str): Timestamp used to create the log and report files.
         report_templ (list): Cells of the calibration report template.
@@ -159,17 +157,18 @@ class DefaultCalibration:
         for key, val in mapping.items():
             for i in range(len(self.report_templ)):
                 self.report_templ[i]['source'] = self.report_templ[i]['source'].replace('{'+key+'}', val)
+        
+        self.pre_process_mapping = mapping
 
     def process(self) -> None:
         """Executes analysis code and updates assumptions.
 
         """
-        self.log.info(self.pre, 'Adding final conditional cells ("#if condition and \'STATUS\' == \'done\'")')
         for i, cell in enumerate(self.report_templ):
             src = cell['source'].splitlines()
             if keep_cell(src):
                 self.report.cells.pop()
-            self.report_templ[i]['source'] = self.report_templ[i]['source'].replace('STATE', 'done')
+            self.report_templ[i]['source'] = self.report_templ[i]['source'].replace('{STATE}', '{STATE_PROCESS}')
         self.report.add_calibration(self)
 
         self.log.info(self.pre, 'Executing header')
@@ -179,14 +178,18 @@ class DefaultCalibration:
             if cell['cell_type'] == 'code':
                 # Handle magic commands
                 code += '\n'+'\n'.join([
-                    line for line in cell['source'].splitlines()
-                    if handle_magic_commands(self.log, self.pre, line)
+                    handle_magic_commands(self.log, self.pre, line)
+                    for line in cell['source'].splitlines()
                 ])
 
         self.log.info(self.pre, f'Executing "qualib/calibrations/{self.name}/template_{self.name}.ipynb" code cells')
         for cell in self.report.cells[self.report.last_calibration:]:
             if cell['type'] == 'py':
-                code += '\n'+cell['source']
+                # Handle magic commands
+                code += '\n'+'\n'.join([
+                    handle_magic_commands(self.log, self.pre, line)
+                    for line in cell['source'].splitlines()
+                ])
 
         try:
             exec(code, locs, locs)
@@ -230,14 +233,16 @@ class DefaultCalibration:
         self.log.info(self.pre, f'Handling post_process placeholders defined in "qualib/calibrations/{self.name}/{self.name}_utils.py"')
         self.log.info(self.pre, *self.log.json(mapping))
 
-        for key, val in mapping.items():
-            for i in range(len(self.report.cells)):
-                src = self.report.cells[i]['source']
-                if type(src) == list:
-                    src = '\n'.join(src)
-                self.report.cells[i]['source'] = src.replace('{'+key+'}', val)
-
-        self.report.update()
+        mapping['STATE_PROCESS'] = '{STATE_POST_PROCESS}'
+        for key, val in ({**mapping, **self.pre_process_mapping, **self.substitutions}).items():
+            for i in range(len(self.report_templ)):
+                self.report_templ[i].source = self.report_templ[i].source.replace('{'+key+'}', val)
+                
+        for i, cell in enumerate(self.report_templ):
+            src = cell['source'].splitlines()
+            if keep_cell(src):
+                self.report.cells.pop()
+        self.report.add_calibration(self)
 
 ######################################################################
 
@@ -270,7 +275,7 @@ class Report:
     def __init__(self, log: Log, filename: str, assumptions: dict, calib_scheme: str):
         self.log         = log
         self.filename    = filename
-        self.assumptions = dict(assumptions)
+        self.assumptions = deepcopy(assumptions)
         self.assump_befr = json.dumps(assumptions, indent=4)
         self.header      = nb.read(os.path.join(os.path.dirname(__file__), 'default_header.ipynb'), as_version=4).cells
         self.notebook    = new_notebook()
@@ -279,6 +284,7 @@ class Report:
         self.add_md_cell('# Calibration sequence')
         self.add_py_cell(calib_scheme.strip()+';')
         self.add_md_cell('# Assumptions before calibration sequence')
+        self.cell_befr: int = len(self.cells)
         self.add_py_cell(self.assump_befr+';')
 
         self.add_md_cell('# Assumptions after calibration sequence')
@@ -335,7 +341,7 @@ class Report:
         
         """
         self.log.info(calibration.pre, 'Comparing assumptions before and assumptions after')
-        self.assump_aftr = json.dumps(self.assumptions, indent=4)
+        self.assump_aftr = json.dumps(calibration.assumptions, indent=4)
         diff = list(get_diff(
             self.assump_befr.splitlines(keepends=True),
             self.assump_aftr.splitlines(keepends=True)

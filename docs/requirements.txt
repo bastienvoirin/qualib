@@ -3,4 +3,5 @@ nbsphinx
 numpy
 scipy
 nbformat
+requests
 sphinx_toolbox

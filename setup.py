@@ -13,7 +13,8 @@ setup(
    install_requires=[
       'numpy',
       'scipy',
-      'nbformat'
+      'nbformat',
+      'requests'
    ],
    scripts=['qualib/main.py']
 )

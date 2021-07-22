@@ -5,6 +5,7 @@ report*.ipynb
 .ipynb_checkpoints
 *checkpoint.ipynb
 *.log
+logs/*.json
 build/
 dist/
 qualib.egg-info/

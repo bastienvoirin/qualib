@@ -4,6 +4,7 @@ import sys
 import json
 import traceback
 import subprocess
+from copy import deepcopy
 
 from pathlib import Path
 from datetime import datetime, time
@@ -80,9 +81,9 @@ class Qualib:
 
             log_info('Reporting results')
             report.add_results(calibration)
-            assumptions = calibration.assumptions.copy()
+            assumptions = deepcopy(calibration.assumptions)
             Qualib.retries = 0
-            return assumptions.copy()
+            return deepcopy(assumptions)
         except KeyboardInterrupt:
             log.error(prefix, f'{sys.exc_info()[1]}')
             for line in traceback.format_exc().splitlines():
@@ -159,12 +160,19 @@ class Qualib:
         report = Report(log, report_path, assumptions, seq_str)
 
         log_info('Starting calibration sequence')
+        assumptions_ls = []
         for id, calibration in enumerate(seq_list, start=1):
-            substitutions = calibration.get('substitutions') or {'NAME': ''}
-            assumptions = self.run(log, report, assumptions, id, calibration['name'],
-                                   substitutions, timestamp)
+            substitutions = calibration.get('substitutions') or {}
+            if not substitutions.get('NAME'):
+                substitutions = {'NAME': ''}
+            assumptions_ls += [self.run(log, report, assumptions, id, calibration['name'],
+                                       substitutions, timestamp)]
+            with open(f"logs/{timestamp}.json", "w") as f:
+                f.write(json.dumps(assumptions_ls, indent=4))
+            assumptions = {}
+            assumptions = deepcopy(assumptions_ls[-1])
         log_info('Done')
-        return assumptions.copy()
+        return assumptions_ls
 
 if __name__ == '__main__':
     qualib = Qualib()
