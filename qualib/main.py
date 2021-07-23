@@ -1,5 +1,5 @@
 import os
-from re import sub
+from re import sub, findall, MULTILINE
 import sys
 import json
 import traceback
@@ -157,7 +157,7 @@ class Qualib:
 
         report_path = f'reports/report_{timestamp}.ipynb'
         log_info(f'Initializing "{report_path}"')
-        report = Report(log, report_path, assumptions, seq_str)
+        report = Report(log, report_path, assumptions, seq_str, timestamp)
 
         log_info('Starting calibration sequence')
         assumptions_ls = []
@@ -167,6 +167,20 @@ class Qualib:
                 substitutions = {'NAME': ''}
             assumptions_ls += [self.run(log, report, assumptions, id, calibration['name'],
                                        substitutions, timestamp)]
+
+            # Handle variables ("$parameter" in "substitutions", such as "$flux")
+            variables = findall(r'(\$([a-z0-9_]+)(?:/([a-z0-9_]+))?)',
+                                       " ".join(substitutions.keys()),
+                                       MULTILINE)
+            log.info(f'{calibration["name"]}:', f'Updating variables in "logs/{timestamp}.json"')
+            log.info(f'{calibration["name"]}:', *variables)
+            for tree, root, leaf in variables:
+                log.debug(f'{calibration["name"]}:', str((tree, root, leaf)))
+                if leaf:
+                    assumptions_ls[-1][root][leaf] = float(substitutions[tree])
+                else:
+                    assumptions_ls[-1][root] = float(substitutions[tree])
+
             with open(f"logs/{timestamp}.json", "w") as f:
                 f.write(json.dumps(assumptions_ls, indent=4))
             assumptions = {}

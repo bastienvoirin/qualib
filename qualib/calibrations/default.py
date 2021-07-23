@@ -253,6 +253,7 @@ class Report:
         filename (str): Report filename.
         assumptions (dict): Dictionary of assumptions.
         calib_scheme_str (str): String representation of the calibration sequence.
+        timestamp (str): Timestamp used to create the log and report files.
             
     Attributes:
         log (Log): Logging object.
@@ -272,7 +273,7 @@ class Report:
                          current calibration.
     """
     
-    def __init__(self, log: Log, filename: str, assumptions: dict, calib_scheme: str):
+    def __init__(self, log: Log, filename: str, assumptions: dict, calib_scheme: str, timestamp: str):
         self.log         = log
         self.filename    = filename
         self.assumptions = deepcopy(assumptions)
@@ -280,6 +281,7 @@ class Report:
         self.header      = nb.read(os.path.join(os.path.dirname(__file__), 'default_header.ipynb'), as_version=4).cells
         self.notebook    = new_notebook()
         self.cells       = []
+        self.timestamp   = timestamp
 
         self.add_md_cell('# Calibration sequence')
         self.add_py_cell(calib_scheme.strip()+';')
@@ -296,7 +298,9 @@ class Report:
         # Add default header (imports and useful functions)
         for cell in self.header:
             if cell['cell_type'] == 'code':
-                self.add_py_cell(cell['source'])
+                src = cell['source']
+                src = src.replace('{TIMESTAMP}', timestamp)
+                self.add_py_cell(src)
             if cell['cell_type'] == 'markdown':
                 self.add_md_cell(cell['source'])
 
