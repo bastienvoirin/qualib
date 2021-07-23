@@ -161,6 +161,8 @@ class Qualib:
 
         log_info('Starting calibration sequence')
         assumptions_ls = []
+        with open(f"logs/{timestamp}.json", "w") as f:
+            f.write(json.dumps(assumptions_ls, indent=4))
         for id, calibration in enumerate(seq_list, start=1):
             substitutions = calibration.get('substitutions') or {}
             if not substitutions.get('NAME'):

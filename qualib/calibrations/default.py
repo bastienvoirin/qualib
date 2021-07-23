@@ -191,6 +191,8 @@ class DefaultCalibration:
                     for line in cell['source'].splitlines()
                 ])
 
+        json_log_path = str(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))).replace('\\', '/')
+        code = code.replace('{JSON_LOG}', f'{json_log_path}/logs/{self.timestamp}')
         try:
             exec(code, locs, locs)
         except:
@@ -299,7 +301,7 @@ class Report:
         for cell in self.header:
             if cell['cell_type'] == 'code':
                 src = cell['source']
-                src = src.replace('{TIMESTAMP}', timestamp)
+                src = src.replace('{JSON_LOG}', f'../logs/{timestamp}')
                 self.add_py_cell(src)
             if cell['cell_type'] == 'markdown':
                 self.add_md_cell(cell['source'])
