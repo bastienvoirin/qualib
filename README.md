@@ -2,21 +2,24 @@
 
 Qualib provides automatic calibrations for experiments on superconducting quantum circuits, based on [Exopy](https://github.com/Exopy/exopy).
 
+# Installation
+
+1. `git clone https://github.com/bastienvoirin/qualib.git`
+1. `pip install .` (or `pip install <path to local Qualib repository>`)
+
 # Usage
 
-`calibration_scheme.py` defines the calibration sequence file to run (see below).
 
-## As a module
+`calibration_scheme.py` defines the calibration sequence file to run.
 
-```shell
+## CLI/module usage
+
+```
 python -m qualib.main calibration_scheme.py
 ```
 
-## As a package
 
-```shell
-pip install qualib
-```
+## Package usage
 
 ```python
 from qualib.main import Qualib
@@ -25,77 +28,36 @@ qualib = Qualib()
 qualib.run_all('calibration_scheme.py')
 ```
 
-# Structure
-
-```text
-├── assumptions.py
-├── calibration_scheme.py
-├── README.md
-├── logs
-│   └── README.md
-├── reports
-│   └── README.md
-├── setup.py
-└── qualib
-    ├── __init__.py
-    ├── qualib.py
-    ├── load.py
-    ├── log.py
-    └── calibrations
-        ├── __init__.py
-        ├── default_header.ipynb
-        ├── default.py
-        ├── template_CALIBRATION_NAME.ipynb
-        ├── rabi
-        │   ├── rabi_template.meas.ini
-        │   ├── rabi_utils.py
-        │   └── template_rabi.ipynb
-        ├── rabi_probe
-        │   ├── rabi_probe_template.meas.ini
-        │   ├── rabi_probe_utils.py
-        │   └── template_rabi_probe.ipynb
-        ├── ramsey
-        │   ├── ramsey_template.meas.ini
-        │   ├── ramsey_utils.py
-        │   └── template_ramsey.ipynb
-        ├── spectro_ro
-        │   ├── spectro_ro_template.meas.ini
-        │   ├── spectro_ro_utils.py
-        │   └── template_spectro_ro.ipynb
-        └── t1_qubit
-            ├── t1_qubit_template.meas.ini
-            ├── t1_qubit_utils.py
-            └── template_t1_qubit.ipynb
-```
-
 # Calibration sequence
-
-## `calibration_scheme.py`
-
-- Format: Python list of calibration dictionaries with `<str>name` and `<list>substitutions`; each substitution is a dictionary with `<str>name` and `<dict>repl` dict of `"PLACEHOLDER": "replacement"` pairs
-- Example:
-
-```python
-[
-    {"name": "rabi_probe"},
-    {"name": "rabi", "substitutions": [{"name": "uncond_pi2",
-                                        "repl": {"PULSE": "unconditional_pi2_pulse",
-                                                 "TYPE":  "unconditional pi/2 pulse"}},
-                                       {"name": "uncond_pi",
-                                        "repl": {"PULSE": "unconditional_pi_pulse",
-                                                 "TYPE":  "unconditional pi pulse"}},
-                                       {"name": "cond_pi",
-                                        "repl": {"PULSE": "conditional_pi_pulse",
-                                                 "TYPE":  "conditional pi pulse"}}]},
-    {"name": "t1_qubit"},
-    {"name": "ramsey"},
-    {"name": "spectro_ro"}
-]
-```
 
 ## `assumptions.py`
 
-# Defining a calibration in qualib/calibrations/
+`assumptions.py` should be a Python dictionary of depth 1 or 2.
+
+## `calibration_scheme.py`
+
+`calibration_scheme.py` should be a Python list. Each element of this list specifies a calibration to run.
+
+Format:
+
+```python
+[
+    {"name": "a_calibration"},
+    
+    {"name": "another_calibration",
+     "substitutions": {"NAME":                "variant_in_camel_case",
+                       "A_SUBSTITUTION":      "a_value",
+                       "ANOTHER_SUBTITUTION": "another_value"}}
+]
+```
+
+* `name`: the calibration name
+* `substitutions`: an optional dictionary of substitutions; if present, `NAME` must be defined.
+
+
+# Defining a calibration in `qualib/calibrations/`
+
+See [https://qualib.readthedocs.io/en/latest/user_guide.html](https://qualib.readthedocs.io/en/latest/user_guide.html) for further explanations.
 
 ## `{calib_name}_template.meas.ini`
 
@@ -107,29 +69,38 @@ qualib.run_all('calibration_scheme.py')
 
 ## `template_{calib_name}.ipynb`
 
-# Calibrations
+Typical Jupyter Notebook template:
 
-## rabi_probe
+```python
+# Calibration name ({SUBSTITUTION})
+## Result: {POST_PLACEHOLDER} unit
 
-A "Rabi probe" calibration consists in:
+# load experimental data
+file = h5py.File('HDF5_PATH', 'r', swmr=True)
+xdata = file['data']['x'][()]
+ydata = file['data']['y'][()];
 
-- A long pulse (> 750ns) with many points (100 to 1000)
-- A running FFT
-- A detection algorithm returning a linearity limit
+# fit experimental data
+popt, pcov = opt.curve_fit(function, xdata, ydata, guesses=(0, 1, 2))
+f'a, b, c = {popt}'
 
-## rabi
+# plot experimental data and curve fit(s)
+fig, ax = plt.subplots()
+ax.plot(xdata, ydata, '.-', label='Data')
+ax.plot(xdata, function(xdata, *popt), label=f'Fit: a = {popt[0]:f}')
+ax.legend();
 
-A "Rabi" calibration consists in:
+# optional interfaces: raise an exception when any(np.sqrt(np.diag(_cov)) >= 0.05*_opt)
+# where np.sqrt(np.diag(_cov)) gives the standard deviation on the optimized parameters
+_opt = popt
+_cov = pcov
 
-- Conditional (long) or unconditional (short) pulses
-- A cosine curve fit
+# optional interface: raises an exception when a specific condition is met
+_err = {'Custom error', _opt[0] < 0}
 
-## t1_qubit
+# mandatory interface
+_results = {'a': popt[0]}
+_results
+```
 
-A "T1 of qubit" calibration consists in:
-
-- An exponential curve fit
-
-## ramsey
-
-## spectro_ro
+This Jupyter notebook should be saved as `calib_name_template.ipynb` under `qualib/calibrations/calib_name`.
