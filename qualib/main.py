@@ -70,7 +70,7 @@ class Qualib:
             part_one = Path(os.path.realpath(__file__)).parent
             part_two = f'calibrations/{name}/{name}.meas.ini'
             ini_path = str(part_one / part_two)
-            subprocess.run(['python', '-m', 'exopy', '-s', '-x', ini_path],
+            subprocess.run(['python', '-m', 'exopy', '-s', '--measurement-execute', ini_path],
                            capture_output=True, shell=True)
             
             log_info('Processing (fetching results and updating assumptions)')
@@ -91,7 +91,7 @@ class Qualib:
             raise # Propagate the exception to show the stack
                   # trace and prevent the next calibration
         except:
-            log.error(prefix, f'{sys.exc_info()[1]}')
+            log.error(prefix, *str(sys.exc_info()[1]).splitlines())
             for line in traceback.format_exc().splitlines():
                 log.error('', line)
             if Qualib.retries < (assumptions.get('retries') or 0):
@@ -104,7 +104,7 @@ class Qualib:
                   # trace and prevent the next calibration
         
     
-    def run_all(self, pkg_calib_scheme: Union[str, list] = '', assumptions: dict = {}) -> None:
+    def run_all(self, pkg_calib_scheme: Union[str, list] = '', assumptions: dict = {}) -> list:
         """Runs a calibration sequence whose path is either passed:
         
             * As ``pkg_calib_scheme`` --- package usage examples:
@@ -166,7 +166,7 @@ class Qualib:
         for id, calibration in enumerate(seq_list, start=1):
             substitutions = calibration.get('substitutions') or {}
             if not substitutions.get('NAME'):
-                substitutions = {'NAME': ''}
+                substitutions['NAME'] = ''
             assumptions_ls += [self.run(log, report, assumptions, id, calibration['name'],
                                        substitutions, timestamp)]
 
